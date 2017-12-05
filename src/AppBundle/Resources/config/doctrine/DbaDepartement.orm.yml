@@ -1,0 +1,70 @@
+AppBundle\Entity\DbaDepartement:
+    type: entity
+    table: dba_departement
+    indexes:
+        fk_dba_departement_user1_idx:
+            columns:
+                - departement_code
+        fk_dba_departement_user2_idx:
+            columns:
+                - departement_nom
+        fk_dba_departement_ext1_idx:
+            columns:
+                - departement_slug
+        fk_dba_departement_ext2_idx:
+            columns:
+                - departement_nom_soundex
+    id:
+        departementId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: departement_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        departementCode:
+            type: string
+            nullable: true
+            length: 3
+            options:
+                fixed: false
+            column: departement_code
+        departementNom:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_nom
+        departementNomUppercase:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_nom_uppercase
+        departementSlug:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_slug
+        departementMessage:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_message
+        departementNomSoundex:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_nom_soundex
+    lifecycleCallbacks: {  }

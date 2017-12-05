@@ -1,0 +1,7 @@
+cpossible:
+    resource: "@cpossibleBundle/Resources/config/routing/dbalisteerp.yml"
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation

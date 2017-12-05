@@ -1,0 +1,33 @@
+AppBundle\Entity\DbaTypeerp:
+    type: entity
+    table: dba_typeERP
+    indexes:
+        fk_dba_typeERP_user1:
+            columns:
+                - typeERP_code
+    id:
+        typeerpId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: typeERP_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        typeerpCode:
+            type: string
+            nullable: true
+            length: 5
+            options:
+                fixed: false
+            column: typeERP_code
+        typeerpNom:
+            type: string
+            nullable: true
+            length: 25
+            options:
+                fixed: false
+            column: typeERP_nom
+    lifecycleCallbacks: {  }

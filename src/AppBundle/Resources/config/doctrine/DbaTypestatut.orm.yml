@@ -1,0 +1,29 @@
+AppBundle\Entity\DbaTypestatut:
+    type: entity
+    table: dba_typeStatut
+    id:
+        typestatutId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: typeStatut_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        typestatutCode:
+            type: string
+            nullable: true
+            length: 5
+            options:
+                fixed: false
+            column: typeStatut_code
+        typestatutNom:
+            type: string
+            nullable: true
+            length: 25
+            options:
+                fixed: false
+            column: typeStatut_nom
+    lifecycleCallbacks: {  }

@@ -1,0 +1,33 @@
+AppBundle\Entity\DbaTypedossier:
+    type: entity
+    table: dba_typeDossier
+    indexes:
+        fk_dba_typeDossier_user1:
+            columns:
+                - typeDossier_code
+    id:
+        typedossierId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: typeDossier_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        typedossierCode:
+            type: string
+            nullable: true
+            length: 11
+            options:
+                fixed: false
+            column: typeDossier_code
+        typedossierNom:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: typeDossier_nom
+    lifecycleCallbacks: {  }

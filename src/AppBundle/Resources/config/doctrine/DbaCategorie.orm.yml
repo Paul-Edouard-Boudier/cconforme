@@ -1,0 +1,29 @@
+AppBundle\Entity\DbaCategorie:
+    type: entity
+    table: dba_categorie
+    id:
+        categorieId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: categorie_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        categorieCode:
+            type: string
+            nullable: true
+            length: 4
+            options:
+                fixed: false
+            column: categorie_code
+        categorieNom:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: categorie_nom
+    lifecycleCallbacks: {  }

@@ -1,0 +1,211 @@
+AppBundle\Entity\DbaListeerp:
+    type: entity
+    table: dba_listeERP
+    indexes:
+        fk_dba_listeERP_user1_idx:
+            columns:
+                - listeERP_demandeur
+        fk_dba_listeERP_user2_idx:
+            columns:
+                - liste_ERP_nom_erp
+        fk_dba_listeERP_ext1_idx:
+            columns:
+                - listeERP_type
+        fk_dba_listeERP_ext2_idx:
+            columns:
+                - listeERP_numero_voie
+        fk_dba_listeERP_ext3_idx:
+            columns:
+                - listeERP_complement_voie
+        fk_dba_listeERP_ext4_idx:
+            columns:
+                - listeERP_nom_voie
+        fk_dba_listeERP_ext5_idx:
+            columns:
+                - listeERP_alias_nom_voie
+        fk_dba_listeERP_ext6_idx:
+            columns:
+                - listeERP_lieu_dit
+        fk_dba_listeERP_ext7_idx:
+            columns:
+                - listeERP_code_postal
+        fk_dba_listeERP_ext8_idx:
+            columns:
+                - listeERP_nom_commune
+        fk_dba_listeERP_ext9_idx:
+            columns:
+                - listeERP_departement
+        listeERP_siret:
+            columns:
+                - listeERP_siret
+    id:
+        listeerpId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: listeERP_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        listeerpTypedossier:
+            type: string
+            nullable: true
+            length: 15
+            options:
+                fixed: false
+            column: listeERP_typeDossier
+        listeerpIdAdap:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: listeERP_id_adap
+        listeerpDemandeur:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_demandeur
+        listeErpNomErp:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: liste_ERP_nom_erp
+        listeerpNature:
+            type: string
+            nullable: true
+            length: 5
+            options:
+                fixed: false
+            column: listeERP_nature
+        listeerpCategorie:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: listeERP_categorie
+        listeerpType:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: listeERP_type
+        listeerpDateDeclaration:
+            type: string
+            nullable: true
+            length: 15
+            options:
+                fixed: false
+            column: listeERP_date_declaration
+        listeerpDateValidAdap:
+            type: string
+            nullable: true
+            length: 15
+            options:
+                fixed: false
+            column: listeERP_date_valid_adap
+        listeerpDelaiAdap:
+            type: string
+            nullable: true
+            length: 2
+            options:
+                fixed: false
+            column: listeERP_delai_adap
+        listeerpIdIgn:
+            type: string
+            nullable: true
+            length: 25
+            options:
+                fixed: false
+            column: listeERP_id_ign
+        listeerpSiret:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: listeERP_siret
+        listeerpNumeroVoie:
+            type: string
+            nullable: true
+            length: 5
+            options:
+                fixed: false
+            column: listeERP_numero_voie
+        listeerpNumeroComplement:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: listeERP_numero_complement
+        listeerpComplementVoie:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_complement_voie
+        listeerpNomVoie:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_nom_voie
+        listeerpAliasNomVoie:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_alias_nom_voie
+        listeerpLieuDit:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_lieu_dit
+        listeerpCodePostal:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: listeERP_code_postal
+        listeerpCodeInsee:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: listeERP_code_insee
+        listeerpNomCommune:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_nom_commune
+        listeerpDepartement:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_departement
+        listeerpStatut:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: listeERP_statut
+    lifecycleCallbacks: {  }

@@ -1,0 +1,24 @@
+dbalisteerp_index:
+    path:     /
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:index" }
+    methods:  GET
+
+dbalisteerp_show:
+    path:     /{listeerpId}/show
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:show" }
+    methods:  GET
+
+dbalisteerp_new:
+    path:     /new
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:new" }
+    methods:  [GET, POST]
+
+dbalisteerp_edit:
+    path:     /{listeerpId}/edit
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:edit" }
+    methods:  [GET, POST]
+
+dbalisteerp_delete:
+    path:     /{listeerpId}/delete
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
+    methods:  DELETE

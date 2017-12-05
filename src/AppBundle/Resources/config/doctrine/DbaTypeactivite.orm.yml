@@ -1,0 +1,33 @@
+AppBundle\Entity\DbaTypeactivite:
+    type: entity
+    table: dba_typeActivite
+    indexes:
+        fk_dba_listeActivite_user1:
+            columns:
+                - typeActivite_code
+    id:
+        typeactiviteId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: typeActivite_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        typeactiviteCode:
+            type: string
+            nullable: true
+            length: 10
+            options:
+                fixed: false
+            column: typeActivite_code
+        typeactiviteNom:
+            type: string
+            nullable: true
+            length: 128
+            options:
+                fixed: false
+            column: typeActivite_nom
+    lifecycleCallbacks: {  }

@@ -1,0 +1,7 @@
+cpossible_dbalisteerp:
+    resource: "@cpossibleBundle/Resources/config/routing/dbalisteerp.yml"
+    prefix:   /dbalisteerp
+
+cpossible_homepage:
+    path:     /
+    defaults: { _controller: cpossibleBundle:Default:index }

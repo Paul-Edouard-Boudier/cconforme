@@ -1,0 +1,29 @@
+AppBundle\Entity\DbaIntitulevoie:
+    type: entity
+    table: dba_intituleVoie
+    id:
+        intitulevoieId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            column: intituleVoie_id
+            generator:
+                strategy: IDENTITY
+    fields:
+        intitulevoieCode:
+            type: string
+            nullable: true
+            length: 3
+            options:
+                fixed: false
+            column: intituleVoie_code
+        intitulevoieNom:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: intituleVoie_nom
+    lifecycleCallbacks: {  }
