@@ -1,33 +1,29 @@
-AppBundle\Entity\DbaTypedossier:
+cpossibleBundle\Entity\DbaCategorie:
     type: entity
-    table: dba_typeDossier
-    indexes:
-        fk_dba_typeDossier_user1:
-            columns:
-                - typeDossier_code
+    table: dba_categorie
     id:
-        typedossierId:
+        categorieId:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: typeDossier_id
+            column: categorie_id
             generator:
                 strategy: IDENTITY
     fields:
-        typedossierCode:
+        categorieCode:
             type: string
             nullable: true
-            length: 11
+            length: 4
             options:
                 fixed: false
-            column: typeDossier_code
-        typedossierNom:
+            column: categorie_code
+        categorieNom:
             type: string
             nullable: true
-            length: 255
+            length: 45
             options:
                 fixed: false
-            column: typeDossier_nom
+            column: categorie_nom
     lifecycleCallbacks: {  }

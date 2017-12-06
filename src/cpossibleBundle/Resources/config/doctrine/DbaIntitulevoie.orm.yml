@@ -1,29 +1,29 @@
-AppBundle\Entity\DbaCategorie:
+cpossibleBundle\Entity\DbaIntitulevoie:
     type: entity
-    table: dba_categorie
+    table: dba_intituleVoie
     id:
-        categorieId:
+        intitulevoieId:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: categorie_id
+            column: intituleVoie_id
             generator:
                 strategy: IDENTITY
     fields:
-        categorieCode:
+        intitulevoieCode:
             type: string
             nullable: true
-            length: 4
+            length: 3
             options:
                 fixed: false
-            column: categorie_code
-        categorieNom:
+            column: intituleVoie_code
+        intitulevoieNom:
             type: string
             nullable: true
             length: 45
             options:
                 fixed: false
-            column: categorie_nom
+            column: intituleVoie_nom
     lifecycleCallbacks: {  }

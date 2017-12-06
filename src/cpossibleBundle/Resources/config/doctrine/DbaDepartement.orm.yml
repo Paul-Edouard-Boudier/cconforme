@@ -1,4 +1,4 @@
-AppBundle\Entity\DbaDepartement:
+cpossibleBundle\Entity\DbaDepartement:
     type: entity
     table: dba_departement
     indexes:

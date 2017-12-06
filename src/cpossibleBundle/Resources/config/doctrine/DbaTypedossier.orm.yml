@@ -1,33 +1,33 @@
-AppBundle\Entity\DbaTypeactivite:
+cpossibleBundle\Entity\DbaTypedossier:
     type: entity
-    table: dba_typeActivite
+    table: dba_typeDossier
     indexes:
-        fk_dba_listeActivite_user1:
+        fk_dba_typeDossier_user1:
             columns:
-                - typeActivite_code
+                - typeDossier_code
     id:
-        typeactiviteId:
+        typedossierId:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: typeActivite_id
+            column: typeDossier_id
             generator:
                 strategy: IDENTITY
     fields:
-        typeactiviteCode:
+        typedossierCode:
             type: string
             nullable: true
-            length: 10
+            length: 11
             options:
                 fixed: false
-            column: typeActivite_code
-        typeactiviteNom:
+            column: typeDossier_code
+        typedossierNom:
             type: string
             nullable: true
-            length: 128
+            length: 255
             options:
                 fixed: false
-            column: typeActivite_nom
+            column: typeDossier_nom
     lifecycleCallbacks: {  }

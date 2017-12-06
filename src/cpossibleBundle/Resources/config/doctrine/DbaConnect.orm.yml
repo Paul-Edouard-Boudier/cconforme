@@ -1,33 +1,26 @@
-AppBundle\Entity\DbaTypeerp:
+cpossibleBundle\Entity\DbaConnect:
     type: entity
-    table: dba_typeERP
-    indexes:
-        fk_dba_typeERP_user1:
-            columns:
-                - typeERP_code
+    table: dba_connect
     id:
-        typeerpId:
+        id:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: typeERP_id
             generator:
                 strategy: IDENTITY
     fields:
-        typeerpCode:
+        username:
             type: string
-            nullable: true
-            length: 5
+            nullable: false
+            length: 16
             options:
                 fixed: false
-            column: typeERP_code
-        typeerpNom:
+        password:
             type: string
-            nullable: true
-            length: 25
+            nullable: false
+            length: 255
             options:
                 fixed: false
-            column: typeERP_nom
     lifecycleCallbacks: {  }

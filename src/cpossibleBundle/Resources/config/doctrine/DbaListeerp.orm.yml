@@ -1,4 +1,4 @@
-AppBundle\Entity\DbaListeerp:
+cpossibleBundle\Entity\DbaListeerp:
     type: entity
     table: dba_listeERP
     indexes:

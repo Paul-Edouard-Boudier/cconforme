@@ -1,26 +1,29 @@
-AppBundle\Entity\DbaConnect:
+cpossibleBundle\Entity\DbaTypestatut:
     type: entity
-    table: dba_connect
+    table: dba_typeStatut
     id:
-        id:
+        typestatutId:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
+            column: typeStatut_id
             generator:
                 strategy: IDENTITY
     fields:
-        username:
+        typestatutCode:
             type: string
-            nullable: false
-            length: 16
+            nullable: true
+            length: 5
             options:
                 fixed: false
-        password:
+            column: typeStatut_code
+        typestatutNom:
             type: string
-            nullable: false
-            length: 255
+            nullable: true
+            length: 25
             options:
                 fixed: false
+            column: typeStatut_nom
     lifecycleCallbacks: {  }

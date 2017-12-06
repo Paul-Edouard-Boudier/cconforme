@@ -1,29 +1,33 @@
-AppBundle\Entity\DbaIntitulevoie:
+cpossibleBundle\Entity\DbaTypeactivite:
     type: entity
-    table: dba_intituleVoie
+    table: dba_typeActivite
+    indexes:
+        fk_dba_listeActivite_user1:
+            columns:
+                - typeActivite_code
     id:
-        intitulevoieId:
+        typeactiviteId:
             type: integer
             nullable: false
             options:
                 unsigned: false
             id: true
-            column: intituleVoie_id
+            column: typeActivite_id
             generator:
                 strategy: IDENTITY
     fields:
-        intitulevoieCode:
+        typeactiviteCode:
             type: string
             nullable: true
-            length: 3
+            length: 10
             options:
                 fixed: false
-            column: intituleVoie_code
-        intitulevoieNom:
+            column: typeActivite_code
+        typeactiviteNom:
             type: string
             nullable: true
-            length: 45
+            length: 128
             options:
                 fixed: false
-            column: intituleVoie_nom
+            column: typeActivite_nom
     lifecycleCallbacks: {  }
