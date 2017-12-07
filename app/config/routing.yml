@@ -1,10 +1,6 @@
 cpossible:
     resource: "@cpossibleBundle/Resources/config/routing/dbalisteerp.yml"
-    prefix:   /
-
-app:
-    resource: '@AppBundle/Controller/'
-    type: annotation
+    prefix:   /liste
 
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
@@ -24,3 +20,7 @@ fos_user_resetting:
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
+
+cpossible_home:
+    path:      /
+    defaults:  { _controller: cpossibleBundle:Home:index }

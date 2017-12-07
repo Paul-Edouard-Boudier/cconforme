@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url('https://fonts.googleapis.com/css?family=Manuale');
+
+body{
+    text-align: center;
+}
+
+.btn:hover{
+    cursor: pointer;
+}
+
+a:link{
+    text-decoration: none;
+}
+
+#logo{
+    width: 20vw;
+    margin-top: 0.8vh;
+    margin-bottom: 0.8vh;
+}
+
+#title{
+    font-size: 1.8em;
+    font-family: 'Raleway', sans-serif;
+}
+
+#slogan{
+    color: #e7e7e7;
+    font-size: 1.1em;
+    /*font-family: 'Inconsolata', monospace;*/
+    font-family: 'Manuale', serif;
+}
+
+#search-address-wrap, #login-wrap{
+    margin-top: 8vh;
+}
+
+#more_criteria{
+    /*margin-bottom: 6vh;*/
+    display: none;
+}
+
+#nom_erp_title{
+    color: #2746c8;
+}
+
+.nom_erp_inmportant{
+    font-style: italic;
+    font-weight: bold;
+}
+
+#map-container{
+    position: relative;
+    display: none;
+}
+
+#google-map{
+    height: 500px;
+    width: 100%;
+}
+
+#signaler-btn{
+    display: none;
+    position: absolute;
+    bottom: 2vh;
+    left: 40vw;
+    /*right: 50%;*/
+    width: 20%;
+}
+
+.header{
+    background-color: #1398e3;
+    text-align: center;
+    /*margin-bottom: 2%;*/
+}
+
+.header h1, .header h2{
+    color: aliceblue;
+}
+
+.action-nav > a{
+    color: #333634;
+}
+
+.action:hover{
+    background-color: #2b2934;
+}
+
+.action> a{
+    color: #1b9ec1 !important;
+    border-radius: 5px;
+}
+
+.action> a:hover{
+    cursor: pointer;
+}
+
+.dashboard-menu{
+    background-color: #23212a;
+    margin-bottom: 8vh;
+}
+
+.dashboard-menu> .action{
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}
+
+#dashboard-welcome{
+    margin-top: 30vh;
+}
+
+#dashboard-welcome > h2{
+    font-size: 4em;
+    color: #ccc5c5;
+    font-family: 'Raleway', sans-serif;
+    opacity: 0.3;
+}
+
+.action-btn{
+    margin-top: 2%;
+}
+
+.edit-buttons{
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+}
+
+#chebox-wrapper-left, #chebox-wrapper-right{
+    border: 2px solid;
+    border-color: #1981e0;
+    border-radius: 5px;
+    /*background-color: #b4b4b4*/
+}
+
+#chebox-wrapper-left:hover, #chebox-wrapper-right:hover{
+    border-color: #94cafc;
+}
+
+.form-check-label{
+    text-align: left;
+}
