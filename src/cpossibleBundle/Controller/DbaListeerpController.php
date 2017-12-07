@@ -18,13 +18,31 @@ class DbaListeerpController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+        $securityContext = $this->container->get('security.authorization_checker');
 
-        return $this->render('dbalisteerp/index.html.twig', array(
-            'dbaListeerps' => $dbaListeerps,
-        ));
+        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+
+                $em = $this->getDoctrine()->getManager();
+
+                $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+
+                return $this->render('dbalisteerp/index.html.twig', array(
+                    'dbaListeerps' => $dbaListeerps,
+                ));
+
+            } else {
+
+                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+
+            }
+
+        } else {
+
+            return $this->redirectToRoute('fos_user_security_login');
+        }
     }
 
     /**
@@ -33,22 +51,40 @@ class DbaListeerpController extends Controller
      */
     public function newAction(Request $request)
     {
-        $dbaListeerp = new Dbalisteerp();
-        $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($dbaListeerp);
-            $em->flush();
+        $securityContext = $this->container->get('security.authorization_checker');
 
-            return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
+        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+
+                $dbaListeerp = new Dbalisteerp();
+                $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($dbaListeerp);
+                    $em->flush();
+
+                    return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                }
+
+                return $this->render('dbalisteerp/new.html.twig', array(
+                    'dbaListeerp' => $dbaListeerp,
+                    'form' => $form->createView(),
+                ));
+
+            } else {
+
+                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+
+            }
+
+        } else {
+
+            return $this->redirectToRoute('fos_user_security_login');
         }
-
-        return $this->render('dbalisteerp/new.html.twig', array(
-            'dbaListeerp' => $dbaListeerp,
-            'form' => $form->createView(),
-        ));
     }
 
     /**
@@ -57,12 +93,29 @@ class DbaListeerpController extends Controller
      */
     public function showAction(DbaListeerp $dbaListeerp)
     {
-        $deleteForm = $this->createDeleteForm($dbaListeerp);
+        $securityContext = $this->container->get('security.authorization_checker');
 
-        return $this->render('dbalisteerp/show.html.twig', array(
-            'dbaListeerp' => $dbaListeerp,
-            'delete_form' => $deleteForm->createView(),
-        ));
+        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+
+            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+
+                $deleteForm = $this->createDeleteForm($dbaListeerp);
+
+                return $this->render('dbalisteerp/show.html.twig', array(
+                    'dbaListeerp' => $dbaListeerp,
+                    'delete_form' => $deleteForm->createView(),
+                ));
+
+            } else {
+
+                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+
+            }
+
+        } else {
+
+            return $this->redirectToRoute('fos_user_security_login');
+        }
     }
 
     /**
@@ -71,21 +124,38 @@ class DbaListeerpController extends Controller
      */
     public function editAction(Request $request, DbaListeerp $dbaListeerp)
     {
-        $deleteForm = $this->createDeleteForm($dbaListeerp);
-        $editForm = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
-        $editForm->handleRequest($request);
+        $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
 
-            return $this->redirectToRoute('dbalisteerp_edit', array('listeerpId' => $dbaListeerp->getListeerpid()));
+            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+
+                $deleteForm = $this->createDeleteForm($dbaListeerp);
+                $editForm = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
+                $editForm->handleRequest($request);
+
+                if ($editForm->isSubmitted() && $editForm->isValid()) {
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return $this->redirectToRoute('dbalisteerp_edit', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                }
+
+                return $this->render('dbalisteerp/edit.html.twig', array(
+                    'dbaListeerp' => $dbaListeerp,
+                    'edit_form' => $editForm->createView(),
+                    'delete_form' => $deleteForm->createView(),
+                ));
+
+            } else {
+
+                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+
+            }
+
+        } else {
+
+            return $this->redirectToRoute('fos_user_security_login');
         }
-
-        return $this->render('dbalisteerp/edit.html.twig', array(
-            'dbaListeerp' => $dbaListeerp,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
     }
 
     /**
@@ -94,6 +164,7 @@ class DbaListeerpController extends Controller
      */
     public function deleteAction(Request $request, DbaListeerp $dbaListeerp)
     {
+
         $form = $this->createDeleteForm($dbaListeerp);
         $form->handleRequest($request);
 
