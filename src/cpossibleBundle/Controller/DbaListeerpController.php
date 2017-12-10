@@ -93,29 +93,13 @@ class DbaListeerpController extends Controller
      */
     public function showAction(DbaListeerp $dbaListeerp)
     {
-        $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+        $deleteForm = $this->createDeleteForm($dbaListeerp);
 
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-
-                $deleteForm = $this->createDeleteForm($dbaListeerp);
-
-                return $this->render('dbalisteerp/show.html.twig', array(
-                    'dbaListeerp' => $dbaListeerp,
-                    'delete_form' => $deleteForm->createView(),
-                ));
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
-
-        } else {
-
-            return $this->redirectToRoute('fos_user_security_login');
-        }
+        return $this->render('dbalisteerp/show.html.twig', array(
+            'dbaListeerp' => $dbaListeerp,
+            'delete_form' => $deleteForm->createView(),
+        ));
     }
 
     /**
@@ -192,4 +176,5 @@ class DbaListeerpController extends Controller
             ->getForm()
         ;
     }
+
 }

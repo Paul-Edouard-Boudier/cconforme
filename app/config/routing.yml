@@ -26,4 +26,4 @@ fos_user_change_password:
 
 cpossible_home:
     path:      /
-    defaults:  { _controller: cpossibleBundle:Home:index }
+    defaults:  { _controller: cpossibleBundle:Home:fetch }

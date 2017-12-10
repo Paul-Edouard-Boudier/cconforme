@@ -1,13 +1,128 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>{% block title %}Cpossible - Rechercher les établissements à accès pour personnes à mobilité réduite{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+        <link rel="icon" href="{{ asset('img/marianne.jpg') }}">
+        <link rel="stylesheet" href="{{ asset('css/style_footer.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style_login.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    <div class="container-fluid header">
+        <a href="/">
+
+            <div class="row">
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <img id="logo" src="{{ asset('img/marianne.jpg') }}" class="img-fluid rounded">
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="title">C'Possible</h1>
+                </div>
+
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="slogan" >Vérifier la conformité à l'accessibilité à un établissement pour une personne en situation de handicap.</h2>
+                </div>
+
+            </div>
+
+        </a>
+
+    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
+        <div class="row">
+            <div class="action-nav col-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="/">Espace Clients</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="action-nav col-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="/login">Espace Restreint</a>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+        {% block body %}
+
+        {% endblock %}
+    <footer class="footer">
+        <div class= "" >
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                        <h3> INFORMATIONS </h3>
+                        <ul>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                        <h3> SERVICES </h3>
+                        <ul>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                        <h3> RUBRIQUES </h3>
+                        <ul>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                        <h3> AUTRES SITES </h3>
+                        <ul>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                            <li> <a href="#"> Lorem Ipsum </a> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <footer2>
+        <nav id="nav2">
+            <div class="barrenav_2">
+                <p class="p1"><a id="navbar-brand2" href="https://www.service-public.fr/">Service-public.fr</a> | <a id="navbar-brand2" href="https://www.legifrance.gouv.fr/">Legifrance.gouv.fr</a></p>
+            </div>
+        </nav>
+        <nav id="nav3">
+            <div class="barrenav_3">
+                <p class="p1">© Direction Départementale des Territoires - <a id="navbar-brand2" href="https://www.impots.gouv.fr/portail/mentions-legales">Mentions légales</a></p>
+            </div>
+        </nav>
+    </footer2>
+
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('js/script.js') }}"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script>
+        {% endblock %}
     </body>
 </html>

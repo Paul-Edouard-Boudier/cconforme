@@ -139,3 +139,10 @@ a:link{
 .form-check-label{
     text-align: left;
 }
+
+@media (min-width: 576px){
+    .container{
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

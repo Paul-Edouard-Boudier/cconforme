@@ -22,3 +22,7 @@ dbalisteerp_delete:
     path:     /{listeerpId}/delete
     defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
     methods:  DELETE
+
+dbalisteerp_fetch:
+    path:     /fetch
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:fetch" }
