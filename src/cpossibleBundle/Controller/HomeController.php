@@ -38,41 +38,52 @@ class HomeController extends Controller
             echo "<pre>";
             var_dump($data);
             echo "</pre>";
- */
-
+*/
             $error = '0';
-            private $success;
-            private $error2;
 
             foreach ($data as $result) {
                 if ($result['name'] == $form['name']) {
                     $error = 0;
                     break;
+                } elseif ($form['name'] == "") {
+                    echo 'Veuillez entrer un nom <br>';
+                    break;
                 } else {
                     $error++;
                 }
+            }
 
+            if ($error == 0) {
+                echo 'ok <br>';
+            }elseif ($error == -1) {
+
+            } else {
+                echo 'error <br>';
             }
 
             foreach ($data as $result) {
                 if ($result['adress'] == $form['adress']) {
                     $error = 0;
                     break;
+                } elseif ($form['adress'] == "") {
+                    $error = -1;
+                    echo 'Veuillez entrer une adresse <br>';
+                    break;
                 } else {
                     $error++;
                 }
-
             }
 
             if ($error == 0) {
-                echo $success;
+                echo 'ok';
+            } elseif ($error == -1) {
+
             } else {
-                echo $error2;
+                echo 'error';
             }
 
-
         } else{
-            return $this->render('cpossibleBundle:Home:accueil.html.twig', array('success' => , 'error2' =>));
+
         }
 
         return $this->render('cpossibleBundle:Home:accueil.html.twig'); // retour de la vue
