@@ -10,6 +10,8 @@ class HomeController extends Controller
     {
         $data = [];
 
+        $test = "";
+
         if(isset($_POST['name'])){
 
             $name= $_POST['name'];
@@ -42,11 +44,12 @@ class HomeController extends Controller
             $error = '0';
 
             foreach ($data as $result) {
-                if ($result['name'] == $form['name']) {
-                    $error = 0;
-                    break;
-                } elseif ($form['name'] == "") {
+                if ($form['name'] == "") {
+                    $error = -1;
                     echo 'Veuillez entrer un nom <br>';
+                    break;
+                } elseif ($result['name'] == $form['name']) {
+                    $error = 0;
                     break;
                 } else {
                     $error++;
@@ -62,12 +65,13 @@ class HomeController extends Controller
             }
 
             foreach ($data as $result) {
-                if ($result['adress'] == $form['adress']) {
-                    $error = 0;
-                    break;
-                } elseif ($form['adress'] == "") {
+                if ($form['adress'] == "") {
                     $error = -1;
+                    $test = 'test';
                     echo 'Veuillez entrer une adresse <br>';
+                    break;
+                } elseif ($result['adress'] == $form['adress']) {
+                    $error = 0;
                     break;
                 } else {
                     $error++;
@@ -86,6 +90,6 @@ class HomeController extends Controller
 
         }
 
-        return $this->render('cpossibleBundle:Home:accueil.html.twig'); // retour de la vue
+        return $this->render('cpossibleBundle:Home:accueil.html.twig', array('test' => $test)); // retour de la vue
     }
 }
