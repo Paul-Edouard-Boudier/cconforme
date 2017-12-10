@@ -11,27 +11,25 @@
             <input type="text" id="name" name="name" placeholder="Entrez un nom..." autofocus><br><br>
 
             <label for="adress"><h2>Rechercher une adresse</h2></label><br>
-            <input type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus>
+            <input type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus><br><br>
 
-            <button type="submit" >Submit</button>
+            <button id="search-btn" type="submit" class="animated bounceInDown btn btn-success" name="button">Rechercher</button>
         </form>
     </div>
 
     <div class="row">
+        {% if success %}
         <div class="col-12 col-sm-12 col-md-12 col-lg-12">
             <h2 id="nom_erp_title"></h2>
-            <div id="nom_erp"></div>
+            <div class="alert alert-success">{{ success }}</div>
         </div>
-
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-            <div id="access_text"></div>
+        {% elseif error2 %}
+         <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="alert alert-danger">{{ error2 }}</div>
         </div>
+        {% else %}
+        {% endif %}
     </div>
-
-    {{ test }}
-
-    <button id="search-btn" type="submit" class="animated bounceInDown btn btn-success" name="button">Rechercher</button>
-
 </div>
 
     <!--

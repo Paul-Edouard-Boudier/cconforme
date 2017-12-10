@@ -19,7 +19,8 @@ class HomeController extends Controller
     {
         $data = [];
 
-        $test = "";
+        $success = "";
+        $error2 = "";
 
         if(isset($_POST['name'])){
 
@@ -72,17 +73,18 @@ class HomeController extends Controller
             }
 
             if ($error == 0) {
-                echo 'ok <br>';
+                $success = "Cet ERP est conforme";
+                $error2 = NULL;
             }elseif ($error == -1) {
 
             } else {
-                echo 'error <br>';
+                $error2 = "Cet ERP n'est pas conforme";
+                $success = NULL;
             }
 
             foreach ($data as $result) {
                 if ($form['adress'] == "") {
                     $error = -1;
-                    $test = 'test';
                     break;
                 } elseif ($result['adress'] == $form['adress']) {
                     $error = 0;
@@ -93,17 +95,22 @@ class HomeController extends Controller
             }
 
             if ($error == 0) {
-                echo 'ok';
+                $success = "Cet ERP est conforme";
+                $error2 = NULL;
             } elseif ($error == -1) {
 
             } else {
-                echo 'error';
+                $error2 = "Cet ERP n'est pas conforme";
+                $success = NULL;
             }
 
         } else{
 
         }
 
-        return $this->render('cpossibleBundle:Home:accueil.html.twig', array('test' => $test)); // retour de la vue
+        return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+            'success' => $success,
+            'error2' => $error2,
+        )); // retour de la vue
     }
 }
