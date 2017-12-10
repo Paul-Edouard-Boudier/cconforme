@@ -8,6 +8,13 @@ class HomeController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('cpossibleBundle:Home:accueil.html.twig');
-    }
+        $em = $this->getDoctrine()->getManager();
+
+        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+
+        return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+            'dbaListeerps' => $dbaListeerps,
+        ));
+
+        }
 }

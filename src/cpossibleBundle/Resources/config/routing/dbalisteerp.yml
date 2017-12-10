@@ -22,3 +22,15 @@ dbalisteerp_delete:
     path:     /{listeerpId}/delete
     defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
     methods:  DELETE
+
+dbalisteerp_test:
+    path: /test_autocomplete
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:test"}
+
+ERP_Autocomplete_name:
+    path: /autocomplete_name
+    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_name"}
+
+ERP_Autocomplete_adress:
+    path: /autocomplete_adress
+    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}

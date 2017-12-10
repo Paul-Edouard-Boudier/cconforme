@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Autocomplete - Remote datasource</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <style>
+    </style>
+    <script>
+        $(function() {
+            function log( message ) {
+                $( "<div>" ).text( message ).prependTo( "#log" );
+                $( "#log" ).scrollTop( 0 );
+            }
+
+            $( "#birds" ).autocomplete({
+
+                source: "{{ path('ERP_Autocomplete_name') }}",
+                minLength: 2,
+                select: function( event, ui ) {
+                    log( ui.item ?
+                        "Selected: " + ui.item.value + " aka " + ui.item.id :
+                        "Nothing selected, input was " + this.value );
+                }
+            });
+        });
+
+        $(function() {
+            function log( message ) {
+                $( "<div>" ).text( message ).prependTo( "#log2" );
+                $( "#log" ).scrollTop( 0 );
+            }
+
+            $( "#dogs" ).autocomplete({
+
+                source: "{{ path('ERP_Autocomplete_adress') }}",
+                minLength: 2,
+                select: function( event, ui ) {
+                    log( ui.item ?
+                        "Selected: " + ui.item.value + " aka " + ui.item.id :
+                        "Nothing selected, input was " + this.value );
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="ui-widget">
+    <label for="birds">Name: </label>
+    <input id="birds">
+    <label for="dogs">Adress:</label>
+    <input id="dogs">
+</div>
+
+<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+    Result:
+    <div id="log" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
+</div>
+
+<div class="ui-widget" style="margin-top:2em; font-family:Arial">
+    Result:
+    <div id="log2" style="height: 200px; width: 300px; overflow: auto;" class="ui-widget-content"></div>
+</div>
+
+
+</body>
+</html>

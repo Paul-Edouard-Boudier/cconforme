@@ -177,6 +177,19 @@ class DbaListeerpController extends Controller
         return $this->redirectToRoute('dbalisteerp_index');
     }
 
+
+
+    public function testAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+
+        return $this->render('cpossibleBundle:Home:test_autocomplete.html.twig', array(
+            'dbaListeerps' => $dbaListeerps,
+        ));
+    }
+
     /**
      * Creates a form to delete a dbaListeerp entity.
      *
