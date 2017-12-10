@@ -26,3 +26,11 @@ dbalisteerp_delete:
 dbalisteerp_fetch:
     path:     /fetch
     defaults: { _controller: "cpossibleBundle:DbaListeerp:fetch" }
+
+ERP_Autocomplete_name:
+    path: /autocomplete_name
+    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_name"}
+
+ERP_Autocomplete_adress:
+    path: /autocomplete_adress
+    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}

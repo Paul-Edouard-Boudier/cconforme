@@ -4,7 +4,9 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>{% block title %}Cpossible - Rechercher les établissements à accès pour personnes à mobilité réduite{% endblock %}</title>
+
     {% block stylesheets %}
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
         <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
@@ -21,10 +23,49 @@
         <link rel="stylesheet" href="{{ asset('css/style_footer.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style_login.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+        <script>
+            $(function() {
+                function log( message ) {
+                    $( "<div>" ).text( message ).prependTo( "#log" );
+                    $( "#log" ).scrollTop( 0 );
+                }
+                $( "#name" ).autocomplete({
+                    source: "{{ path('ERP_Autocomplete_name') }}",
+                    minLength: 1,
+                    select: function( event, ui ) {
+                        log( ui.item ?
+                            "Selected: " + ui.item.value + " aka " + ui.item.id :
+                            "Nothing selected, input was " + this.value );
+                    }
+                });
+            });
+            $(function() {
+                function log( message ) {
+                    $( "<div>" ).text( message ).prependTo( "#log2" );
+                    $( "#log" ).scrollTop( 0 );
+                }
+                $( "#adress" ).autocomplete({
+                    source: "{{ path('ERP_Autocomplete_adress') }}",
+                    minLength: 1,
+                    select: function( event, ui ) {
+                        log( ui.item ?
+                            "Selected: " + ui.item.value + " aka " + ui.item.id :
+                            "Nothing selected, input was " + this.value );
+                    }
+                });
+            });
+        </script>
+
     {% endblock %}
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
 </head>
     <body>
+
     <div class="container-fluid header">
         <a href="/">
 

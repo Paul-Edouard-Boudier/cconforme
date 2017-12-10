@@ -6,6 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class HomeController extends Controller
 {
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+        return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+            'dbaListeerps' => $dbaListeerps,
+        ));
+    }
+
     public function fetchAction ()
     {
         $data = [];
@@ -29,10 +38,17 @@ class HomeController extends Controller
 
 
             for($i=0; $i <= sizeof($dbaListeerps)-1; $i++){
-                $data[] = array(
-                    'name' => $dbaListeerps[$i]->getlisteErpNomErp(),
-                    'adress' =>$dbaListeerps[$i]->getListeerpNumeroVoie() . ' ' . $dbaListeerps[$i]->getListeerpNomVoie(),
-                );
+                if ($dbaListeerps[$i]->getListeerpNumeroVoie() == '') {
+                    $data[] = array(
+                      'name' => $dbaListeerps[$i]->getListeErpNomErp(),
+                      'adress' =>$dbaListeerps[$i]->getListeerpNomVoie(),
+                    );
+                } else {
+                    $data[] = array(
+                        'name' => $dbaListeerps[$i]->getlisteErpNomErp(),
+                        'adress' =>$dbaListeerps[$i]->getListeerpNumeroVoie() . ' ' . $dbaListeerps[$i]->getListeerpNomVoie(),
+                    );
+                }
             }
 
             /*var_dump($form);
@@ -46,7 +62,6 @@ class HomeController extends Controller
             foreach ($data as $result) {
                 if ($form['name'] == "") {
                     $error = -1;
-                    echo 'Veuillez entrer un nom <br>';
                     break;
                 } elseif ($result['name'] == $form['name']) {
                     $error = 0;
@@ -68,7 +83,6 @@ class HomeController extends Controller
                 if ($form['adress'] == "") {
                     $error = -1;
                     $test = 'test';
-                    echo 'Veuillez entrer une adresse <br>';
                     break;
                 } elseif ($result['adress'] == $form['adress']) {
                     $error = 0;
