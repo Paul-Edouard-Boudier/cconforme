@@ -20,6 +20,7 @@ class HomeController extends Controller
         $data = [];
 
         $success = "";
+        $success2 = "";
         $error2 = "";
 
         if(isset($_POST['name'])){
@@ -42,12 +43,18 @@ class HomeController extends Controller
                 if ($dbaListeerps[$i]->getListeerpNumeroVoie() == '') {
                     $data[] = array(
                       'name' => $dbaListeerps[$i]->getListeErpNomErp(),
-                      'adress' =>$dbaListeerps[$i]->getListeerpNomVoie(),
+                      'adress' => $dbaListeerps[$i]->getListeerpNomVoie(),
+                      'type' => $dbaListeerps[$i]->getListeerpTypedossier(),
+                      'demandeur' => $dbaListeerps[$i]->getListeerpDemandeur(),
+                      'date' => $dbaListeerps[$i]->getListeerpDateValidAdap(),
                     );
                 } else {
                     $data[] = array(
                         'name' => $dbaListeerps[$i]->getlisteErpNomErp(),
-                        'adress' =>$dbaListeerps[$i]->getListeerpNumeroVoie() . ' ' . $dbaListeerps[$i]->getListeerpNomVoie(),
+                        'adress' => $dbaListeerps[$i]->getListeerpNumeroVoie() . ' ' . $dbaListeerps[$i]->getListeerpNomVoie(),
+                        'type' => $dbaListeerps[$i]->getListeerpTypedossier(),
+                        'demandeur' => $dbaListeerps[$i]->getListeerpDemandeur(),
+                        'date' => $dbaListeerps[$i]->getListeerpDateValidAdap(),
                     );
                 }
             }
@@ -66,6 +73,7 @@ class HomeController extends Controller
                     break;
                 } elseif ($result['name'] == $form['name']) {
                     $error = 0;
+                    $data = $result;
                     break;
                 } else {
                     $error++;
@@ -73,12 +81,23 @@ class HomeController extends Controller
             }
 
             if ($error == 0) {
-                $success = "Cet ERP est conforme";
+                $success = "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, cet établissement à déclaré être 
+                rentrés dans la démarche de mise en accessibilité.";
                 $error2 = NULL;
+                if ($data['type'] == 'adap') {
+                    $success2 = $success . " Le demandeur " . $data["demandeur"] . "s’est engagé à rendre l’ERP "  . $data["name"] . ", 
+                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap 
+                    avant le " . $data["date"] . "." ;
+                    $success = NULL;
+                } else {
+                    $success = "Le demandeur " . $data["demandeur"] . "a déclaré l’établissement " . $data['name'] . ", situé au " . $data["adress"] . " 
+                    conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap ";
+                }
             }elseif ($error == -1) {
 
             } else {
-                $error2 = "Cet ERP n'est pas conforme";
+                $error2 = "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, aucun établissement situé à cette 
+                adresse n’a déclaré être rentré dans la démarche de mise en accessibilité";
                 $success = NULL;
             }
 
@@ -88,6 +107,7 @@ class HomeController extends Controller
                     break;
                 } elseif ($result['adress'] == $form['adress']) {
                     $error = 0;
+                    $data = $result;
                     break;
                 } else {
                     $error++;
@@ -95,12 +115,23 @@ class HomeController extends Controller
             }
 
             if ($error == 0) {
-                $success = "Cet ERP est conforme";
+                $success = "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, l'établissement situé à 
+                cette adresse à déclaré être rentrés dans la démarche de mise en accessibilité.";
                 $error2 = NULL;
+                if ($data['type'] == 'adap' or 'at-adap') {
+                    $success2 = $success . " Le demandeur " . $data["demandeur"] . "s’est engagé à rendre l’ERP "  . $data["name"] . ", 
+                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap 
+                    avant le " . $data["date"] . ".";
+                    $success = NULL;
+                } else {
+                    $success = "Le demandeur " . $data["demandeur"] . "a déclaré l’établissement " . $data['name'] . ", situé au " . $data["adress"] . " 
+                    conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap ";
+                }
             } elseif ($error == -1) {
 
             } else {
-                $error2 = "Cet ERP n'est pas conforme";
+                $error2 = "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, aucun établissement situé à cette 
+                adresse n’a déclaré être rentré dans la démarche de mise en accessibilité";
                 $success = NULL;
             }
 
@@ -110,6 +141,7 @@ class HomeController extends Controller
 
         return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
             'success' => $success,
+            'success2' => $success2,
             'error2' => $error2,
         )); // retour de la vue
     }
