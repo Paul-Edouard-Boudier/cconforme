@@ -85,13 +85,13 @@ class HomeController extends Controller
                 rentrés dans la démarche de mise en accessibilité.";
                 $error2 = NULL;
                 if ($data['type'] == 'adap') {
-                    $success2 = $success . " Le demandeur " . $data["demandeur"] . "s’est engagé à rendre l’ERP "  . $data["name"] . ", 
-                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap 
+                    $success2 = $success . " Le demandeur " . $data["demandeur"] . " s’est engagé à rendre l’ERP "  . $data["name"] . ", 
+                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap 
                     avant le " . $data["date"] . "." ;
                     $success = NULL;
                 } else {
                     $success = "Le demandeur " . $data["demandeur"] . "a déclaré l’établissement " . $data['name'] . ", situé au " . $data["adress"] . " 
-                    conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap ";
+                    conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap ";
                 }
             }elseif ($error == -1) {
 
@@ -119,13 +119,13 @@ class HomeController extends Controller
                 cette adresse à déclaré être rentrés dans la démarche de mise en accessibilité.";
                 $error2 = NULL;
                 if ($data['type'] == 'adap' or 'at-adap') {
-                    $success2 = $success . " Le demandeur " . $data["demandeur"] . "s’est engagé à rendre l’ERP "  . $data["name"] . ", 
-                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap 
+                    $success2 = $success . " Le demandeur " . $data["demandeur"] . " s’est engagé à rendre l’ERP "  . $data["name"] . ", 
+                    situé au " . $data["adress"] ." conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap 
                     avant le " . $data["date"] . ".";
                     $success = NULL;
                 } else {
                     $success = "Le demandeur " . $data["demandeur"] . "a déclaré l’établissement " . $data['name'] . ", situé au " . $data["adress"] . " 
-                    conforme à la réglementation en matière d’accessibilité des personnes en situation en handicap ";
+                    conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap ";
                 }
             } elseif ($error == -1) {
 
