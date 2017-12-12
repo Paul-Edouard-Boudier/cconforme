@@ -2,40 +2,6 @@
 
 {% block body %}
 
-<div style="height: 50vh">
-
-    <div class="col-lg-4 col-sm-8 col-md-8 mx-auto col-12" id="search-address-wrap">
-        <form action="" method="POST">
-
-            <label for="name"<h2>Recherchez un Nom</h2></label><br>
-            <input type="text" id="name" name="name" placeholder="Entrez un nom..." autofocus><br><br>
-
-            <label for="adress"><h2>Rechercher une adresse</h2></label><br>
-            <input type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus><br><br>
-
-            <button id="search-btn" type="submit" class="animated bounceInDown btn btn-success" name="button">Rechercher</button>
-        </form>
-    </div>
-
-    <div class="row">
-        {% if success %}
-        <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
-            <h2 id="nom_erp_title"></h2>
-            <div class="alert alert-success">{{ success }}</div>
-        </div>
-        {% elseif error2 %}
-         <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
-            <br><div class="alert alert-danger">{{ error2 }}</div>
-        </div>
-        {% else %}
-        {% endif %}
-        {% if success2 %}
-        <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
-           <br><div class="alert alert-success">{{ success2 }}</div>
-        </div>
-        {% endif %}
-    </div>
-</div>
 
     <!--
 <div id="map-container" class="container-fluid">

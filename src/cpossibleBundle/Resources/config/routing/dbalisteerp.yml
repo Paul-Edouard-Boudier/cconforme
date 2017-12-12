@@ -1,5 +1,5 @@
 dbalisteerp_index:
-    path:     /
+    path:     /index
     defaults: { _controller: "cpossibleBundle:DbaListeerp:index" }
     methods:  GET
 

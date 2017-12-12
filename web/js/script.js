@@ -125,21 +125,6 @@ function initAutocomplete() {
     autocomplete.addListener('place_changed', addrProcessing);
 }
 
-function initMap(latLng) {
-
-    map = new google.maps.Map(document.getElementById('google-map'), {
-        center: {lat: latLng[0], lng: latLng[1]},
-        zoom: 14
-    });
-
-    var marker = new google.maps.Marker({
-        position: {lat: latLng[0], lng: latLng[1]},
-        map: map
-    });
-
-    $('#map-container').show();
-    $('#signaler-btn').show();
-}
 
 //------------------------------------------------------------------------------------------------------//
 //  Coffee Function ;) : Create cleanObject, Display map of entered address, sendData to the server     //

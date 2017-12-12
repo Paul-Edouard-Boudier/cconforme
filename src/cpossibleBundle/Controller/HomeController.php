@@ -3,14 +3,25 @@
 namespace cpossibleBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HomeController extends Controller
 {
-    public function indexAction()
+    public function accueilAction()
     {
         $em = $this->getDoctrine()->getManager();
         $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
         return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+            'dbaListeerps' => $dbaListeerps,
+        ));
+    }
+
+    public function showMarkersAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+
+        return $this->render('cpossibleBundle:Home:map.html.twig', array(
             'dbaListeerps' => $dbaListeerps,
         ));
     }
@@ -143,6 +154,18 @@ class HomeController extends Controller
             'success' => $success,
             'success2' => $success2,
             'error2' => $error2,
-        )); // retour de la vue
+        ));
+
+        /*$data = array(
+            'success' => $success,
+            'success2' => $success2,
+            'error2' => $error2,
+        );
+
+        $response = new JsonResponse();
+        $response->setData($data);
+
+        return $response;
+*/
     }
 }
