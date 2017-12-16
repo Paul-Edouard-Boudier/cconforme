@@ -4,6 +4,7 @@ namespace cpossibleBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomeController extends Controller
 {
@@ -28,13 +29,41 @@ class HomeController extends Controller
 
     public function fetchAction ()
     {
-        $data = [];
+        $request = Request::createFromGlobals();
 
-        $success = "";
-        $success2 = "";
-        $error2 = "";
+        $search = $request->request;
+        if($request->isMethod('post') &&
+            $search->get('name') ||
+            $search->get('adress')
+        ) {
 
-        if(isset($_POST['name'])){
+            $em = $this->getDoctrine()->getManager(); // get doctrine manager
+            $erpRepo = $em->getRepository('cpossibleBundle:DbaListeerp'); // get ERP repository
+
+            if ($search->get('name')) $searchArray['listeErpNomErp'] = $search->get('name');
+            if ($search->get('adress')) $searchArray['listeerpNomVoie'] = $search->get('adress');
+            if ($erp = $this->getErpEntity($erpRepo, $searchArray)) {
+                $response = $this->constructResponseMessage('ok', $erp);
+            } else {
+                $response = $this->constructResponseMessage('ko');
+            };
+
+            $res = new JsonResponse();
+            $res->setData($response);
+
+            return $res;
+        }
+
+        return $this->render('cpossibleBundle:Home:accueil.html.twig');
+
+
+
+            /*
+
+            $data = [];
+            $success = "";
+            $success2 = "";
+            $error2 = "";
 
             $name= $_POST['name'];
             $adress = $_POST['adress'];
@@ -44,7 +73,7 @@ class HomeController extends Controller
                 'adress' => $adress,
             );
 
-            $em = $this->getDoctrine()->getManager(); // on récup la totalité de la DB et on le stock dans une variable $em (entity manager)
+             // on récup la totalité de la DB et on le stock dans une variable $em (entity manager)
 
             $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll(); // on choisi une entité afin de recup sa table en DB.
 
@@ -70,24 +99,18 @@ class HomeController extends Controller
                 }
             }
 
-            /*var_dump($form);
+            var_dump($form);
 
             echo "<pre>";
             var_dump($data);
             echo "</pre>";
-*/
+
             $error = '0';
 
             foreach ($data as $result) {
-                if ($form['name'] == "") {
-                    $error = -1;
-                    break;
-                } elseif ($result['name'] == $form['name']) {
-                    $error = 0;
+                if ($result['name'] == $form['name']) {
                     $data = $result;
                     break;
-                } else {
-                    $error++;
                 }
             }
 
@@ -146,26 +169,85 @@ class HomeController extends Controller
                 $success = NULL;
             }
 
-        } else{
+            $data = array(
+                'success' => $success,
+                'success2' => $success2,
+                'error2' => $error2,
+            );
+
+            $response = new JsonResponse();
+            $response->setData($data);
+
+            return $response;
 
         }
+
+
 
         return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
             'success' => $success,
             'success2' => $success2,
             'error2' => $error2,
-        ));
+        ));*/
 
-        /*$data = array(
-            'success' => $success,
-            'success2' => $success2,
-            'error2' => $error2,
-        );
+    }
 
-        $response = new JsonResponse();
-        $response->setData($data);
+    /**
+     * @param $status 'ok' | 'ko'
+     * @param null $erp ErpEntity
+     * @return array|void
+     */
+    private function constructResponseMessage($status, $erp = null) {
 
-        return $response;
-*/
+        $messageText = [
+            'standard' => "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, ",
+            'pending' => "l'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
+            'none' => "aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche de mise en accessibilité."
+        ];
+
+        switch($status){
+            case 'ok':
+                $response['status'] = 'ok';
+                if ($erp['type'] == 'adap') {
+                $response["message"] = $messageText['standard'] . $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
+                    " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
+                    " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant le " .
+                    $erp["date"] . ".";
+                } else {
+                    $response["message"] = "Le demandeur " . $erp["demandeur"] . "a déclaré l’établissement " .
+                        $erp['name'] . ", situé au " . $erp["adress"] .
+                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                }
+                return $response;
+            case 'ko':
+                return [
+                    "message" => $messageText['standard'] . $messageText['none'],
+                    "status" => 'ko'
+                ];
+            default:
+                return;
+        }
+    }
+
+    /**
+     * @param $erpRepo 'ErpRepository'
+     * @param $param array
+     * @return 'ErpEntityArray'
+     */
+    private function getErpEntity($erpRepo, $param) {
+        if ($erpEntity = $erpRepo->findOneBy($param)) {
+            $erp = [
+                'name' => $erpEntity->getListeErpNomErp(),
+                'adress' => $erpEntity->getListeerpNomVoie(),
+                'type' => $erpEntity->getListeerpTypedossier(),
+                'demandeur' => $erpEntity->getListeerpDemandeur(),
+                'date' => $erpEntity->getListeerpDateValidAdap(),
+            ];
+            if ($erpEntity->getListeerpNumeroVoie() != '') $erp['adress'] = $erpEntity->
+                getListeerpNumeroVoie() . ' ' . $erpEntity->getListeerpNomVoie();
+            return $erp;
+        }else {
+            return false;
+        }
     }
 }
