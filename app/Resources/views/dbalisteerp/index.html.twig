@@ -1,83 +1,96 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Dbalisteerps list</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>typedossier</th>
-                <th>Listeerpidadap</th>
-                <th>Listeerpdemandeur</th>
-                <th>Listeerpnomerp</th>
-                <th>Listeerpnature</th>
-                <th>Listeerpcategorie</th>
-                <th>Listeerptype</th>
-                <th>Listeerpdatedeclaration</th>
-                <th>Listeerpdatevalidadap</th>
-                <th>Listeerpdelaiadap</th>
-                <th>Listeerpidign</th>
-                <th>Listeerpsiret</th>
-                <th>Listeerpnumerovoie</th>
-                <th>Listeerpnumerocomplement</th>
-                <th>Listeerpcomplementvoie</th>
-                <th>Listeerpnomvoie</th>
-                <th>Listeerpaliasnomvoie</th>
-                <th>Listeerplieudit</th>
-                <th>Listeerpcodepostal</th>
-                <th>Listeerpcodeinsee</th>
-                <th>Listeerpnomcommune</th>
-                <th>Listeerpdepartement</th>
-                <th>Listeerpstatut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for dbaListeerp in dbaListeerps %}
-            <tr>
-                <td><a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">{{ dbaListeerp.listeerpId }}</a></td>
-                <td>{{ dbaListeerp.listeerpTypedossier }}</td>
-                <td>{{ dbaListeerp.listeerpIdAdap }}</td>
-                <td>{{ dbaListeerp.listeerpDemandeur }}</td>
-                <td>{{ dbaListeerp.listeErpNomErp }}</td>
-                <td>{{ dbaListeerp.listeerpNature }}</td>
-                <td>{{ dbaListeerp.listeerpCategorie }}</td>
-                <td>{{ dbaListeerp.listeerpType }}</td>
-                <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
-                <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
-                <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
-                <td>{{ dbaListeerp.listeerpIdIgn }}</td>
-                <td>{{ dbaListeerp.listeerpSiret }}</td>
-                <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
-                <td>{{ dbaListeerp.listeerpNumeroComplement }}</td>
-                <td>{{ dbaListeerp.listeerpComplementVoie }}</td>
-                <td>{{ dbaListeerp.listeerpNomVoie }}</td>
-                <td>{{ dbaListeerp.listeerpAliasNomVoie }}</td>
-                <td>{{ dbaListeerp.listeerpLieuDit }}</td>
-                <td>{{ dbaListeerp.listeerpCodePostal }}</td>
-                <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
-                <td>{{ dbaListeerp.listeerpNomCommune }}</td>
-                <td>{{ dbaListeerp.listeerpDepartement }}</td>
-                <td>{{ dbaListeerp.listeerpStatut }}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <br>
+    <h1>Liste ERP</h1>
+    <br>
 
-    <ul>
-        <li>
-            <a href="{{ path('dbalisteerp_new') }}">Create a new dbaListeerp</a>
-        </li>
-    </ul>
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <table class="table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Type dossier</th>
+                            <th>Id adap</th>
+                            <th>Demandeur</th>
+                            <th>Nom erp</th>
+                            <th>Nature</th>
+                            <th>Categorie</th>
+                            <th>Type</th>
+                            <th>Date declaration</th>
+                            <th>Date valid adap</th>
+                            <th>Delai adap</th>
+                            <th>Id ign</th>
+                            <th>Siret</th>
+                            <th>Numero voie</th>
+                            <th>Numero complement</th>
+                            <th>Complement voie</th>
+                            <th>Nom voie</th>
+                            <th>Alias nom voie</th>
+                            <th>Lieu dit</th>
+                            <th>Code postal</th>
+                            <th>Code insee</th>
+                            <th>Nom commune</th>
+                            <th>Departement</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for dbaListeerp in dbaListeerps %}
+                        <tr>
+                            <td><a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">{{ dbaListeerp.listeerpId }}</a></td>
+                            <td>{{ dbaListeerp.listeerpTypedossier }}</td>
+                            <td>{{ dbaListeerp.listeerpIdAdap }}</td>
+                            <td>{{ dbaListeerp.listeerpDemandeur }}</td>
+                            <td>{{ dbaListeerp.listeErpNomErp }}</td>
+                            <td>{{ dbaListeerp.listeerpNature }}</td>
+                            <td>{{ dbaListeerp.listeerpCategorie }}</td>
+                            <td>{{ dbaListeerp.listeerpType }}</td>
+                            <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
+                            <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
+                            <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
+                            <td>{{ dbaListeerp.listeerpIdIgn }}</td>
+                            <td>{{ dbaListeerp.listeerpSiret }}</td>
+                            <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
+                            <td>{{ dbaListeerp.listeerpNumeroComplement }}</td>
+                            <td>{{ dbaListeerp.listeerpComplementVoie }}</td>
+                            <td>{{ dbaListeerp.listeerpNomVoie }}</td>
+                            <td>{{ dbaListeerp.listeerpAliasNomVoie }}</td>
+                            <td>{{ dbaListeerp.listeerpLieuDit }}</td>
+                            <td>{{ dbaListeerp.listeerpCodePostal }}</td>
+                            <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
+                            <td>{{ dbaListeerp.listeerpNomCommune }}</td>
+                            <td>{{ dbaListeerp.listeerpDepartement }}</td>
+                            <td>{{ dbaListeerp.listeerpStatut }}</td>
+                            <td>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">voir</a>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">modifier</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <ul>
+                    <li>
+                        <a href="{{ path('dbalisteerp_new') }}">Create a new dbaListeerp</a>
+                    </li>
+                </ul>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

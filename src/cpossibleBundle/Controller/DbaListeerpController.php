@@ -21,7 +21,7 @@ class DbaListeerpController extends Controller
 
         $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
 
@@ -54,7 +54,7 @@ class DbaListeerpController extends Controller
 
         $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
 
@@ -110,7 +110,7 @@ class DbaListeerpController extends Controller
     {
         $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
 

@@ -1,21 +1,30 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme edit_form 'bootstrap_3_layout.html.twig' %}
+{# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
+
 {% block body %}
+    <br>
     <h1>Dbalisteerp edit</h1>
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4 mx-auto">
 
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
+                {{ form_start(edit_form) }}
+                    {{ form_widget(edit_form) }}
+                <br>
+                    <input class="btn btn-primary" type="submit" value="Modifier" />
+                {{ form_end(edit_form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('dbalisteerp_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+                <br>
+                <ul class="list-group">
+                    <li class="list-group-item col-lg-3 mx-auto">
+                        <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,16 +1,28 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
+
 {% block body %}
     <h1>Dbalisteerp creation</h1>
 
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4 mx-auto">
+
     {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+    {{ form_widget(form) }}
+
+    <input class="btn btn-success" type="submit" value="Ajouter" />
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('dbalisteerp_index') }}">Back to the list</a>
+    <br>
+    <ul class="list-group">
+        <li class="list-group-item col-lg-4 mx-auto">
+            <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
         </li>
     </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,120 +1,130 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    <br>
     <h1>Dbalisteerp</h1>
+    <br>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Listeerpid</th>
-                <td>{{ dbaListeerp.listeerpId }}</td>
-            </tr>
-            <tr>
-                <th>Listeerptypedossier</th>
-                <td>{{ dbaListeerp.listeerpTypedossier }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpidadap</th>
-                <td>{{ dbaListeerp.listeerpIdAdap }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpdemandeur</th>
-                <td>{{ dbaListeerp.listeerpDemandeur }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnomerp</th>
-                <td>{{ dbaListeerp.listeErpNomErp }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnature</th>
-                <td>{{ dbaListeerp.listeerpNature }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpcategorie</th>
-                <td>{{ dbaListeerp.listeerpCategorie }}</td>
-            </tr>
-            <tr>
-                <th>Listeerptype</th>
-                <td>{{ dbaListeerp.listeerpType }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpdatedeclaration</th>
-                <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpdatevalidadap</th>
-                <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpdelaiadap</th>
-                <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpidign</th>
-                <td>{{ dbaListeerp.listeerpIdIgn }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpsiret</th>
-                <td>{{ dbaListeerp.listeerpSiret }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnumerovoie</th>
-                <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnumerocomplement</th>
-                <td>{{ dbaListeerp.listeerpNumeroComplement }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpcomplementvoie</th>
-                <td>{{ dbaListeerp.listeerpComplementVoie }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnomvoie</th>
-                <td>{{ dbaListeerp.listeerpNomVoie }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpaliasnomvoie</th>
-                <td>{{ dbaListeerp.listeerpAliasNomVoie }}</td>
-            </tr>
-            <tr>
-                <th>Listeerplieudit</th>
-                <td>{{ dbaListeerp.listeerpLieuDit }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpcodepostal</th>
-                <td>{{ dbaListeerp.listeerpCodePostal }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpcodeinsee</th>
-                <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpnomcommune</th>
-                <td>{{ dbaListeerp.listeerpNomCommune }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpdepartement</th>
-                <td>{{ dbaListeerp.listeerpDepartement }}</td>
-            </tr>
-            <tr>
-                <th>Listeerpstatut</th>
-                <td>{{ dbaListeerp.listeerpStatut }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 mx-auto">
 
-    <ul>
-        <li>
-            <a href="{{ path('dbalisteerp_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+                <table class="table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ dbaListeerp.listeerpId }}</td>
+                        </tr>
+                        <tr>
+                            <th>Type Dossier</th>
+                            <td>{{ dbaListeerp.listeerpTypedossier }}</td>
+                        </tr>
+                        <tr>
+                            <th>Id Adap</th>
+                            <td>{{ dbaListeerp.listeerpIdAdap }}</td>
+                        </tr>
+                        <tr>
+                            <th>Demandeur</th>
+                            <td>{{ dbaListeerp.listeerpDemandeur }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom ERP</th>
+                            <td>{{ dbaListeerp.listeErpNomErp }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nature</th>
+                            <td>{{ dbaListeerp.listeerpNature }}</td>
+                        </tr>
+                        <tr>
+                            <th>Categorie</th>
+                            <td>{{ dbaListeerp.listeerpCategorie }}</td>
+                        </tr>
+                        <tr>
+                            <th>Type</th>
+                            <td>{{ dbaListeerp.listeerpType }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date declaration</th>
+                            <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date valid Adap</th>
+                            <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
+                        </tr>
+                        <tr>
+                            <th>Delai Adap</th>
+                            <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
+                        </tr>
+                        <tr>
+                            <th>Id IGN</th>
+                            <td>{{ dbaListeerp.listeerpIdIgn }}</td>
+                        </tr>
+                        <tr>
+                            <th>Siret</th>
+                            <td>{{ dbaListeerp.listeerpSiret }}</td>
+                        </tr>
+                        <tr>
+                            <th>Numero voie</th>
+                            <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
+                        </tr>
+                        <tr>
+                            <th>Numero complement</th>
+                            <td>{{ dbaListeerp.listeerpNumeroComplement }}</td>
+                        </tr>
+                        <tr>
+                            <th>Complement voie</th>
+                            <td>{{ dbaListeerp.listeerpComplementVoie }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom voie</th>
+                            <td>{{ dbaListeerp.listeerpNomVoie }}</td>
+                        </tr>
+                        <tr>
+                            <th>Alias nom voie</th>
+                            <td>{{ dbaListeerp.listeerpAliasNomVoie }}</td>
+                        </tr>
+                        <tr>
+                            <th>Lieu dit</th>
+                            <td>{{ dbaListeerp.listeerpLieuDit }}</td>
+                        </tr>
+                        <tr>
+                            <th>Code postal</th>
+                            <td>{{ dbaListeerp.listeerpCodePostal }}</td>
+                        </tr>
+                        <tr>
+                            <th>Code INSEE</th>
+                            <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom commune</th>
+                            <td>{{ dbaListeerp.listeerpNomCommune }}</td>
+                        </tr>
+                        <tr>
+                            <th>Departement</th>
+                            <td>{{ dbaListeerp.listeerpDepartement }}</td>
+                        </tr>
+                        <tr>
+                            <th>Statut</th>
+                            <td>{{ dbaListeerp.listeerpStatut }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <ul class="list-group">
+                    <li class="list-group-item col-lg-6 mx-auto">
+                        <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
+                    </li>
+                    <li class="list-group-item col-lg-6 mx-auto">
+                        <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">Modifier</a>
+                    </li>
+                    <li class="list-group-item col-lg-6 mx-auto">
+                        {{ form_start(delete_form) }}
+                            <input class="btn btn-danger" type="submit" value="Supprimer">
+                        {{ form_end(delete_form) }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
