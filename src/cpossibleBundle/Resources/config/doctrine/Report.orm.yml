@@ -11,17 +11,17 @@ cpossibleBundle\Entity\Report:
     fields:
         adresseErp:
             type: string
-            length: 255
+            length: 200
             column: adresse_erp
         adresseSignalee:
             type: string
-            length: 255
+            length: 200
             column: adresse_signalee
         userEmail:
             type: string
-            length: 255
+            length: 200
             column: user_email
         message:
             type: string
-            length: 255
+            length: 200
     lifecycleCallbacks: {  }
