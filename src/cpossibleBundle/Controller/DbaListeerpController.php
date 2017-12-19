@@ -16,7 +16,7 @@ class DbaListeerpController extends Controller
      * Lists all dbaListeerp entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
 
         $securityContext = $this->container->get('security.authorization_checker');
@@ -29,8 +29,16 @@ class DbaListeerpController extends Controller
 
                 $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
 
+                $paginator = $this->get('knp_paginator');
+
+                $result =$paginator->paginate(
+                    $dbaListeerps,
+                    $request->query->getInt('page', 1),
+                    $request->query->getInt('limit', 4)
+                );
+
                 return $this->render('dbalisteerp/index.html.twig', array(
-                    'dbaListeerps' => $dbaListeerps,
+                    'dbaListeerps' => $result,
                 ));
 
             } else {
