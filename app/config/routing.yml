@@ -35,3 +35,7 @@ cpossible_fetch:
 cpossible_map:
     path: /map
     defaults: { _controller: cpossibleBundle:Home:showMarkers}
+
+report_index:
+    path:     /report
+    defaults: { _controller: cpossibleBundle:Report:index }
