@@ -3,7 +3,7 @@ cpossible_dbalisteerp:
     prefix:   /dbalisteerp
 
 cpossible_homepage:
-    path:     /index2
+    path:     /defaul_index
     defaults: { _controller: cpossibleBundle:Default:index }
 
 
