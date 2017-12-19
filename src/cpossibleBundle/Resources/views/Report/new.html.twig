@@ -1,17 +1,17 @@
-{# {% extends "::base.html.twig" %} #}
+{% extends "::base.html.twig" %}
 
 {% block body %}
-<h1>Ajoutez une adresse</h1>
-<p>{{ test }}</p>
-<form class="" action="/report/insert" method="post">
-  <label for="">Adresse actuelle</label>
-  <input type="text" name="adresse_erp" value="">
-  <label for="">Adresse Constatée</label>
-  <input type="text" name="adresse_signalee" value="">
-  <label for="">Votre email</label>
-  <input type="text" name="email" value="">
-  <label for="">Votre message</label>
-  <input type="text" name="message" value="">
-  <input type="submit" name="submit" value="envoyer">
-</form>
+  <h1>Ajoutez une adresse</h1>
+  <p>{{ test }}</p>
+  <form class="" action="/report/insert" method="post">
+    <label for="">Adresse actuelle</label>
+    <input type="text" name="adresse_erp" value="">
+    <label for="">Adresse Constatée</label>
+    <input type="text" name="adresse_signalee" value="">
+    <label for="">Votre email</label>
+    <input type="text" name="email" value="">
+    <label for="">Votre message</label>
+    <input type="text" name="message" value="">
+    <input type="submit" name="submit" value="envoyer">
+  </form>
 {% endblock %}
