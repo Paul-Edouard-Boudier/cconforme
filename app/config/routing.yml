@@ -39,3 +39,12 @@ cpossible_map:
 report_index:
     path:     /report
     defaults: { _controller: cpossibleBundle:Report:index }
+
+report_form:
+  path: /report/new
+  defaults: { _controller: cpossibleBundle:Report:form }
+
+report_new:
+  path: /report/insert
+  defaults: { _controller: cpossibleBundle:Report:insertOne }
+  methods: POST

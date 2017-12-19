@@ -1,7 +1,25 @@
 {% extends "::base.html.twig" %}
 
-{% block title %}cpossibleBundle:Report:index{% endblock %}
-
 {% block body %}
-<h1>Welcome to the Report:index page</h1>
+  <h1>Welcome to the Report:index page</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Adresse actuelle de l'erp</th>
+        <th>Adresse signalée</th>
+        <th>Mail de l'utilisateur</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+      <tr>
+        <td> {{ report.AdresseErp}}</td>
+        <td> {{ report.AdresseSignalee }}</td>
+        <td> {{ report.UserEmail}}</td>
+        <td> {{report.Message}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
