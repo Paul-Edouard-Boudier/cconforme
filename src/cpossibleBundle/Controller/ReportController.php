@@ -28,12 +28,15 @@ class ReportController extends Controller
     public function insertOneAction(Request $request) {
       // dump($request->request);die;
       $em = $this->getDoctrine()->getManager();
-
+      $fullMessage = "";
+      foreach ($request->request->get('message') as $message) {
+        $fullMessage .= $message . " / ";
+      }
       $report = new Report();
       $report->setAdresseErp($request->request->get('adresse_erp'));
       $report->setAdresseSignalee($request->request->get('adresse_signalee'));
       $report->setUserEmail($request->request->get('email'));
-      $report->setMessage($request->request->get('message'));
+      $report->setMessage($fullMessage);
       // dump($report);die;
       $em->persist($report);
       $em->flush();

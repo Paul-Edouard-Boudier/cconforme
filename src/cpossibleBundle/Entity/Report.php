@@ -14,16 +14,6 @@ class Report
 {
 
     /**
-     * @ORM\ManyToMany(targetEntity=Type::class)
-     */
-     protected $types;
-
-     public function __construct()
-     {
-         $this->types = new ArrayCollection();
-     }
-
-    /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
