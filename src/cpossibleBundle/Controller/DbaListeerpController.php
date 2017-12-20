@@ -121,7 +121,7 @@ class DbaListeerpController extends Controller
                 if ($editForm->isSubmitted() && $editForm->isValid()) {
                     $this->getDoctrine()->getManager()->flush();
 
-                    return $this->redirectToRoute('dbalisteerp_edit', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                    return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
                 }
 
                 return $this->render('dbalisteerp/edit.html.twig', array(

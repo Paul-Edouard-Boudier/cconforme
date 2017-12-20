@@ -5,24 +5,148 @@
 
 {% block body %}
     <br>
-    <h1>Modifier un ERP</h1>
+    <h1>Modification d'un établissement sur la liste d'accessibilité</h1>
     <br>
+
+
+    {{ form_start(edit_form) }}
+    {% if form_errors(edit_form) != '' %} 
+        {{ form_errors(edit_form) }}
+         {% endif %}
+
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-4 mx-auto">
 
-                {{ form_start(edit_form) }}
-                    {{ form_widget(edit_form) }}
-                <br>
-                    <input class="btn btn-primary" type="submit" value="Modifier" />
-                {{ form_end(edit_form) }}
+            <div class="col-lg-4 offset-2">
+                {{ form_widget(edit_form.listeerpDemandeur, {'attr': {'placeholder': 'Demandeur'}}) }}
+            </div>
 
-                <br>
+            <div class="col-lg-4">
+                {{ form_widget(edit_form.listeErpNomErp, {'attr': {'placeholder': 'Etablissement, enseigne'}}) }}
+            </div>
+
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-2 offset-2">
+                {{ form_widget(edit_form.listeerpSiret, {'attr': {'placeholder': 'Siret'}}) }}
+            </div>
+
+            <div class="col-lg-1">
+                {{ form_widget(edit_form.listeerpNumeroVoie, {'attr': {'placeholder': 'Numéro Voie'}}) }}
+            </div>
+
+            <div class="col-lg-1">
+                {{ form_widget(edit_form.listeerpComplementVoie, {'attr': {'placeholder': 'Compl. voie'}}) }}
+            </div>
+
+            <div class="col-lg-4">
+                {{ form_widget(edit_form.listeerpNomVoie, {'attr': {'placeholder': 'Nom de la voie'}}) }}
+            </div>
+
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-1 offset-5">
+                {{ form_widget(edit_form.listeerpCodePostal, {'attr': {'placeholder': 'Code Postal'}}) }}
+            </div>
+
+            <div class="col-lg-4">
+                {{ form_widget(edit_form.listeerpNomCommune, {'attr': {'placeholder': 'Ville'}}) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto" style="height: 20px; border-top: 2px solid blue;"></div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-1 offset-5">
+                <h3>type d'ERP</h3>
+                {{ form_widget(edit_form.listeerpNature) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 offset-2">
+                <h3>Activité</h3>
+                {{ form_widget(edit_form.listeerpType) }}
+            </div>
+
+            <div class="col-lg-4">
+                <h3>Catégorie</h3>
+                {{ form_widget(edit_form.listeerpCategorie) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2 offset-2">
+                {{ form_widget(edit_form.listeerpTypedossier) }}
+            </div>
+            <div class="col-lg-2">
+                {{ form_widget(edit_form.listeerpIdAdap, {'attr': {'placeholder': 'Numéro Adap'}}) }}
+            </div>
+
+            <div class="col-lg-2">
+                {{ form_widget(edit_form.listeerpDateValidAdap, {'attr': {'placeholder': 'Date d\'engagement'}}) }}
+            </div>
+
+            <div class="col-lg-2">
+                {{ form_widget(edit_form.listeerpDelaiAdap, {'attr': {'placeholder': 'Délai Adap'}}) }}
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-2 offset-5">
+                {{ form_widget(edit_form.Enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
+            </div>
+
+            {{ form_widget(edit_form._token) }}
+
+            {{ form_end(edit_form, {'render_rest': false}) }}
+
+            <br>
+            <br>
+
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
                 <ul class="list-group">
-                    <li class="list-group-item col-lg-3 mx-auto">
+                    <li class="list-group-item col-lg-1 mx-auto">
                         <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
                     </li>
-
                 </ul>
             </div>
         </div>
