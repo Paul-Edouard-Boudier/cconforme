@@ -10,9 +10,11 @@ class ReportController extends Controller
 {
     public function indexAction() {
 
-      return $this->render('cpossibleBundle:Report:index.html.twig', array(
-          // ...
-      ));
+      $em = $this->getDoctrine()->getManager();
+      $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
+      return $this->render('cpossibleBundle:Report:index.html.twig', [
+        'reports' => $reports,
+      ]);
     }
 
     public function formAction() {

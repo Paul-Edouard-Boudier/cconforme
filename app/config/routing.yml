@@ -37,7 +37,7 @@ cpossible_map:
     defaults: { _controller: cpossibleBundle:Home:showMarkers}
 
 report_index:
-    path:     /report
+    path: /report
     defaults: { _controller: cpossibleBundle:Report:index }
 
 report_form:
