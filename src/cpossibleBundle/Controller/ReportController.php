@@ -5,6 +5,7 @@ namespace cpossibleBundle\Controller;
 use cpossibleBundle\Entity\Report;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use cpossibleBundle\Entity\DbaListeerp;
 
 class ReportController extends Controller
 {
@@ -42,6 +43,15 @@ class ReportController extends Controller
       return $this->render('cpossibleBundle:Report:index.html.twig', [
         'reports' => $reports,
       ]);
+    }
+
+    public function testAction()
+    {
+      $em = $this->getDoctrine()->getManager();
+      $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+      return $this->render('dbalisteerp/index.html.twig', array(
+          'dbaListeerps' => $dbaListeerps,
+      ));
     }
 
 }

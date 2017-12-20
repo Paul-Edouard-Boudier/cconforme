@@ -36,6 +36,7 @@ cpossible_map:
     path: /map
     defaults: { _controller: cpossibleBundle:Home:showMarkers}
 
+
 report_index:
     path: /report
     defaults: { _controller: cpossibleBundle:Report:index }
@@ -48,3 +49,8 @@ report_new:
   path: /report/insert
   defaults: { _controller: cpossibleBundle:Report:insertOne }
   methods: POST
+
+liste:
+  path: /report/test
+  defaults: { _controller: cpossibleBundle:Report:test}
+  methods: GET

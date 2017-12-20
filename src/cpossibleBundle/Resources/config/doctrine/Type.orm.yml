@@ -1,0 +1,16 @@
+cpossibleBundle\Entity\Report:
+    type: entity
+    table: types
+    repositoryClass: cpossibleBundle\Repository\TypeRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 45
+            column: name
+    lifecycleCallbacks: {  }
