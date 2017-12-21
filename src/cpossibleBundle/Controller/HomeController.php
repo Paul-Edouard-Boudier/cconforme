@@ -206,7 +206,7 @@ class HomeController extends Controller
             'pending' => "l'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
             'none' => "aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche de mise en accessibilité."
         ];
-        setlocale(LC_TIME, "fr_FR");
+        setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
         $date = $erp["date"];
         $delai = $erp["delai"];
 

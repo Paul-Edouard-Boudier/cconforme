@@ -6,11 +6,12 @@ use cpossibleBundle\Entity\Report;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use cpossibleBundle\Entity\DbaListeerp;
+use \Datetime;
+use \DateInterval;
 
 class ReportController extends Controller
 {
     public function indexAction() {
-
       $em = $this->getDoctrine()->getManager();
       $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
       return $this->render('cpossibleBundle:Report:index.html.twig', [
@@ -19,14 +20,11 @@ class ReportController extends Controller
     }
 
     public function formAction() {
-      $test = 'Ceci représente un test de niveau 1';
       return $this->render('cpossibleBundle:Report:new.html.twig', [
-        'test' => $test,
       ]);
     }
 
     public function insertOneAction(Request $request) {
-      // dump($request->request);die;
       $em = $this->getDoctrine()->getManager();
       $fullMessage = "";
       foreach ($request->request->get('message') as $message) {
@@ -37,7 +35,6 @@ class ReportController extends Controller
       $report->setAdresseSignalee($request->request->get('adresse_signalee'));
       $report->setUserEmail($request->request->get('email'));
       $report->setMessage($fullMessage);
-      // dump($report);die;
       $em->persist($report);
       $em->flush();
 
