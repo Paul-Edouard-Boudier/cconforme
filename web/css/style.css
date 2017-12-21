@@ -310,4 +310,21 @@ ul.ui-autocomplete{
     height: 455px;
     wi
 }
+/* ********** /!\ CSS Formulaire Signalement /!\ ********* */
 
+.form-report {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+.report-row {
+  padding-top: 5px;
+}
+.left {
+  text-align: left;
+}
+.btn-report {
+  margin-top: 10px;
+}
+
+/* ********** /!\ FIN CSS Formulaire Signalement /!\ ********* */
