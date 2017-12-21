@@ -29,6 +29,7 @@
             </div>
             <div class="col-lg-6 mx-auto" id="map"></div>
         </div>
+          <button type="btn btn-secondary" type="submit" class="directions-btn" name="button">Directions</button>
     </div>
 
 
@@ -63,18 +64,41 @@
                 })
                 return false;
             })
+
+            $('.directions-btn').on('click', function() {
+              // $.ajax({
+              //   url: 'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ',
+              //   type: "GET",
+              //   dataType: 'json',
+              //   cache: false,
+              //   success: function(response){
+              //       alert(response);
+              //   }
+              // });
+              // console.log('ntm');
+
+          })
+
         })
 
         function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: {lat: 45.750000, lng: 4.850000}
-            });
-            var geocoder = new google.maps.Geocoder();
+          // var geocoder = new google.maps.Geocoder();
+          //
+          // document.getElementById('search-btn').addEventListener('click', function() {
+          //     geocodeAddress(geocoder, map);
+          // });
+          //******************************
 
+          // *** INITIALISAITON ***
+          var map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 14,
+              center: {lat: 45.750000, lng: 4.850000}
+          });
+          var bounds = new google.maps.LatLngBounds();
+          // *** END INITIALISATION ***
             document.getElementById('search-btn').addEventListener('click', function() {
-                geocodeAddress(geocoder, map);
-            });
+               geocodeAddress(infoWindow, map);
+           });
         }
 
         function geocodeAddress(geocoder, resultsMap) {
@@ -90,6 +114,61 @@
                     alert('Geocode was not successful for the following reason: ' + status);
                 }
             });
+        }
+
+        function getAndDisplayDirection() {
+          var bounds = new google.maps.LatLngBounds();
+          var markers = [];
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              // array instead of object {}
+              var pos = [position.coords.latitude,position.coords.longitude];
+              var center = [45.750000,4.850000];
+              var test = [45.760492,4.842762];
+              markers.push(pos);
+              markers.push(center);
+              for( i = 0; i < markers.length; i++ ) {
+                var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
+                bounds.extend(position);
+                marker = new google.maps.Marker({
+                  map: map,
+                  position: position,
+                });
+                map.fitBounds(bounds);
+              }
+
+              // *********** DIRECTIONS **************
+
+              // var directionsService = new google.maps.DirectionsService();
+              // var directionsRequest = {
+              //   origin: center[0],center[1],
+              //   destination: pos[0],pos[1],
+              //   travelMode: google.maps.DirectionsTravelMode.WALKING,
+              //   unitSystem: google.maps.UnitSystem.METRIC
+              // };
+              // directionsService.route( directionsRequest, function(response, status) {
+              //   if (status == google.maps.DirectionsStatus.OK) {
+              //     new google.maps.DirectionsRenderer({
+              //       map: map,
+              //       directions: response
+              //     });
+              //   }
+              //   else {
+              //     console.log("doesn't work");
+              //   }
+              // });
+              // ************* ENDDIRECTIONS **********
+              //https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=YOUR_API_KEY
+              //debugger;
+              //markers.push(test);
+            }, function() {
+              handleLocationError(true, map, map.getCenter());
+            });
+          } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, map, map.getCenter());
+          }
+          //********************************
         }
     </script>
 
