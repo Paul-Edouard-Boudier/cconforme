@@ -5,7 +5,7 @@
     <div class="container-fluid" id="formulaire1">
 
         <div class="col-lg-4 col-sm-8 col-md-8 mx-auto col-12" id="search-address-wrap">
-            <form action="" method="POST" id="form">
+            <form action="" method="POST" id="form1">
 
                 <div class="col-lg-12 col-sm-12 col-md-12 mx-auto col-12">
                     <label for="name"><h2>Recherchez un Nom</h2></label><br>
@@ -16,12 +16,11 @@
                     <label for="adress"><h2>Rechercher une adresse</h2></label><br>
                     <input style="text-align: center" class="form-control" type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus><br><br>
                 </div>
-                <div class="col-12">
-                  <a href="/report/new">Signaler une adresse</a>
-                </div>
-
                 <button id="search-btn" type="submit" class="animated bounceInDown btn btn-success" name="button">Rechercher</button>
             </form>
+            <div class="col-12">
+              <a href="/report/new">Signaler une adresse</a>
+            </div>
         </div>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
@@ -30,16 +29,14 @@
             <div class="col-lg-6 mx-auto" id="map"></div>
         </div>
           <button type="btn btn-secondary" type="" class="directions-btn" name="button-directions">Directions</button>
-          <button type="btn btn-secondary" name="button-route" class="route">Itinéraire</button>
+          <button type="btn btn-secondary" name="button-route" class="route">Itinéraire vers ce lieux depuis ma position</button>
     </div>
-    <div class="" id="warnings-panel"></div>
+    <!-- <div class="" id="warnings-panel"></div> -->
 
 
     <script>
-
-
         $(function() {
-            $('#form').on('submit', function() {
+            $('#form1').on('submit', function() {
                 var result = $('#result')
                 var datas = $(this).serialize()
                 $.ajax({
@@ -67,21 +64,6 @@
                 return false;
             })
 
-          //   $('.directions-btn').on('click', function() {
-          //     // $.ajax({
-          //     //   url: 'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ',
-          //     //   type: "GET",
-          //     //   dataType: 'json',
-          //     //   cache: false,
-          //     //   success: function(response){
-          //     //       alert(response);
-          //     //   }
-          //     // });
-          //     // console.log('ntm');
-          //     // getAndDisplayDirection()
-          //
-          // })
-
         })
 
         function initMap() {
@@ -98,38 +80,32 @@
           var stepDisplay = new google.maps.InfoWindow;
 
           directionsDisplay.setMap(map);
-
           document.getElementById('search-btn').addEventListener('click', function() {
               geocodeAddress(geocoder, map, markerArray);
           });
-          // $('.directions-btn').on('click', function() {
-          //   console.log('ntm');
-          // })
           $('.directions-btn').on('click', function() {
             getAndDisplayDirection(map, bounds, markers, markerArray);
           })
           $('.route').on('click', function() {
-            // var test = [directionsService, directionsDisplay, markers];
              calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map)
-             //debugger;
-             // console.log(test);
-             // calculateAndDisplayRoute.apply(null, test);
-            //console.log('ntm');
           })
           //******************************
 
           // *** INITIALISAITON ***
 
           // *** END INITIALISATION ***
-            document.getElementById('search-btn').addEventListener('click', function() {
-               geocodeAddress(geocoder, map, markers);
-           });
+           //  document.getElementById('search-btn').addEventListener('click', function() {
+           //     geocodeAddress(geocoder, map, markers);
+           // });
         }
 
         function geocodeAddress(geocoder, resultsMap, markerArray) {
             var address = document.getElementById('adress').value;
             geocoder.geocode({'address': address}, function(results, status) {
                 if (status === 'OK') {
+                  for (var i = 0; i < markerArray.length; i++) {
+                    markerArray[i].setMap(null);
+                  }
                   markerArray = [];
                     resultsMap.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
@@ -137,7 +113,7 @@
                         position: results[0].geometry.location,
                     });
                     markerArray.push(marker);
-                    console.log(markerArray);
+                    // console.log(markerArray);
                 } else {
                     alert('Geocode was not successful for the following reason: ' + status);
                 }
@@ -150,7 +126,6 @@
             for (var i = 0; i < markerArray.length; i++) {
               markerArray[i].setMap(null);
             }
-
             var origin = markerArray[0];
             var destination = markerArray[1];
             directionsService.route({
@@ -179,11 +154,11 @@
         // Warning :
         // directionResult.routes[0].warnings[0]
         for (var i = 0; i < myRoute.steps.length; i++) {
-          // var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
-          // marker.setMap(map);
-          // marker.setPosition(myRoute.steps[i].start_location);
-          // attachInstructionText(
-          //     stepDisplay, marker, myRoute.steps[i].instructions, map);
+          var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
+          marker.setMap(map);
+          marker.setPosition(myRoute.steps[i].start_location);
+          attachInstructionText(
+              stepDisplay, marker, myRoute.steps[i].instructions, map);
 
           // start and end location of each step:
           // directionResult.routes[0].legs[0].steps[i].start_location.lat()
@@ -191,7 +166,7 @@
           //
           // directionResult.routes[0].legs[0].steps[i].end_location.lat()
           // directionResult.routes[0].legs[0].steps[i].end_location.lng()
-          debugger;
+          // debugger;
 
         }
       }
@@ -207,6 +182,7 @@
 
 
         function getAndDisplayDirection(map, bounds, markers, markerArray) {
+          console.log(markerArray);
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
               // array instead of object {}
