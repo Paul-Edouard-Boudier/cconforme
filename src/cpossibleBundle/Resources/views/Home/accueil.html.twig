@@ -29,8 +29,10 @@
             </div>
             <div class="col-lg-6 mx-auto" id="map"></div>
         </div>
-          <button type="btn btn-secondary" type="submit" class="directions-btn" name="button">Directions</button>
+          <button type="btn btn-secondary" type="" class="directions-btn" name="button-directions">Directions</button>
+          <button type="btn btn-secondary" name="button-route" class="route">Itinéraire</button>
     </div>
+    <div class="" id="warnings-panel"></div>
 
 
     <script>
@@ -65,68 +67,154 @@
                 return false;
             })
 
-            $('.directions-btn').on('click', function() {
-              // $.ajax({
-              //   url: 'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ',
-              //   type: "GET",
-              //   dataType: 'json',
-              //   cache: false,
-              //   success: function(response){
-              //       alert(response);
-              //   }
-              // });
-              // console.log('ntm');
-
-          })
+          //   $('.directions-btn').on('click', function() {
+          //     // $.ajax({
+          //     //   url: 'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ',
+          //     //   type: "GET",
+          //     //   dataType: 'json',
+          //     //   cache: false,
+          //     //   success: function(response){
+          //     //       alert(response);
+          //     //   }
+          //     // });
+          //     // console.log('ntm');
+          //     // getAndDisplayDirection()
+          //
+          // })
 
         })
 
         function initMap() {
-          // var geocoder = new google.maps.Geocoder();
-          //
-          // document.getElementById('search-btn').addEventListener('click', function() {
-          //     geocodeAddress(geocoder, map);
-          // });
-          //******************************
-
-          // *** INITIALISAITON ***
+          var geocoder = new google.maps.Geocoder();
+          var directionsService = new google.maps.DirectionsService;
+          var directionsDisplay = new google.maps.DirectionsRenderer;
           var map = new google.maps.Map(document.getElementById('map'), {
               zoom: 14,
               center: {lat: 45.750000, lng: 4.850000}
           });
           var bounds = new google.maps.LatLngBounds();
+          var markers = []; // array of position
+          var markerArray = []; // array of marker object
+          var stepDisplay = new google.maps.InfoWindow;
+
+          directionsDisplay.setMap(map);
+
+          document.getElementById('search-btn').addEventListener('click', function() {
+              geocodeAddress(geocoder, map, markerArray);
+          });
+          // $('.directions-btn').on('click', function() {
+          //   console.log('ntm');
+          // })
+          $('.directions-btn').on('click', function() {
+            getAndDisplayDirection(map, bounds, markers, markerArray);
+          })
+          $('.route').on('click', function() {
+            // var test = [directionsService, directionsDisplay, markers];
+             calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map)
+             //debugger;
+             // console.log(test);
+             // calculateAndDisplayRoute.apply(null, test);
+            //console.log('ntm');
+          })
+          //******************************
+
+          // *** INITIALISAITON ***
+
           // *** END INITIALISATION ***
             document.getElementById('search-btn').addEventListener('click', function() {
-               geocodeAddress(infoWindow, map);
+               geocodeAddress(geocoder, map, markers);
            });
         }
 
-        function geocodeAddress(geocoder, resultsMap) {
+        function geocodeAddress(geocoder, resultsMap, markerArray) {
             var address = document.getElementById('adress').value;
             geocoder.geocode({'address': address}, function(results, status) {
                 if (status === 'OK') {
+                  markerArray = [];
                     resultsMap.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
                         map: resultsMap,
-                        position: results[0].geometry.location
+                        position: results[0].geometry.location,
                     });
+                    markerArray.push(marker);
+                    console.log(markerArray);
                 } else {
                     alert('Geocode was not successful for the following reason: ' + status);
                 }
             });
         }
 
-        function getAndDisplayDirection() {
-          var bounds = new google.maps.LatLngBounds();
-          var markers = [];
+        function calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map) {
+          if (markerArray.length > 0) {
+            // First, remove any existing markers from the map.
+            for (var i = 0; i < markerArray.length; i++) {
+              markerArray[i].setMap(null);
+            }
+
+            var origin = markerArray[0];
+            var destination = markerArray[1];
+            directionsService.route({
+              origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+              destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+              travelMode: 'WALKING'
+            }, function(response, status) {
+              if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+                showSteps(response, markerArray, stepDisplay, map);
+              } else {
+                window.alert('Directions request failed due to ' + status);
+              }
+            });
+          }
+        }
+
+        function showSteps(directionResult, markerArray, stepDisplay, map) {
+        // For each step, place a marker, and add the text to the marker's infowindow.
+        // Also attach the marker to an array so we can keep track of it and remove it
+        // when calculating new routes.
+        var myRoute = directionResult.routes[0].legs[0];
+        // display distance and duration:
+        // directionResult.routes[0].legs[0].distance.text
+        // directionResult.routes[0].legs[0].duration.text
+        // Warning :
+        // directionResult.routes[0].warnings[0]
+        for (var i = 0; i < myRoute.steps.length; i++) {
+          // var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
+          // marker.setMap(map);
+          // marker.setPosition(myRoute.steps[i].start_location);
+          // attachInstructionText(
+          //     stepDisplay, marker, myRoute.steps[i].instructions, map);
+
+          // start and end location of each step:
+          // directionResult.routes[0].legs[0].steps[i].start_location.lat()
+          // directionResult.routes[0].legs[0].steps[i].start_location.lng()
+          //
+          // directionResult.routes[0].legs[0].steps[i].end_location.lat()
+          // directionResult.routes[0].legs[0].steps[i].end_location.lng()
+          debugger;
+
+        }
+      }
+
+      function attachInstructionText(stepDisplay, marker, text, map) {
+       google.maps.event.addListener(marker, 'click', function() {
+         // Open an info window when the marker is clicked on, containing the text
+         // of the step.
+         stepDisplay.setContent(text);
+         stepDisplay.open(map, marker);
+       });
+     }
+
+
+        function getAndDisplayDirection(map, bounds, markers, markerArray) {
           if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
               // array instead of object {}
               var pos = [position.coords.latitude,position.coords.longitude];
               var center = [45.750000,4.850000];
-              var test = [45.760492,4.842762];
               markers.push(pos);
               markers.push(center);
+              // Multiple markers on a single map
               for( i = 0; i < markers.length; i++ ) {
                 var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
                 bounds.extend(position);
@@ -135,32 +223,8 @@
                   position: position,
                 });
                 map.fitBounds(bounds);
+                markerArray.push(marker);
               }
-
-              // *********** DIRECTIONS **************
-
-              // var directionsService = new google.maps.DirectionsService();
-              // var directionsRequest = {
-              //   origin: center[0],center[1],
-              //   destination: pos[0],pos[1],
-              //   travelMode: google.maps.DirectionsTravelMode.WALKING,
-              //   unitSystem: google.maps.UnitSystem.METRIC
-              // };
-              // directionsService.route( directionsRequest, function(response, status) {
-              //   if (status == google.maps.DirectionsStatus.OK) {
-              //     new google.maps.DirectionsRenderer({
-              //       map: map,
-              //       directions: response
-              //     });
-              //   }
-              //   else {
-              //     console.log("doesn't work");
-              //   }
-              // });
-              // ************* ENDDIRECTIONS **********
-              //https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=YOUR_API_KEY
-              //debugger;
-              //markers.push(test);
             }, function() {
               handleLocationError(true, map, map.getCenter());
             });
