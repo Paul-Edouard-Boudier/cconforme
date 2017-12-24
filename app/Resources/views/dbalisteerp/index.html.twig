@@ -1,21 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
     <br>
     <h1>Liste ERP</h1>
-    <br>
 
     <div class="container-fluid">
 
-        <div class="row">
+         <div class="row">
+            <form class="form-control col-4" action="{{ path('list') }}" method="get">
+                <input class="col-6" type="text" name="commune" placeholder="Rechercher par Commune...">
+                <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
+            </form>
+            <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+                <input class="col-6" type="text" name="adap" placeholder="Rechercher par Id-adap...">
+                <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
+            </form>
 
-            <div class="col-lg-10">
+             <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+                 <input class="col-6" type="text" name="demandeur" placeholder="Rechercher par Demandeur...">
+                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
+             </form>
+        </div>
+        <br>
+        <div class="row">
+            <form class="form-control col-4 mx-auto" action="{{ path('list') }}" class="form" method="get">
+                <input class="col-6" type="text" name="nom_voie" placeholder="Rechercher par Nom de voie...">
+                <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
+            </form>
+            <form class="form-control col-4 mx-auto" action="{{ path('list') }}" class="form" method="get">
+                <input class="col-6" type="text" name="nom_erp" placeholder="Rechercher par Nom ERP...">
+                <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
+            </form>
+
+
+        </div>
+        <br>
+
+
+    </div>
+            <div class="col-lg-12 mx-auto">
 
                 <table class="table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>id</th>
                             <th>Type dossier</th>
                             <th>Id adap</th>
                             <th>Demandeur</th>
@@ -26,26 +53,20 @@
                             <th>Date declaration</th>
                             <th>Date valid adap</th>
                             <th>Delai adap</th>
-                            <th>Id ign</th>
                             <th>Siret</th>
                             <th>Numero voie</th>
-                            <th>Numero complement</th>
-                            <th>Complement voie</th>
                             <th>Nom voie</th>
-                            <th>Alias nom voie</th>
                             <th>Lieu dit</th>
                             <th>Code postal</th>
                             <th>Code insee</th>
                             <th>Nom commune</th>
                             <th>Departement</th>
-                            <th>Statut</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for dbaListeerp in dbaListeerps %}
                         <tr>
-                            <td><a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">{{ dbaListeerp.listeerpId }}</a></td>
                             <td>{{ dbaListeerp.listeerpTypedossier }}</td>
                             <td>{{ dbaListeerp.listeerpIdAdap }}</td>
                             <td>{{ dbaListeerp.listeerpDemandeur }}</td>
@@ -56,19 +77,14 @@
                             <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
                             <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
                             <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
-                            <td>{{ dbaListeerp.listeerpIdIgn }}</td>
                             <td>{{ dbaListeerp.listeerpSiret }}</td>
                             <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
-                            <td>{{ dbaListeerp.listeerpNumeroComplement }}</td>
-                            <td>{{ dbaListeerp.listeerpComplementVoie }}</td>
                             <td>{{ dbaListeerp.listeerpNomVoie }}</td>
-                            <td>{{ dbaListeerp.listeerpAliasNomVoie }}</td>
                             <td>{{ dbaListeerp.listeerpLieuDit }}</td>
                             <td>{{ dbaListeerp.listeerpCodePostal }}</td>
                             <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
                             <td>{{ dbaListeerp.listeerpNomCommune }}</td>
                             <td>{{ dbaListeerp.listeerpDepartement }}</td>
-                            <td>{{ dbaListeerp.listeerpStatut }}</td>
                             <td>
                                 <ul class="list-group">
                                     <li class="list-group-item">
@@ -83,14 +99,18 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <br>
+                <div class="liens_liste">
+                    <button class="btn btn-primary btn-lg"><a style="color: #ffffff; padding: 4em" href="/liste/new">Nouveau</a></button>
+                    <button class="btn btn-primary btn-lg"><a style="color: #ffffff; padding: 4em" href="/liste/new">Exporter</a></button>
+                </div>
 
-                <ul>
-                    <li>
-                        <a href="{{ path('dbalisteerp_new') }}">Create a new dbaListeerp</a>
-                    </li>
-                </ul>
-
+                <br>
+                <div class="navigation col-4 mx-auto">
+                    {{ knp_pagination_render(dbaListeerps) }}
+                </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

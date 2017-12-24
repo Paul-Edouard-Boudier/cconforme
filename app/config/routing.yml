@@ -35,3 +35,8 @@ cpossible_fetch:
 cpossible_map:
     path: /map
     defaults: { _controller: cpossibleBundle:Home:showMarkers}
+
+# import routes from a controller directory
+annot:
+    resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
+    type:     annotation
