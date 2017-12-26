@@ -36,7 +36,18 @@
                     $( "#log" ).scrollTop( 0 );
                 }
                 $( "#name" ).autocomplete({
-                    source: "{{ path('ERP_Autocomplete_name') }}",
+                    source: function (request, response) {
+                        $.get("liste/autocomplete_name",  {
+                            term: request.term
+                        }, function (data) {
+                            var strings = []
+                            $.each(data, function(i, e) {
+                                strings[i] = e["name"] + " | " + e["adress"]
+
+                            })
+                            if (strings)response(strings);
+                        });
+                    },
                     minLength: 1,
                     select: function( event, ui ) {
                         log( ui.item ?
@@ -51,7 +62,18 @@
                     $( "#log" ).scrollTop( 0 );
                 }
                 $( "#adress" ).autocomplete({
-                    source: "{{ path('ERP_Autocomplete_adress') }}",
+                    source: function (request, response) {
+                        $.get("liste/autocomplete_adress", {
+                            term: request.term
+                        }, function (data) {
+                            var strings = []
+                            $.each(data, function(i, e) {
+                                strings[i] = e["name"] + " | " + e["adress"]
+
+                            })
+                            if (strings)response(strings);
+                        });
+                    },
                     minLength: 1,
                     select: function( event, ui ) {
                         log( ui.item ?
@@ -65,28 +87,28 @@
     {% endblock %}
 
 </head>
-    <body>
+<body>
 
-    <div class="container-fluid header">
-        <a href="/">
+<div class="container-fluid header">
+    <a href="/">
 
-            <div class="row">
+        <div class="row">
 
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <img id="logo" src="{{ asset('img/marianne.jpg') }}" class="img-fluid rounded">
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <h1 id="title">C'Possible</h1>
-                </div>
-
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <h2 id="slogan" >Vérifier la conformité à l'accessibilité à un établissement pour une personne en situation de handicap.</h2>
-                </div>
-
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <img id="logo" src="{{ asset('img/marianne.jpg') }}" class="img-fluid rounded">
             </div>
 
-        </a>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <h1 id="title">C'Possible</h1>
+            </div>
+
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <h2 id="slogan" >Vérifier la conformité à l'accessibilité à un établissement pour une personne en situation de handicap.</h2>
+            </div>
+
+        </div>
+
+    </a>
 
     {% if is_granted("IS_AUTHENTICATED_FULLY") %}
         <div class="row">
@@ -101,74 +123,74 @@
             </div>
         </div>
     {% endif %}
-    </div>
-    {% block body %}
+</div>
+{% block body %}
 
-    {% endblock %}
+{% endblock %}
 
-    <footer class="footer" id="footer1">
-        <div class= "" >
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                        <h3> INFORMATIONS </h3>
-                        <ul>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                        <h3> SERVICES </h3>
-                        <ul>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                        <h3> RUBRIQUES </h3>
-                        <ul>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                        <h3> AUTRES SITES </h3>
-                        <ul>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                            <li> <a href="#"> Lorem Ipsum </a> </li>
-                        </ul>
-                    </div>
+<footer class="footer" id="footer1">
+    <div class= "" >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                    <h3> INFORMATIONS </h3>
+                    <ul>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                    <h3> SERVICES </h3>
+                    <ul>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                    <h3> RUBRIQUES </h3>
+                    <ul>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
+                    <h3> AUTRES SITES </h3>
+                    <ul>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                        <li> <a href="#"> Lorem Ipsum </a> </li>
+                    </ul>
                 </div>
             </div>
         </div>
-    </footer>
-    <footer2>
-        <nav id="nav2">
-            <div class="barrenav_2">
-                <p class="p1"><a id="navbar-brand2" href="https://www.service-public.fr/">Service-public.fr</a> | <a id="navbar-brand2" href="https://www.legifrance.gouv.fr/">Legifrance.gouv.fr</a></p>
-            </div>
-        </nav>
-        <nav id="nav3">
-            <div class="barrenav_3">
-                <p class="p1">© Direction Départementale des Territoires - <a id="navbar-brand2" href="https://www.impots.gouv.fr/portail/mentions-legales">Mentions légales</a></p>
-            </div>
-        </nav>
-    </footer2>
+    </div>
+</footer>
+<footer2>
+    <nav id="nav2">
+        <div class="barrenav_2">
+            <p class="p1"><a id="navbar-brand2" href="https://www.service-public.fr/">Service-public.fr</a> | <a id="navbar-brand2" href="https://www.legifrance.gouv.fr/">Legifrance.gouv.fr</a></p>
+        </div>
+    </nav>
+    <nav id="nav3">
+        <div class="barrenav_3">
+            <p class="p1">© Direction Départementale des Territoires - <a id="navbar-brand2" href="https://www.impots.gouv.fr/portail/mentions-legales">Mentions légales</a></p>
+        </div>
+    </nav>
+</footer2>
 
-        {% block javascripts %}
-            <script src="{{ asset('js/script.js') }}"></script>
-            <script async defer
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&callback=initMap">
-            </script>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script>
-        {% endblock %}
-    </body>
+{% block javascripts %}
+    <script src="{{ asset('js/script.js') }}"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&callback=initMap">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script>
+{% endblock %}
+</body>
 </html>
