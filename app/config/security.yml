@@ -27,6 +27,20 @@ security:
                 csrf_token_generator: security.csrf.token_manager
                 # if you are using Symfony < 2.8, use the following config instead:
                 # csrf_provider: form.csrf_provider
+                # submit the login form here
+                check_path: /login_check
+
+                # the user is redirected here when they need to log in
+                login_path: /login
+
+                # if true, forward the user to the login form instead of redirecting
+                use_forward: false
+
+                # login success redirecting options (read further below)
+                always_use_default_target_path: false
+                default_target_path:            /liste/index
+                target_path_parameter:          _target_path
+                use_referer:                    false
 
             logout:       true
             anonymous:    true
