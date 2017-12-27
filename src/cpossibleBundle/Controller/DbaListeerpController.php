@@ -5,6 +5,7 @@ namespace cpossibleBundle\Controller;
 use cpossibleBundle\Entity\DbaListeerp;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Unirest;
 
 /**
  * Dbalisteerp controller.
@@ -175,6 +176,19 @@ class DbaListeerpController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    public function tpsAction() {
+      // $query = array('q' => '1998', 'token' => '85cc86ebbca4d1b518db1f597256b365df4465de');
+      //api/v1/procedures/1998?token=85cc86ebbca4d1b518db1f597256b365df4465de
+
+      $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/1998?token=85cc86ebbca4d1b518db1f597256b365df4465de');
+      // Display the result
+
+      $procedure = $response->body->procedure;
+      // dump(gettype($procedure->types_de_champ[0]));die;
+      // dump($procedure->types_de_champ[0]);die;
+      return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
     }
 
 }

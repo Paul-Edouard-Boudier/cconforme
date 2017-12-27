@@ -1,0 +1,12 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+  <h1>TPS</h1>
+  <p>Organisation : {{ procedure.organisation}}</p>
+  <!-- {% for values in procedure.types_de_champ[6] %}
+  <p> {{ values }}</p>
+  {% endfor %} -->
+  <p>SIRET :  {{ procedure.types_de_champ[6].description }}</p>
+  <p>Nom entreprise : {{ procedure.types_de_champ[8].description}}</p>
+  <p>Adresse : {{ procedure.types_de_champ[10].description}}, département : {{procedure.types_de_champ[11].description}}</p>
+{% endblock %}

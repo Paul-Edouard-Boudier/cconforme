@@ -50,6 +50,10 @@ report_new:
   defaults: { _controller: cpossibleBundle:Report:insertOne }
   methods: POST
 
+tps_index:
+  path: /tps
+  defaults: { _controller: cpossibleBundle:DbaListeerp:tps }
+
 liste:
   path: /report/test
   defaults: { _controller: cpossibleBundle:Report:test}
