@@ -56,6 +56,7 @@ abstract class AbstractErpController extends Controller
             'type' => $erpEntity->getListeerpTypedossier(),
             'demandeur' => $erpEntity->getListeerpDemandeur(),
             'date' => $erpEntity->getListeerpDateValidAdap(),
+            'delai' => $erpEntity->getListeerpDelaiAdap(),
         ];
         if ($erpEntity->getListeerpNumeroVoie() != '') $entity['adress'] = $erpEntity->
             getListeerpNumeroVoie() . ' ' . $erpEntity->getListeerpNomVoie() . ' ' .
