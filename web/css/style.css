@@ -308,7 +308,6 @@ ul.ui-autocomplete{
 
 #map{
     height: 455px;
-    wi
 }
 /* ********** /!\ CSS Formulaire Signalement /!\ ********* */
 
@@ -328,3 +327,23 @@ ul.ui-autocomplete{
 }
 
 /* ********** /!\ FIN CSS Formulaire Signalement /!\ ********* */
+
+#voir1:hover{
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    background-color: #007BFF;
+}
+
+#voir1:hover a{
+    color: #ffffff;
+}
+
+#modifier1:hover{
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    background-color: #EEA73F;
+}
+
+#modifier1:hover a{
+    color: #ffffff;
+}

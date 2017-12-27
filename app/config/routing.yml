@@ -54,3 +54,7 @@ liste:
   path: /report/test
   defaults: { _controller: cpossibleBundle:Report:test}
   methods: GET
+  
+annot:
+    resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
+    type:     annotation

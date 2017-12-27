@@ -5,6 +5,13 @@ namespace cpossibleBundle\Controller;
 use cpossibleBundle\Entity\DbaListeerp;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * Dbalisteerp controller.
@@ -16,7 +23,11 @@ class DbaListeerpController extends Controller
      * Lists all dbaListeerp entities.
      *
      */
-    public function indexAction()
+
+    /**
+     * @Route("/liste/index", name="list")
+     */
+    public function indexAction(Request $request)
     {
 
         $securityContext = $this->container->get('security.authorization_checker');
@@ -25,12 +36,53 @@ class DbaListeerpController extends Controller
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
 
+
                 $em = $this->getDoctrine()->getManager();
 
-                $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+                $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+
+                if($request->query->getAlnum('adap')){
+                    $queryBuilder
+                        ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                        ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
+                }
+
+                if($request->query->getAlnum('commune')){
+                    $queryBuilder
+                        ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                        ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
+                }
+
+                if($request->query->getAlnum('demandeur')){
+                    $queryBuilder
+                        ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                        ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
+                }
+
+                if($request->query->getAlnum('nom_erp')){
+                    $queryBuilder
+                        ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
+                        ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
+                }
+
+                if($request->query->getAlnum('nom_voie')){
+                    $queryBuilder
+                        ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                        ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
+                }
+
+                $dbaListeerps = $queryBuilder->getQuery();
+
+                $paginator = $this->get('knp_paginator');
+
+                $result =$paginator->paginate(
+                    $dbaListeerps,
+                    $request->query->getInt('page', 1),
+                    $request->query->getInt('limit', 10)
+                );
 
                 return $this->render('dbalisteerp/index.html.twig', array(
-                    'dbaListeerps' => $dbaListeerps,
+                    'dbaListeerps' => $result,
                 ));
 
             } else {
@@ -121,7 +173,7 @@ class DbaListeerpController extends Controller
                 if ($editForm->isSubmitted() && $editForm->isValid()) {
                     $this->getDoctrine()->getManager()->flush();
 
-                    return $this->redirectToRoute('dbalisteerp_edit', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                    return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
                 }
 
                 return $this->render('dbalisteerp/edit.html.twig', array(

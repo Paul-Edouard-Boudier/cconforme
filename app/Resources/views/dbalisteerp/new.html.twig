@@ -3,27 +3,163 @@
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
 
+
 {% block body %}
     <br>
-    <h1>Ajouter un ERP</h1>
+    <h1>Saisie d'un établissement sur la liste d'accessibilité</h1>
     <br>
+
+
+    {{ form_start(form) }}
+    {% if form_errors(form) != '' %} 
+        {{ form_errors(form) }}
+         {% endif %}
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-4 mx-auto">
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <input class="btn btn-success" type="submit" value="Ajouter" />
-    {{ form_end(form) }}
-
-    <br>
-    <ul class="list-group">
-        <li class="list-group-item col-lg-4 mx-auto">
-            <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
-        </li>
-    </ul>
+            <div class="col-lg-4 offset-2">
+                {{ form_widget(form.listeerpDemandeur, {'attr': {'placeholder': 'Demandeur'}}) }}
             </div>
+
+            <div class="col-lg-4">
+                {{ form_widget(form.listeErpNomErp, {'attr': {'placeholder': 'Etablissement, enseigne'}}) }}
+            </div>
+
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-2 offset-2">
+                {{ form_widget(form.listeerpSiret, {'attr': {'placeholder': 'Siret'}}) }}
+            </div>
+
+            <div class="col-lg-1">
+                {{ form_widget(form.listeerpNumeroVoie, {'attr': {'placeholder': 'Numéro Voie'}}) }}
+            </div>
+
+            <div class="col-lg-1">
+                {{ form_widget(form.listeerpComplementVoie, {'attr': {'placeholder': 'Compl. voie'}}) }}
+            </div>
+
+            <div class="col-lg-4">
+                {{ form_widget(form.listeerpNomVoie, {'attr': {'placeholder': 'Nom de la voie'}}) }}
+            </div>
+
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-1 offset-5">
+                {{ form_widget(form.listeerpCodePostal, {'attr': {'placeholder': 'Code Postal'}}) }}
+            </div>
+
+            <div class="col-lg-4">
+                {{ form_widget(form.listeerpNomCommune, {'attr': {'placeholder': 'Ville'}}) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto" style="height: 20px; border-top: 2px solid blue;"></div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-1 offset-5">
+                <h3>type d'ERP</h3>
+                {{ form_widget(form.listeerpNature) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 offset-2">
+                <h3>Activité</h3>
+                {{ form_widget(form.listeerpType) }}
+            </div>
+
+            <div class="col-lg-4">
+                <h3>Catégorie</h3>
+                {{ form_widget(form.listeerpCategorie) }}
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2 offset-2">
+                {{ form_widget(form.listeerpTypedossier) }}
+            </div>
+            <div class="col-lg-2">
+                {{ form_widget(form.listeerpIdAdap, {'attr': {'placeholder': 'Numéro Adap'}}) }}
+            </div>
+
+            <div class="col-lg-2">
+                {{ form_widget(form.listeerpDateValidAdap, {'attr': {'placeholder': 'Date d\'engagement'}}) }}
+            </div>
+
+            <div class="col-lg-2">
+                {{ form_widget(form.listeerpDelaiAdap, {'attr': {'placeholder': 'Délai Adap'}}) }}
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-lg-2 offset-5">
+            {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
+            </div>
+
+            {{ form_widget(form._token) }}
+
+            {{ form_end(form, {'render_rest': false}) }}
+
+            <br>
+            <br>
+
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <ul class="list-group">
+                    <li class="list-group-item col-lg-1 mx-auto">
+                        <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <br>
+        <div class="col-10 mx-auto">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-danger btn-lg">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    Déconnexion
+                </a>
+            {% else %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}

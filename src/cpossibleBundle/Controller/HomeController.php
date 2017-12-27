@@ -2,13 +2,12 @@
 
 namespace cpossibleBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \Datetime;
 use \DateInterval;
 
-class HomeController extends Controller
+class HomeController extends AbstractErpController
 {
     public function accueilAction()
     {
@@ -34,25 +33,21 @@ class HomeController extends Controller
         $request = Request::createFromGlobals();
 
         $search = $request->request;
+
         if($request->isMethod('post') &&
-            $search->get('name') ||
-            $search->get('adress')
+            $search->get('data')
         ) {
-
-            $em = $this->getDoctrine()->getManager(); // get doctrine manager
-            $erpRepo = $em->getRepository('cpossibleBundle:DbaListeerp'); // get ERP repository
-
-            if ($search->get('name')) $searchArray['listeErpNomErp'] = $search->get('name');
-            if ($search->get('adress')) $searchArray['listeerpNomVoie'] = $search->get('adress');
-            if ($erp = $this->getErpEntity($erpRepo, $searchArray)) {
-                $response = $this->constructResponseMessage('ok', $erp);
+            if($response = $this->getSingleErp($search->get('data'))) {
+              if ($response != null) {
+                $response = $this->parseErpEntity($response);
+                $response = $this->constructResponseMessage('ok', $response);
+              }
             } else {
                 $response = $this->constructResponseMessage('ko');
             };
 
             $res = new JsonResponse();
             $res->setData($response);
-
             return $res;
         }
 
@@ -63,10 +58,21 @@ class HomeController extends Controller
     /**
      * @param $status 'ok' | 'ko'
      * @param null $erp ErpEntity
-     * @return array|void
+     * @return array
      */
     private function constructResponseMessage($status, $erp = null) {
+      setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+      $date = $erp["date"];
+      $delai = $erp["delai"];
+      //
+      $date = new DateTime($date);
+      $mois = ucfirst(strftime("%B", $date->getTimestamp()));
+      //
+      $date->add(new DateInterval('P'.$delai.'Y'));
+      $newdate =  $date->format('d-m-Y');
 
+      $time = strtotime($newdate);
+      $annee = date("Y",$time);
         $messageText = [
             'standard' => "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, ",
             'pending' => "l'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
@@ -89,15 +95,16 @@ class HomeController extends Controller
             case 'ok':
                 $response['status'] = 'ok';
                 if ($erp['type'] == 'adap') {
-                $response["message"] = $messageText['standard'] . $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
-                    " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
-                    " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " .
-                    $mois . " " . $annee . ".";
+                    $response["message"] = $messageText['standard'] . $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
+                        " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
+                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " .
+                        $mois . " " .$annee. ".";
                 } else {
                     $response["message"] = "Le demandeur " . $erp["demandeur"] . "a déclaré l’établissement " .
                         $erp['name'] . ", situé au " . $erp["adress"] .
                         " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 }
+                // TODO create method getCloseErpFromGeo
                 return $response;
             case 'ko':
                 return [
