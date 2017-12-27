@@ -62,7 +62,7 @@
                             <th>Code insee</th>
                             <th>Nom commune</th>
                             <th>Departement</th>
-                            <th>Actions</th>
+                            <th>Modifier</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,14 +86,7 @@
                             <td>{{ dbaListeerp.listeerpNomCommune }}</td>
                             <td>{{ dbaListeerp.listeerpDepartement }}</td>
                             <td>
-                                <ul class="list-group">
-                                    <li id="voir1" class="list-group-item">
-                                        <a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">Voir</a>
-                                    </li>
-                                    <li id="modifier1" class="list-group-item">
-                                        <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">Modifier</a>
-                                    </li>
-                                </ul>
+                                <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             </td>
                         </tr>
                     {% endfor %}
