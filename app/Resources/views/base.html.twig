@@ -99,7 +99,7 @@
             </div>
 
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                <h1 id="title">C'Possible</h1>
+                <h1 id="title">C'Conforme</h1>
             </div>
 
             <div class="col-12 col-sm-12 col-md-12 col-lg-12">
@@ -109,14 +109,31 @@
         </div>
 
     </a>
+    <!-- <div class="form-control col-4">
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+
+        {% else %}
+        {% endif %}
+    </div> -->
 
     {% if is_granted("IS_AUTHENTICATED_FULLY") %}
         <div class="row">
-            <div class="action-nav col-12 col-sm-12 col-md-12 col-lg-12">
-                <a href="/">Espace Clients</a> //
-                <a href="/liste/index">Liste ERP</a>
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+              <div class="action-nav">
+                  <a href="/">Espace Clients</a> //
+                  <a href="/liste/index">Liste ERP</a>
+              </div>
             </div>
-
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+              <div class="action-nav">
+                <a href="{{ path('fos_user_security_logout') }}" class="">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    Déconnexion
+                </a>
+              </div>
+            </div>
         </div>
     {% else %}
         <div class="row">
@@ -129,52 +146,7 @@
 {% block body %}
 
 {% endblock %}
-
-<footer class="footer" id="footer1">
-    <div class= "" >
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                    <h3> INFORMATIONS </h3>
-                    <ul>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                    <h3> SERVICES </h3>
-                    <ul>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                    <h3> RUBRIQUES </h3>
-                    <ul>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-12 col-12">
-                    <h3> AUTRES SITES </h3>
-                    <ul>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                        <li> <a href="#"> Lorem Ipsum </a> </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<footer2>
+<footer>
     <nav id="nav2">
         <div class="barrenav_2">
             <p class="p1"><a id="navbar-brand2" href="https://www.service-public.fr/">Service-public.fr</a> | <a id="navbar-brand2" href="https://www.legifrance.gouv.fr/">Legifrance.gouv.fr</a></p>
@@ -185,7 +157,7 @@
             <p class="p1">© Direction Départementale des Territoires - <a id="navbar-brand2" href="https://www.impots.gouv.fr/portail/mentions-legales">Mentions légales</a></p>
         </div>
     </nav>
-</footer2>
+</footer>
 
 {% block javascripts %}
     <script src="{{ asset('js/script.js') }}"></script>
