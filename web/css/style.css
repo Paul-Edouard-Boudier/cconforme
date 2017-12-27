@@ -309,6 +309,7 @@ ul.ui-autocomplete{
 #map{
     height: 455px;
 }
+/* ********** /!\ CSS Formulaire Signalement /!\ ********* */
 
 #voir1:hover{
     -webkit-transition-duration: 0.4s;
@@ -331,3 +332,17 @@ ul.ui-autocomplete{
 }
 
 
+.form-report {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+.report-row {
+  padding-top: 5px;
+}
+.left {
+  text-align: left;
+}
+.btn-report {
+  margin-top: 10px;
+}

@@ -7,7 +7,11 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+<<<<<<< HEAD
     locale: fr_FR
+=======
+    locale: 'fr_FR'
+>>>>>>> polo
 
 framework:
     #esi: ~
@@ -76,6 +80,7 @@ fos_user:
     from_email:
         address: "test"
         sender_name: "test"
+<<<<<<< HEAD
 
 knp_paginator:
     page_range: 5                       # number of links showed in the pagination menu (e.g: you have 10 pages, a page_range of 3, on the 5th page you'll see links to page 4, 5, 6)
@@ -98,3 +103,5 @@ sensio_framework_extra:
     cache:       { annotations: true }
     security:    { annotations: true }
     psr_message: { enabled: false } # Defaults to true if the PSR-7 bridge is installed
+=======
+>>>>>>> polo

@@ -36,7 +36,25 @@ cpossible_map:
     path: /map
     defaults: { _controller: cpossibleBundle:Home:showMarkers}
 
-# import routes from a controller directory
+
+report_index:
+    path: /report
+    defaults: { _controller: cpossibleBundle:Report:index }
+
+report_form:
+  path: /report/new
+  defaults: { _controller: cpossibleBundle:Report:form }
+
+report_new:
+  path: /report/insert
+  defaults: { _controller: cpossibleBundle:Report:insertOne }
+  methods: POST
+
+# liste:
+#   path: /report/test
+#   defaults: { _controller: cpossibleBundle:Report:test}
+#   methods: GET
+
 annot:
     resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
-    type:     annotation
+    type:

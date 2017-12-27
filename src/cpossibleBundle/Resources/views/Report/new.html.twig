@@ -1,0 +1,33 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+  <h1>Signalez une adresse</h1>
+  <form class="form-report" action="/report/insert" method="post">
+    <div class="row report-row">
+      <div class="col-md-6 left">
+        <label for="">Adresse actuelle</label>
+        <input class="form-control" type="text" name="adresse_erp" value="">
+      </div>
+      <div class="col-md-6 left">
+        <label for="">Adresse Constatée</label>
+        <input class="form-control" type="text" name="adresse_signalee" value="">
+      </div>
+    </div>
+    <div class="row report-row">
+      <div class="col-md-4 left">
+        <label for="">Votre email</label>
+        <input class="form-control" type="text" name="email" value="">
+      </div>
+      <div class="col-md-2 offset-md-4">
+        <label for="message">Adresse incorrecte</label>
+        <input class="form-control" type="checkbox" name="message[]" value="Adresse incorrecte">
+      </div>
+      <div class="col-md-2">
+        <label for="message">Inaccessible</label>
+        <input class="form-control" type="checkbox" name="message[]" value="Inaccessible">
+      </div>
+    </div>
+    <!-- <input class="" type="submit" name="submit" value="envoyer"> -->
+    <button class="btn btn-secondary left btn-report" type="submit">envoyer</button>
+  </form>
+{% endblock %}
