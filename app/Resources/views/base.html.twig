@@ -118,12 +118,19 @@
 
     {% if is_granted("IS_AUTHENTICATED_FULLY") %}
         <div class="row">
-            <div class="col-md-4"></div>
+            <!-- <div class="col-md-4"></div>
             <div class="col-md-4">
               <div class="action-nav">
                   <a href="/">Espace Clients</a> //
                   <a href="/liste/index">Liste ERP</a>
               </div>
+            </div> -->
+            <div class="col-md-4"></div>
+            <div class="col-md-2 action-nav">
+                <a href="/report">Liste signalements</a>
+            </div>
+             <div class="col-md-2 action-nav">
+                <a href="/liste/index">Liste ERP</a>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-2">

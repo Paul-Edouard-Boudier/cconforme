@@ -42,19 +42,23 @@ report_index:
     defaults: { _controller: cpossibleBundle:Report:index }
 
 report_form:
-  path: /report/new
-  defaults: { _controller: cpossibleBundle:Report:form }
+    path: /report/new
+    defaults: { _controller: cpossibleBundle:Report:form }
 
 report_new:
-  path: /report/insert
-  defaults: { _controller: cpossibleBundle:Report:insertOne }
-  methods: POST
+    path: /report/insert
+    defaults: { _controller: cpossibleBundle:Report:insertOne }
+    methods: POST
 
-liste:
-  path: /report/test
-  defaults: { _controller: cpossibleBundle:Report:test}
-  methods: GET
-  
+# report_delete:
+#     path: /report/{id}/delete
+#     defaults: { _controller: cpossibleBundle:Report:deleteOne }
+#     method: GET
+report_delete:
+    path: /report/{id}/delete
+    defaults: { _controller: cpossibleBundle:Report:deleteOne }
+
+
 annot:
     resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
     type:     annotation

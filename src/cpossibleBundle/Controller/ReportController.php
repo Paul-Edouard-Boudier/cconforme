@@ -12,11 +12,21 @@ use \DateInterval;
 class ReportController extends Controller
 {
     public function indexAction() {
-      $em = $this->getDoctrine()->getManager();
-      $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
-      return $this->render('cpossibleBundle:Report:index.html.twig', [
-        'reports' => $reports,
-      ]);
+      $securityContext = $this->container->get('security.authorization_checker');
+
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+            $em = $this->getDoctrine()->getManager();
+            $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
+            return $this->render('cpossibleBundle:Report:index.html.twig', [
+              'reports' => $reports,
+            ]);
+          } else {
+              return $this->redirectToRoute('fos_user_security_login');
+          }
+      } else {
+          return $this->redirectToRoute('fos_user_security_login');
+      }
     }
 
     public function formAction() {
@@ -38,20 +48,29 @@ class ReportController extends Controller
       $em->persist($report);
       $em->flush();
 
-      $em = $this->getDoctrine()->getManager();
-      $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
-      return $this->render('cpossibleBundle:Report:index.html.twig', [
-        'reports' => $reports,
-      ]);
+      return $this->render('cpossibleBundle:Home:accueil.html.twig');
     }
 
-    public function testAction()
-    {
-      $em = $this->getDoctrine()->getManager();
-      $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
-      return $this->render('dbalisteerp/index.html.twig', array(
-          'dbaListeerps' => $dbaListeerps,
-      ));
-    }
+    public function deleteOneAction($id) {
+      $securityContext = $this->container->get('security.authorization_checker');
 
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+              $em = $this->getDoctrine()->getManager();
+              $report = $em->getRepository('cpossibleBundle:Report')->find($id);
+              if ($report != null) {
+                $em->remove($report);
+                $em->flush();
+              }
+              $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
+              return $this->render('cpossibleBundle:Report:index.html.twig', [
+                'reports' => $reports,
+              ]);
+          } else {
+              return $this->redirectToRoute('fos_user_security_login');
+          }
+      } else {
+          return $this->redirectToRoute('fos_user_security_login');
+      }
+    }
 }
