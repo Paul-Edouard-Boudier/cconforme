@@ -38,8 +38,10 @@ class HomeController extends AbstractErpController
             $search->get('data')
         ) {
             if($response = $this->getSingleErp($search->get('data'))) {
+              if ($response != null) {
                 $response = $this->parseErpEntity($response);
                 $response = $this->constructResponseMessage('ok', $response);
+              }                
             } else {
                 $response = $this->constructResponseMessage('ko');
             };
