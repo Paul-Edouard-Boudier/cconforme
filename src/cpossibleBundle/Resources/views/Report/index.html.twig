@@ -1,29 +1,41 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-  <h1>Listes des signalements enregistrés</h1>
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col">Adresse actuelle de l'erp</th>
-        <th scope="col">Adresse signalée</th>
-        <th scope="col">Mail de l'utilisateur</th>
-        <th scope="col">Message</th>
-        <th scope="col">Supprimer</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for report in reports %}
-      <tr>
-        <td> {{ report.AdresseErp}}</td>
-        <td> {{ report.AdresseSignalee }}</td>
-        <td> {{ report.UserEmail}}</td>
-        <td> {{ report.Message}}</td>
-        <td>
-          <a href="{{ path('report_delete', { 'id': report.Id }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+
+  {% if reports %}
+    <br>
+    <h1>Listes des signalements enregistrés</h1>
+    <br>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Adresse actuelle de l'erp</th>
+          <th scope="col">Adresse signalée</th>
+          <th scope="col">Mail de l'utilisateur</th>
+          <th scope="col">Message</th>
+          <th scope="col">Supprimer</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <td> {{ report.AdresseErp}}</td>
+          <td> {{ report.AdresseSignalee }}</td>
+          <td> {{ report.UserEmail}}</td>
+          <td> {{ report.Message}}</td>
+          <td>
+            <a href="{{ path('report_delete', { 'id': report.Id }) }}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+</table>
+  {% else %}
+    <br>
+    <br>
+    <h1>Aucune adresse n'a été signalée pour le moment</h1>
+    <br>
+    <br>
+  {% endif %}
+
 {% endblock %}

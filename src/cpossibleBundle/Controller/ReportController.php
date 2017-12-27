@@ -18,6 +18,9 @@ class ReportController extends Controller
           if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
             $em = $this->getDoctrine()->getManager();
             $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
+            // if (empty($reports)) {
+            //   $reports = 'empty reports';
+            // }
             return $this->render('cpossibleBundle:Report:index.html.twig', [
               'reports' => $reports,
             ]);
