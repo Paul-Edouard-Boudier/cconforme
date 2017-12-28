@@ -1,0 +1,27 @@
+cpossibleBundle\Entity\Report:
+    type: entity
+    table: signalements
+    repositoryClass: cpossibleBundle\Repository\ReportRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        adresseErp:
+            type: string
+            length: 200
+            column: adresse_erp
+        adresseSignalee:
+            type: string
+            length: 200
+            column: adresse_signalee
+        userEmail:
+            type: string
+            length: 200
+            column: user_email
+        message:
+            type: string
+            length: 200
+    lifecycleCallbacks: {  }

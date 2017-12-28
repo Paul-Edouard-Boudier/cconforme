@@ -23,23 +23,15 @@
         </div>
         <br>
         <div class="row">
-            <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+            <form class="form-control col-6" action="{{ path('list') }}" class="form" method="get">
                 <input class="col-6" type="text" name="nom_voie" placeholder="Rechercher par Nom de voie...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
-            <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+            <form class="form-control col-6" action="{{ path('list') }}" class="form" method="get">
                 <input class="col-6" type="text" name="nom_erp" placeholder="Rechercher par Nom ERP...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
-            <div class="form-control col-4">
-                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-danger btn-lg col-6">
-                        <i class="fa fa-sign-out" aria-hidden="true"></i>
-                        Déconnexion
-                    </a>
-                {% else %}
-                {% endif %}
-            </div>
+
 
         </div>
 
@@ -70,7 +62,7 @@
                             <th>Code insee</th>
                             <th>Nom commune</th>
                             <th>Departement</th>
-                            <th>Actions</th>
+                            <th>Modifier</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,14 +86,7 @@
                             <td>{{ dbaListeerp.listeerpNomCommune }}</td>
                             <td>{{ dbaListeerp.listeerpDepartement }}</td>
                             <td>
-                                <ul class="list-group">
-                                    <li id="voir1" class="list-group-item">
-                                        <a href="{{ path('dbalisteerp_show', { 'listeerpId': dbaListeerp.listeerpId }) }}">Voir</a>
-                                    </li>
-                                    <li id="modifier1" class="list-group-item">
-                                        <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}">Modifier</a>
-                                    </li>
-                                </ul>
+                                <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -109,8 +94,8 @@
                 </table>
                 <br>
                 <div class="liens_liste">
-                    <button class="btn btn-success btn-lg"><a style="color: #ffffff; padding: 4em" href="/liste/new">Créer Nouvel ERP</a></button>
-                    <button class="btn btn-secondary btn-lg"><a style="color: #ffffff; padding: 4em" href="/liste/new">Export CSV</a></button>
+                    <a style="color: #ffffff; " href="/liste/new"><button class="btn btn-success btn-lg">Créer Nouvel ERP</button></a>
+                    <a style="color: #ffffff; padding: 4em" href="/liste/new"><button class="btn btn-secondary btn-lg">Export CSV</button></a>
                 </div>
 
                 <br>
