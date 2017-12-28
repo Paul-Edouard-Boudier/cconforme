@@ -1,0 +1,36 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <br>
+    <h1>Listes des signalements</h1>
+    <br>
+<div class="container-fluid" style="height: auto; text-align: -webkit-center; text-align: -moz-center; >
+    <div class="row">
+        <div class="col-12 mx-auto">
+
+            <table class="table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Adresse actuelle de l'erp</th>
+                    <th>Adresse signalée</th>
+                    <th>Mail de l'utilisateur</th>
+                    <th>Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for report in reports %}
+                    <tr>
+                        <td> {{ report.AdresseErp}}</td>
+                        <td> {{ report.AdresseSignalee }}</td>
+                        <td> {{ report.UserEmail}}</td>
+                        <td> {{ report.Message}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
