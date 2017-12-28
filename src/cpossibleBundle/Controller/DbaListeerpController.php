@@ -11,6 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
+
 
 
 /**
@@ -75,6 +77,7 @@ class DbaListeerpController extends Controller
 
                 $paginator = $this->get('knp_paginator');
 
+
                 $result =$paginator->paginate(
                     $dbaListeerps,
                     $request->query->getInt('page', 1),
@@ -84,6 +87,7 @@ class DbaListeerpController extends Controller
                 return $this->render('dbalisteerp/index.html.twig', array(
                     'dbaListeerps' => $result,
                 ));
+
 
             } else {
 
@@ -97,6 +101,76 @@ class DbaListeerpController extends Controller
         }
     }
 
+    /**
+     * @Route("/liste/index/csv", name="export")
+     */
+    public function exportAction(Request $request){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+
+        if($request->query->getAlnum('adap')){
+            $queryBuilder
+                ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
+        }
+
+        if($request->query->getAlnum('commune')){
+            $queryBuilder
+                ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
+        }
+
+        if($request->query->getAlnum('demandeur')){
+            $queryBuilder
+                ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
+        }
+
+        if($request->query->getAlnum('nom_erp')){
+            $queryBuilder
+                ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
+                ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
+        }
+
+        if($request->query->getAlnum('nom_voie')){
+            $queryBuilder
+                ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
+        }
+
+        $dbaListeerps = $queryBuilder->getQuery();
+
+        $paginator = $this->get('knp_paginator');
+
+
+        $result =$paginator->paginate(
+            $dbaListeerps,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 5000)
+        );
+
+
+        $csv = $result;
+
+        $rows = array();
+
+        foreach ($csv as $event) {
+            $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
+
+            $rows[] = implode(',', $data);
+        }
+
+        $content = implode("\n", $rows);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $this->render('dbalisteerp/csv.html.twig', array(
+            'dbaListeerps' => $result,
+        ), $response);
+
+        }
     /**
      * Creates a new dbaListeerp entity.
      *
