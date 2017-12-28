@@ -50,12 +50,63 @@ abstract class AbstractErpController extends Controller
     }
 
     protected function parseErpEntity($erpEntity) {
+
+        $date = $erpEntity->getListeerpDateValidAdap();
+
+        $delai = $erpEntity->getListeerpDelaiAdap();
+
+        $date_explode = explode("-", $date);
+
+        $date_explode[2] = $date_explode[2] + $delai;
+
+        $date = implode("-", $date_explode);
+
+        switch ($date_explode[1]) {
+            case "01":
+                $date = "Janvier" . " " . $date_explode[2];
+                break;
+            case "02":
+                $date = "Février" . " " . $date_explode[2];
+                break;
+            case "03":
+                $date = "Mars" . " " . $date_explode[2];
+                break;
+            case "04":
+                $date = "Avril" . " " . $date_explode[2];
+                break;
+            case "05":
+                $date = "Mai" . " " . $date_explode[2];
+                break;
+            case "06":
+                $date = "Juin" . " " . $date_explode[2];
+                break;
+            case "07":
+                $date = "Juillet" . " " . $date_explode[2];
+                break;
+            case "08":
+                $date = "Août" . " " . $date_explode[2];
+                break;
+            case "09":
+                $date = "Septembre" . " " . $date_explode[2];
+                break;
+            case "10":
+                $date = "Octobre" . " " . $date_explode[2];
+                break;
+            case "11":
+                $date = "Novembre" . " " . $date_explode[2];
+                break;
+            case "12":
+                $date = "Décembre" . " " . $date_explode[2];
+                break;
+        }
+
         $entity = [
             'name' => $erpEntity->getListeErpNomErp(),
             'adress' => $erpEntity->getListeerpNomVoie(),
             'type' => $erpEntity->getListeerpTypedossier(),
             'demandeur' => $erpEntity->getListeerpDemandeur(),
-            'date' => $erpEntity->getListeerpDateValidAdap(),
+            'date' => $date,
+            'delai' => $erpEntity->getListeerpDelaiAdap(),
         ];
         if ($erpEntity->getListeerpNumeroVoie() != '') $entity['adress'] = $erpEntity->
             getListeerpNumeroVoie() . ' ' . $erpEntity->getListeerpNomVoie() . ' ' .

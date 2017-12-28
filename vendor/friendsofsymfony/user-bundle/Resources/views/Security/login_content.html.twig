@@ -24,10 +24,8 @@
                         {% if error %}
                             <div style="margin: auto; width: 80%" class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                         {% endif %}
-                        <div>
-                            <input type="submit" id="_submit" name="_submit" value="{{ 'Login'|trans }}" />
-                            <a href="#">Mot de passe perdu?</a>
-                            <a href="#">S'enregistrer</a>
+                        <div class="col-lg-4 offset-3">
+                            <input type="submit" id="_submit" name="_submit" value="{{ 'Se connecter'|trans }}" />
                         </div>
 
 
