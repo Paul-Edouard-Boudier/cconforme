@@ -75,8 +75,3 @@ report_new:
     path: /report/insert
     defaults: { _controller: cpossibleBundle:Report:insertOne }
     methods: POST
-
-liste:
-    path: /report/test
-    defaults: { _controller: cpossibleBundle:Report:test}
-    methods: GET

@@ -308,7 +308,7 @@ ul.ui-autocomplete{
 #map{
     height: 455px;
 }
-/* ********** /!\ CSS Formulaire Signalement /!\ ********* */
+/* ************** /!\ Formulaire Signalement /!\ ************** */
 
 .form-report {
   width: 80vw;
@@ -325,7 +325,20 @@ ul.ui-autocomplete{
   margin-top: 10px;
 }
 
-/* ********** /!\ FIN CSS Formulaire Signalement /!\ ********* */
+/* ************** /!\ FIN Formulaire Signalement /!\ ************** */
+
+.form-control-erp {
+
+}
+
+.erp-row {
+  margin-bottom: 10px;
+  height: 40px;
+}
+
+/* ************** /!\ ERP forumlaire index /!\ ************** */
+
+/* ************** /!\ FIN ERP forumlaire index /!\ ************** */
 
 /* ********** /!\ FOOTER /!\ ********* */
 .footer {

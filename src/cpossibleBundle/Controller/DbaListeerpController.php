@@ -12,6 +12,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 
 
 
@@ -21,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DbaListeerpController extends Controller
 {
+
     /**
      * Lists all dbaListeerp entities.
      *
@@ -31,6 +36,10 @@ class DbaListeerpController extends Controller
      */
     public function indexAction(Request $request)
     {
+      if (session_status() == PHP_SESSION_NONE) {
+          session_start();
+      }
+
 
         $securityContext = $this->container->get('security.authorization_checker');
 
@@ -42,35 +51,47 @@ class DbaListeerpController extends Controller
                 $em = $this->getDoctrine()->getManager();
 
                 $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
-
+                $_SESSION['request'] = [];
                 if($request->query->getAlnum('adap')){
+                  $_SESSION['request']['adap'] = $request->query->getAlnum('adap');
                     $queryBuilder
-                        ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                        ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
                         ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
                 }
 
                 if($request->query->getAlnum('commune')){
+                  $_SESSION['request']['commune'] = $request->query->getAlnum('commune');
                     $queryBuilder
-                        ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                        ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
                         ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
                 }
 
                 if($request->query->getAlnum('demandeur')){
+                  $_SESSION['request']['demandeur'] = $request->query->getAlnum('demandeur');
                     $queryBuilder
-                        ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                        ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
                         ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
                 }
 
                 if($request->query->getAlnum('nom_erp')){
+                  $_SESSION['request']['nom_erp'] = $request->query->getAlnum('nom_erp');
                     $queryBuilder
-                        ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
+                        ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
                         ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
                 }
 
                 if($request->query->getAlnum('nom_voie')){
+                  $_SESSION['request']['nom_voie'] = $request->query->getAlnum('nom_voie');
                     $queryBuilder
-                        ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                        ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
                         ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
+                }
+
+                if($request->query->getAlnum('siret')){
+                  $_SESSION['request']['siret'] = $request->query->getAlnum('siret');
+                    $queryBuilder
+                        ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
+                        ->setParameter('listeerpSiret', '%' . $request->query->getAlnum('siret') . '%' );
                 }
 
                 $dbaListeerps = $queryBuilder->getQuery();
@@ -106,71 +127,141 @@ class DbaListeerpController extends Controller
      */
     public function exportAction(Request $request){
 
-        $em = $this->getDoctrine()->getManager();
+      $securityContext = $this->container->get('security.authorization_checker');
 
-        $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
-        if($request->query->getAlnum('adap')){
-            $queryBuilder
-                ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
-                ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
+          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+            $em = $this->getDoctrine()->getManager();
+
+            $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+            if(!empty($_SESSION['request'])) {
+              if(array_key_exists('adap', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                      ->setParameter('listeerpIdAdap', '%' . $_SESSION['request']['adap'] . '%' );
+              }
+
+              if(array_key_exists('commune', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                      ->setParameter('listeerpNomCommune', '%' . $_SESSION['request']['commune'] . '%' );
+              }
+
+              if(array_key_exists('demandeur', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                      ->setParameter('listeerpDemandeur', '%' . $_SESSION['request']['demandeur'] . '%' );
+              }
+
+              if(array_key_exists('nom_erp', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
+                      ->setParameter('listeErpNomErp', '%' . $_SESSION['request']['nom_erp'] . '%' );
+              }
+
+              if(array_key_exists('nom_voie', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                      ->setParameter('listeerpNomVoie', '%' . $_SESSION['request']['nom_voie'] . '%' );
+              }
+
+              if(array_key_exists('siret', $_SESSION['request']) == true){
+                  $queryBuilder
+                      ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
+                      ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
+              }
+            }
+            var_dump($_SESSION['request']);die;
+
+
+            $dbaListeerps = $queryBuilder->getQuery();
+            $paginator = $this->get('knp_paginator');
+
+
+            $result =$paginator->paginate(
+                $dbaListeerps,
+                $request->query->getInt('page', 1),
+                $request->query->getInt('limit', 20000)
+            );
+
+
+            $csv = $result;
+
+            $rows = array();
+
+            foreach ($csv as $event) {
+                $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
+
+                $rows[] = implode(',', $data);
+            }
+
+            $content = implode("\n", $rows);
+            $response = new Response($content);
+            $response->headers->set('Content-Type', 'text/csv');
+
+            return $this->render('dbalisteerp/csv.html.twig', array(
+                'dbaListeerps' => $result,
+            ), $response);
+          } else {
+
+          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+
         }
 
-        if($request->query->getAlnum('commune')){
-            $queryBuilder
-                ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
-                ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
-        }
+      } else {
 
-        if($request->query->getAlnum('demandeur')){
-            $queryBuilder
-                ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
-                ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
-        }
+        return $this->redirectToRoute('fos_user_security_login');
+      }
 
-        if($request->query->getAlnum('nom_erp')){
-            $queryBuilder
-                ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
-                ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
-        }
+        // instantiation, when using it as a component
 
-        if($request->query->getAlnum('nom_voie')){
-            $queryBuilder
-                ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
-                ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
-        }
+        // $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
+        // // dump($serializer);die;
+        // // instantiation, when using it inside the Symfony framework
+        // // $serializer = $container->get('serializer');
+        // $em = $this->getDoctrine()->getManager();
+        //
+        // $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+        //
+        // if($request->query->getAlnum('adap')){
+        //     $queryBuilder
+        //         ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+        //         ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
+        // }
+        //
+        // if($request->query->getAlnum('commune')){
+        //     $queryBuilder
+        //         ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+        //         ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
+        // }
+        //
+        // if($request->query->getAlnum('demandeur')){
+        //     $queryBuilder
+        //         ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+        //         ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
+        // }
+        //
+        // if($request->query->getAlnum('nom_erp')){
+        //     $queryBuilder
+        //         ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
+        //         ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
+        // }
+        //
+        // if($request->query->getAlnum('nom_voie')){
+        //     $queryBuilder
+        //         ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+        //         ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
+        // }
+        //
+        // $data = strval($queryBuilder->getQuery());
+        //
+        // // encoding contents in CSV format
+        // $serializer->encode($data, 'csv');
 
-        $dbaListeerps = $queryBuilder->getQuery();
-
-        $paginator = $this->get('knp_paginator');
-
-
-        $result =$paginator->paginate(
-            $dbaListeerps,
-            $request->query->getInt('page', 1),
-            $request->query->getInt('limit', 5000)
-        );
-
-
-        $csv = $result;
-
-        $rows = array();
-
-        foreach ($csv as $event) {
-            $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
-
-            $rows[] = implode(',', $data);
-        }
-
-        $content = implode("\n", $rows);
-        $response = new Response($content);
-        $response->headers->set('Content-Type', 'text/csv');
-
-        return $this->render('dbalisteerp/csv.html.twig', array(
-            'dbaListeerps' => $result,
-        ), $response);
-
-        }
+        // decoding CSV contents
+        // $data = $serializer->decode(file_get_contents('data.csv'), 'csv');
+    }
     /**
      * Creates a new dbaListeerp entity.
      *
