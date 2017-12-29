@@ -11,23 +11,23 @@
                 <input class="col-6" type="text" name="commune" placeholder="Rechercher par Commune...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
-            <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+            <form class="form form-control col-4" action="{{ path('list') }}" method="get">
                 <input class="col-6" type="text" name="adap" placeholder="Rechercher par Id-adap...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
 
-             <form class="form-control col-4" action="{{ path('list') }}" class="form" method="get">
+             <form class="form form-control col-4" action="{{ path('list') }}" method="get">
                  <input class="col-6" type="text" name="demandeur" placeholder="Rechercher par Demandeur...">
                  <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
              </form>
         </div>
         <br>
         <div class="row">
-            <form class="form-control col-6" action="{{ path('list') }}" class="form" method="get">
+            <form class="form form-control col-4" action="{{ path('list') }}" method="get">
                 <input class="col-6" type="text" name="nom_voie" placeholder="Rechercher par Nom de voie...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
-            <form class="form-control col-6" action="{{ path('list') }}" class="form" method="get">
+            <form class="form form-control col-4" action="{{ path('list') }}" method="get">
                 <input class="col-6" type="text" name="nom_erp" placeholder="Rechercher par Nom ERP...">
                 <button type="submit" class="btn btn-outline-primary btn-lg">Rechercher</button>
             </form>
@@ -94,16 +94,13 @@
                 </table>
                 <br>
                 <div class="liens_liste">
-                    <a style="color: #ffffff; " href="/liste/new"><button class="btn btn-success btn-lg">Créer Nouvel ERP</button></a>
-                    <a style="color: #ffffff; padding: 4em" href="/liste/new"><button class="btn btn-secondary btn-lg">Export CSV</button></a>
+                    <button class="btn btn-success btn-lg"><a style="color: #ffffff; padding: 4em" href="/liste/new">Créer Nouvel ERP</a></button>
+                    <button class="btn btn-secondary btn-lg"><a style="color: #ffffff; padding: 4em" name="export" href="{{ path('export') }}">Export CSV</a></button>
                 </div>
 
                 <br>
-                <div class="navigation col-4 mx-auto">
+                <div class="navigation col-3 mx-auto">
                     {{ knp_pagination_render(dbaListeerps) }}
                 </div>
         </div>
-    </div>
-
-</div>
 {% endblock %}

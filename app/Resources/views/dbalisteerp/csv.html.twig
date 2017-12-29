@@ -1,0 +1,5 @@
+Type dossier|Id adap|Demandeur|Nom erp|Nature|Categorie|Type|Date declaration|Date valid adap|Delai adap|Siret|Numero voie|Nom voie|Code postal|Code insee|Nom commune|Departement|Actions
+
+{% for dbaListeerp in dbaListeerps %}
+{{ dbaListeerp.listeerpTypedossier }}|{{ dbaListeerp.listeerpIdAdap }}|{{ dbaListeerp.listeerpDemandeur }}|{{ dbaListeerp.listeErpNomErp }}|{{ dbaListeerp.listeerpNature }}|{{ dbaListeerp.listeerpCategorie }}|{{ dbaListeerp.listeerpType }}|{{ dbaListeerp.listeerpDateValidAdap }}|{{ dbaListeerp.listeerpDelaiAdap }}|{{ dbaListeerp.listeerpSiret }}|{{ dbaListeerp.listeerpNumeroVoie }}|{{ dbaListeerp.listeerpNomVoie }}|{{ dbaListeerp.listeerpCodePostal }}|{{ dbaListeerp.listeerpCodeInsee }}|{{ dbaListeerp.listeerpNomCommune }}|{{ dbaListeerp.listeerpDepartement }}
+{% endfor %}

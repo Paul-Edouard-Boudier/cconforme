@@ -1,7 +1,5 @@
 <?php
-
 namespace cpossibleBundle\Repository;
-
 /**
  * ReportRepository
  *
