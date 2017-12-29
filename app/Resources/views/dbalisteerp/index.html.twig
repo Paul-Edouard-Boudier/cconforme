@@ -32,67 +32,72 @@
 
 
     </div>
-            <div class="col-lg-12 mx-auto">
+    {% if dbaListeerps  %}
+    <div class="col-lg-12 mx-auto">
 
-                <table class="table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Type dossier</th>
-                            <th>Id adap</th>
-                            <th>Demandeur</th>
-                            <th>Nom erp</th>
-                            <th>Nature</th>
-                            <th>Categorie</th>
-                            <th>Type</th>
-                            <th>Date declaration</th>
-                            <th>Date valid adap</th>
-                            <th>Delai adap</th>
-                            <th>Siret</th>
-                            <th>Numero voie</th>
-                            <th>Nom voie</th>
-                            <th>Code postal</th>
-                            <th>Code insee</th>
-                            <th>Nom commune</th>
-                            <th>Departement</th>
-                            <th>Modifier</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for dbaListeerp in dbaListeerps %}
-                        <tr>
-                            <td>{{ dbaListeerp.listeerpTypedossier }}</td>
-                            <td>{{ dbaListeerp.listeerpIdAdap }}</td>
-                            <td>{{ dbaListeerp.listeerpDemandeur }}</td>
-                            <td>{{ dbaListeerp.listeErpNomErp }}</td>
-                            <td>{{ dbaListeerp.listeerpNature }}</td>
-                            <td>{{ dbaListeerp.listeerpCategorie }}</td>
-                            <td>{{ dbaListeerp.listeerpType }}</td>
-                            <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
-                            <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
-                            <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
-                            <td>{{ dbaListeerp.listeerpSiret }}</td>
-                            <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
-                            <td>{{ dbaListeerp.listeerpNomVoie }}</td>
-                            <td>{{ dbaListeerp.listeerpCodePostal }}</td>
-                            <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
-                            <td>{{ dbaListeerp.listeerpNomCommune }}</td>
-                            <td>{{ dbaListeerp.listeerpDepartement }}</td>
-                            <td>
-                                <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-                <br>
-                <div class="liens_liste">
-                    <a style="color: #ffffff; padding: 4em" href="/liste/new"><button class="btn btn-success btn-lg">Créer Nouvel ERP</button></a>
-                    <a style="color: #ffffff; padding: 4em" name="export" href="{{ path('export') }}"><button class="btn btn-secondary btn-lg">Export CSV</button></a>
-                </div>
-
-                <br>
-                <div class="navigation col-3 mx-auto">
-                    {{ knp_pagination_render(dbaListeerps) }}
-                </div>
+        <table class="table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Type dossier</th>
+                    <th>Id adap</th>
+                    <th>Demandeur</th>
+                    <th>Nom erp</th>
+                    <th>Nature</th>
+                    <th>Categorie</th>
+                    <th>Type</th>
+                    <th>Date declaration</th>
+                    <th>Date valid adap</th>
+                    <th>Delai adap</th>
+                    <th>Siret</th>
+                    <th>Numero voie</th>
+                    <th>Nom voie</th>
+                    <th>Code postal</th>
+                    <th>Code insee</th>
+                    <th>Nom commune</th>
+                    <th>Departement</th>
+                    <th>Modifier</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for dbaListeerp in dbaListeerps %}
+                <tr>
+                    <td>{{ dbaListeerp.listeerpTypedossier }}</td>
+                    <td>{{ dbaListeerp.listeerpIdAdap }}</td>
+                    <td>{{ dbaListeerp.listeerpDemandeur }}</td>
+                    <td>{{ dbaListeerp.listeErpNomErp }}</td>
+                    <td>{{ dbaListeerp.listeerpNature }}</td>
+                    <td>{{ dbaListeerp.listeerpCategorie }}</td>
+                    <td>{{ dbaListeerp.listeerpType }}</td>
+                    <td>{{ dbaListeerp.listeerpDateDeclaration }}</td>
+                    <td>{{ dbaListeerp.listeerpDateValidAdap }}</td>
+                    <td>{{ dbaListeerp.listeerpDelaiAdap }}</td>
+                    <td>{{ dbaListeerp.listeerpSiret }}</td>
+                    <td>{{ dbaListeerp.listeerpNumeroVoie }}</td>
+                    <td>{{ dbaListeerp.listeerpNomVoie }}</td>
+                    <td>{{ dbaListeerp.listeerpCodePostal }}</td>
+                    <td>{{ dbaListeerp.listeerpCodeInsee }}</td>
+                    <td>{{ dbaListeerp.listeerpNomCommune }}</td>
+                    <td>{{ dbaListeerp.listeerpDepartement }}</td>
+                    <td>
+                        <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <div class="liens_liste">
+            <a style="color: #ffffff; padding: 4em" href="/liste/new"><button class="btn btn-success btn-lg">Créer Nouvel ERP</button></a>
+            <a style="color: #ffffff; padding: 4em" name="export" href="{{ path('export') }}"><button class="btn btn-secondary btn-lg">Export CSV</button></a>
         </div>
+
+        <br>
+        <div class="navigation col-3 mx-auto">
+            {{ knp_pagination_render(dbaListeerps) }}
+        </div>
+      </div>
+    {% else %}
+      <p> Aucun ERP ne correspond à vos critères de recherche </p>
+    {% endif %}
+
 {% endblock %}
