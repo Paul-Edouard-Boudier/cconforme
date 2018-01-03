@@ -4,6 +4,7 @@ namespace cpossibleBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use \Datetime;
 use \DateInterval;
 
@@ -26,6 +27,23 @@ class HomeController extends AbstractErpController
         return $this->render('cpossibleBundle:Home:map.html.twig', array(
             'dbaListeerps' => $dbaListeerps,
         ));
+    }
+
+    public function aroundAction(Request $request) {
+      if ($request->isXMLHttpRequest()) {
+        # code...
+        //dump($request);die;
+        //$_SESSION['ajaxRequest'] = "It works";
+
+        // Query looks like that:
+        // Select all from listeerp where lat < lat + 0.05 && lat > lat - 0.05 && lng < lng + 0.05 && lng > lng +0.05
+        
+        return new JsonResponse([["lat"=>45, "lng"=>4.56], ["lat"=>44.56, "lng"=>4.66]]);
+      } else {
+        return "Failed";
+      }
+      // dump($lat);die;
+      //return $this->render('cpossibleBundle:Home:accueil.html.twig');
     }
 
     public function fetchAction ()
@@ -61,35 +79,23 @@ class HomeController extends AbstractErpController
      * @return array
      */
     private function constructResponseMessage($status, $erp = null) {
-      setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
-      $date = $erp["date"];
-      $delai = $erp["delai"];
+      // setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+      // $date = $erp["date"];
+      // $delai = $erp["delai"];
+      // //
+      // $date = new DateTime($date);
+      // $mois = ucfirst(strftime("%B", $date->getTimestamp()));
+      // //
+      // $date->add(new DateInterval('P'.$delai.'Y'));
+      // $newdate =  $date->format('d-m-Y');
       //
-      $date = new DateTime($date);
-      $mois = ucfirst(strftime("%B", $date->getTimestamp()));
-      //
-      $date->add(new DateInterval('P'.$delai.'Y'));
-      $newdate =  $date->format('d-m-Y');
-
-      $time = strtotime($newdate);
-      $annee = date("Y",$time);
+      // $time = strtotime($newdate);
+      // $annee = date("Y",$time);
         $messageText = [
             'standard' => "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, ",
             'pending' => "L'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
             'none' => "Aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche de mise en accessibilité."
         ];
-        setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
-        $date = $erp["date"];
-        $delai = $erp["delai"];
-
-        $date = new DateTime($date);
-        $mois = ucfirst(strftime("%B", $date->getTimestamp()));
-
-        $date->add(new DateInterval('P'.$delai.'Y'));
-        $newdate =  $date->format('d-m-Y');
-
-        $time = strtotime($newdate);
-        $annee = date("Y",$time);
 
         switch($status){
             case 'ok':

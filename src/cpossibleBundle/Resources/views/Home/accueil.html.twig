@@ -29,15 +29,11 @@
                 </button>
             </form>
         </div>
-        <div class="test">
-          {% if (app.session.get('actualLocation') is defined and app.session.get('actualLocation') is not empty) %}
-            {% for values in app.session.get('actualLocation') %}
-              {{values}}
-            {% endfor %}
-          {% else %}
-            <p>nothing to see here </p>
-          {% endif %}
-        </div>
+        <!-- <form class="around" action="" method="post">
+          <input class="storage" data-lat="45.7613227" data-lng="4.826694800000041" type="hidden" name="" value="">
+          <input type="submit" name="" value="Autour de ce point">
+        </form> -->
+        <div class="storage" data-lat="45.7613227" data-lng="4.826694800000041">Atour de ce point / moi</div>
         <br>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
@@ -73,10 +69,10 @@
 
 
     <script>
-    var markers = [];
+    //var markers = [];
 
 
-        $(function() {
+        $(document).ready(function() {
 
             $('#form').on('submit', function() {
                 var result = $('#result')
@@ -111,10 +107,23 @@
                 })
                 return false;
             })
-        })
+
+            $('.storage').on('click', function() {
+              //console.log('hello');
+                var lat = parseFloat($(this)[0].attributes[1].value);
+                var lng = parseFloat($(this)[0].attributes[2].value);
+                // debugger;
+                $.post('/around',{'lat':lat,'lng':lng}).done(function(data) {
+                      // DisplayMultipleMarkers();
+                      console.log('it works');
+                      debugger;
+                      // console.log('{{app.session.get('ajaxRequest')}}');
+                    });
+                });
+            })
 
         function initMap() {
-          // var markers = [];
+            // var markers = []; // Array of google map marker object
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
                 center: {lat: 45.750000, lng: 4.850000}
@@ -139,7 +148,12 @@
                         map: resultsMap,
                         position: results[0].geometry.location
                     });
-                    markers.push(marker);
+                    //var markers = []; // Setup an array to push marker's in, not useful actually
+                    //markers.push(marker);
+                    // Retrive lat and lng of marker and push it in data attr
+                    document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
+                    document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                    // debugger;
                 } else {
                 }
             });
@@ -153,35 +167,7 @@
 
 <!-- *************** SCRIPT RECUPERÉ ************** -->
     <!-- <script>
-        $(function() {
-            $('#form1').on('submit', function() {
-                var result = $('#result')
-                var datas = $(this).serialize()
-                $.ajax({
-                    method: 'post',
-                    url: '',
-                    data: datas,
-                    dataType: 'json',
-                    success: function(data) {
-                        result.html(data.message)
-                        switch (data.status) {
-                            case 'ok':
-                                    result.removeClass('alert-danger')
-                                    result.addClass('alert-success')
-                                break
-                            case 'ko':
-                                    result.removeClass('alert-success')
-                                    result.addClass('alert-danger')
-                                break
-                        }
-                    },
-                    error: function(data) {
-                        console.log(data)
-                    }
-                })
-                return false;
-            })
-        })
+
         function initMap() {
           var geocoder = new google.maps.Geocoder();
           var directionsService = new google.maps.DirectionsService;

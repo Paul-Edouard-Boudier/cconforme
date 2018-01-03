@@ -183,6 +183,21 @@ class DbaListeerp
     private $listeerpStatut;
 
     /**
+     * @var double
+     *
+     * @ORM\Column(name="listeERP_longitude", type="double", nullable=true)
+     */
+    private $listeerpLongitude;
+
+    /**
+     * @var double
+     *
+     * @ORM\Column(name="listeERP_latitude", type="double", nullable=true)
+     */
+    private $listeerpLatitude;
+
+
+    /**
      * @return int
      */
     public function getListeerpId()
@@ -566,6 +581,36 @@ class DbaListeerp
         $this->listeerpStatut = $listeerpStatut;
     }
 
+    /**
+     * @return double
+     */
+    public function getListeerpLongitude()
+    {
+        return $this->listeerpLongitude;
+    }
+
+    /**
+     * @param double $listeerpLongitude
+     */
+    public function setListeerpLongitude($listeerpLongitude)
+    {
+        $this->listeerpLongitude = $listeerpLongitude;
+    }
+
+    /**
+     * @return double
+     */
+    public function getListeerpLatitude()
+    {
+        return $this->listeerpLatitude;
+    }
+
+    /**
+     * @param double $listeerpLatitude
+     */
+    public function setListeerpLatitude($listeerpLatitude)
+    {
+        $this->listeerpLatitude = $listeerpLatitude;
+    }
 
 }
-
