@@ -31,14 +31,40 @@ class HomeController extends AbstractErpController
 
     public function aroundAction(Request $request) {
       if ($request->isXMLHttpRequest()) {
-        # code...
-        //dump($request);die;
-        //$_SESSION['ajaxRequest'] = "It works";
+        $lat = floatval($request->get('lat'));
+        $lng = floatval($request->get('lng'));
+        $longmin = $lng - 0.05;
+        $longmax = $lng + 0.05;
+        $latmin = $lat - 0.05;
+        $latmax = $lat + 0.05;
 
+        //dump($request);die;
         // Query looks like that:
         // Select all from listeerp where lat < lat + 0.05 && lat > lat - 0.05 && lng < lng + 0.05 && lng > lng +0.05
-        
-        return new JsonResponse([["lat"=>45, "lng"=>4.56], ["lat"=>44.56, "lng"=>4.66]]);
+        $conn = $this->getDoctrine()->getManager()
+                      ->getConnection();
+        //$sql = "SELECT * FROM articles WHERE id = ? LIMIT 6";
+        $sql = "SELECT listeERP_latitude, listeERP_longitude FROM resicadminresic.dba_listeERP
+          WHERE listeERP_longitude > ?
+          AND listeERP_longitude < ?
+          AND listeERP_latitude > ?
+          AND listeERP_latitude < ?
+          LIMIT 6;";
+        $stmt = $conn->prepare($sql);
+        // find a way to bind everything at the same time, cause it's ugly
+        $stmt->bindValue(1, $longmin);
+        $stmt->bindValue(2, $longmax);
+        $stmt->bindValue(3, $latmin);
+        $stmt->bindValue(4, $latmax);
+        $stmt->execute();
+        // $markers = [];
+        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng];
+        //array_push($markers, $actualLocation);
+        $result = $stmt->fetchAll();
+        array_push($result, $actualLocation);
+
+        return new JsonResponse($result);
+        //return new JsonResponse($request);
       } else {
         return "Failed";
       }

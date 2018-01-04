@@ -208,4 +208,16 @@ cpossibleBundle\Entity\DbaListeerp:
             options:
                 unsigned: false
             column: listeERP_statut
+        listeerpLongitude:
+            type: float
+            nullable: true
+            options:
+              unsigned: false
+            column: listeERP_longitude
+        listeerpLatitude:
+          type: float
+          nullable: true
+          options:
+            unsigned: false
+          column: listeERP_latitude
     lifecycleCallbacks: {  }

@@ -116,13 +116,29 @@
                 $.post('/around',{'lat':lat,'lng':lng}).done(function(data) {
                       // DisplayMultipleMarkers();
                       console.log('it works');
-                      debugger;
-                      // console.log('{{app.session.get('ajaxRequest')}}');
+                      //debugger;
+                      // var bounds = new google.maps.LatLngBounds();
+                      // var map = new google.maps.Map(document.getElementById('map'), {
+                      //     zoom: 16,
+                      //     center: {lat: 45.750000, lng: 4.850000}
+                      // });
+                      for( i = 0; i < data.length; i++ ) {
+
+                        var position = new google.maps.LatLng(data[i][0], data[i][1]);
+                        bounds.extend(position);
+                        marker = new google.maps.Marker({
+                          map: map,
+                          position: position,
+                        });
+                        map.fitBounds(bounds);
+                        //markerArray.push(marker);
+                      }
                     });
                 });
             })
 
         function initMap() {
+            var bounds = new google.maps.LatLngBounds();
             // var markers = []; // Array of google map marker object
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,

@@ -94,6 +94,19 @@ class DbaListeerpController extends Controller
                         ->setParameter('listeerpSiret', '%' . $request->query->getAlnum('siret') . '%' );
                 }
 
+                if($request->query->getAlnum('lng')){
+                  $_SESSION['request']['lng'] = $request->query->getAlnum('lng');
+                    $queryBuilder
+                        ->andWhere('dba.listeerpLongitude LIKE :listeerpLongitude')
+                        ->setParameter('listeerpLongitude', '%' . $request->query->getAlnum('lng') . '%' );
+                }
+                if($request->query->getAlnum('lat')){
+                  $_SESSION['request']['lat'] = $request->query->getAlnum('lat');
+                    $queryBuilder
+                        ->andWhere('dba.listeerpLatitude LIKE :listeerpLatitude')
+                        ->setParameter('listeerpLatitude', '%' . $request->query->getAlnum('lat') . '%' );
+                }
+
                 $dbaListeerps = $queryBuilder->getQuery();
 
                 $paginator = $this->get('knp_paginator');
