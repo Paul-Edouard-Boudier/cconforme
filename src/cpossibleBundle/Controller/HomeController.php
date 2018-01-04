@@ -33,10 +33,11 @@ class HomeController extends AbstractErpController
       if ($request->isXMLHttpRequest()) {
         $lat = floatval($request->get('lat'));
         $lng = floatval($request->get('lng'));
-        $longmin = $lng - 0.05;
-        $longmax = $lng + 0.05;
-        $latmin = $lat - 0.05;
-        $latmax = $lat + 0.05;
+        $limit = intval($request->get('limit'));
+        $longmin = $lng - 0.003;
+        $longmax = $lng + 0.003;
+        $latmin = $lat - 0.003;
+        $latmax = $lat + 0.003;
 
         //dump($request);die;
         // Query looks like that:
@@ -44,21 +45,22 @@ class HomeController extends AbstractErpController
         $conn = $this->getDoctrine()->getManager()
                       ->getConnection();
         //$sql = "SELECT * FROM articles WHERE id = ? LIMIT 6";
-        $sql = "SELECT listeERP_latitude, listeERP_longitude FROM resicadminresic.dba_listeERP
+        $sql = "SELECT listeERP_latitude, listeERP_longitude, liste_ERP_nom_erp FROM resicadminresic.dba_listeERP
           WHERE listeERP_longitude > ?
           AND listeERP_longitude < ?
           AND listeERP_latitude > ?
           AND listeERP_latitude < ?
-          LIMIT 6;";
+          LIMIT $limit;";
         $stmt = $conn->prepare($sql);
         // find a way to bind everything at the same time, cause it's ugly
         $stmt->bindValue(1, $longmin);
         $stmt->bindValue(2, $longmax);
         $stmt->bindValue(3, $latmin);
         $stmt->bindValue(4, $latmax);
+        //$stmt->bindValue(5, $limit);
         $stmt->execute();
         // $markers = [];
-        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng];
+        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'vous êtes ici'];
         //array_push($markers, $actualLocation);
         $result = $stmt->fetchAll();
         array_push($result, $actualLocation);

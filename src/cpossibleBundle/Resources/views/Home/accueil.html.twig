@@ -33,7 +33,7 @@
           <input class="storage" data-lat="45.7613227" data-lng="4.826694800000041" type="hidden" name="" value="">
           <input type="submit" name="" value="Autour de ce point">
         </form> -->
-        <div class="storage" data-lat="45.7613227" data-lng="4.826694800000041">Atour de ce point / moi</div>
+        <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="2">Atour de ce point / moi</div>
         <br>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
@@ -108,38 +108,39 @@
                 return false;
             })
 
-            $('.storage').on('click', function() {
-              //console.log('hello');
-                var lat = parseFloat($(this)[0].attributes[1].value);
-                var lng = parseFloat($(this)[0].attributes[2].value);
-                // debugger;
-                $.post('/around',{'lat':lat,'lng':lng}).done(function(data) {
-                      // DisplayMultipleMarkers();
-                      console.log('it works');
-                      //debugger;
-                      // var bounds = new google.maps.LatLngBounds();
-                      // var map = new google.maps.Map(document.getElementById('map'), {
-                      //     zoom: 16,
-                      //     center: {lat: 45.750000, lng: 4.850000}
-                      // });
-                      for( i = 0; i < data.length; i++ ) {
-
-                        var position = new google.maps.LatLng(data[i][0], data[i][1]);
-                        bounds.extend(position);
-                        marker = new google.maps.Marker({
-                          map: map,
-                          position: position,
-                        });
-                        map.fitBounds(bounds);
-                        //markerArray.push(marker);
-                      }
-                    });
-                });
+            // $('.storage').on('click', function() {
+            //   debugger;
+            //   //console.log('hello');
+            //     var lat = parseFloat($(this)[0].attributes[1].value);
+            //     var lng = parseFloat($(this)[0].attributes[2].value);
+            //     // debugger;
+            //     $.post('/around',{'lat':lat,'lng':lng}).done(function(data) {
+            //           // DisplayMultipleMarkers();
+            //           console.log('it works');
+            //           //debugger;
+            //           // var bounds = new google.maps.LatLngBounds();
+            //           // var map = new google.maps.Map(document.getElementById('map'), {
+            //           //     zoom: 16,
+            //           //     center: {lat: 45.750000, lng: 4.850000}
+            //           // });
+            //           for( i = 0; i < data.length; i++ ) {
+            //
+            //             var position = new google.maps.LatLng(data[i][0], data[i][1]);
+            //             bounds.extend(position);
+            //             marker = new google.maps.Marker({
+            //               map: map,
+            //               position: position,
+            //             });
+            //             map.fitBounds(bounds);
+            //             //markerArray.push(marker);
+            //           }
+            //         });
+            //     });
             })
 
         function initMap() {
+            var markerArray = [];// Array of google map marker object
             var bounds = new google.maps.LatLngBounds();
-            // var markers = []; // Array of google map marker object
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
                 center: {lat: 45.750000, lng: 4.850000}
@@ -147,11 +148,62 @@
 
             document.getElementById('search-btn').addEventListener('click', function() {
                 var geocoder = new google.maps.Geocoder();
-                geocodeAddress(geocoder, map);
+                geocodeAddress(geocoder, map, markerArray);
+            });
+            $('.storage').on('click', function() {
+              var lat = parseFloat($(this)[0].attributes[1].value);
+              var lng = parseFloat($(this)[0].attributes[2].value);
+              var limit = parseInt($(this)[0].attributes[3].value);
+              for (var i = 0; i < markerArray.length; i++) {
+                markerArray[i].setMap(null);
+              }
+              markerArray = [];
+              bounds = new google.maps.LatLngBounds();
+              displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+            })
+        }
+
+        function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
+            $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
+                console.log('it works');
+                // numbers need to be in float
+                for( i = 0; i < ((data.length) -1); i++ ) {
+                    var position = new google.maps.LatLng(parseFloat(data[i].listeERP_latitude), parseFloat(data[i].listeERP_longitude));
+                    bounds.extend(position);
+                    marker = new google.maps.Marker({
+                      map: map,
+                      position: position,
+                      icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                      info: data[i].liste_ERP_nom_erp,
+                    });
+                    map.fitBounds(bounds);
+                    //foreach marker, create an event that open a window with the name of the erp (through info)
+                    var infowindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(marker, 'click', function () {
+                      infowindow.setContent(this.info);
+                      infowindow.open(map, this);
+                    });
+                    markerArray.push(marker);
+                }
+                //Keep the color for the last one that represent the location from where the user is searching
+                var position = new google.maps.LatLng(parseFloat(data[limit].listeERP_latitude), parseFloat(data[limit].listeERP_longitude));
+                bounds.extend(position);
+                marker = new google.maps.Marker({
+                  map: map,
+                  position: position,
+                  info: data[limit].liste_ERP_nom_erp,
+                });
+                var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, 'click', function () {
+                  infowindow.setContent(this.info);
+                  infowindow.open(map, this);
+                });
+                markerArray.push(marker);
+                map.fitBounds(bounds);
             });
         }
 
-        function geocodeAddress(geocoder, resultsMap) {
+        function geocodeAddress(geocoder, resultsMap, markerArray) {
             var address = document.getElementById('adress').value
             var name = document.getElementById('name').value
             data = address ? address : null
@@ -165,7 +217,7 @@
                         position: results[0].geometry.location
                     });
                     //var markers = []; // Setup an array to push marker's in, not useful actually
-                    //markers.push(marker);
+                    markerArray.push(marker);
                     // Retrive lat and lng of marker and push it in data attr
                     document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                     document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
