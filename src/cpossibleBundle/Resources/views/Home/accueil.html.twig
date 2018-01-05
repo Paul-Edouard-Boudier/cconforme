@@ -140,10 +140,15 @@
             $('.location-browser').on('click', function() {
               if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                  //debugger;
+                  // get current position
                   var lat = position.coords.latitude;
                   var lng = position.coords.longitude;
                   var limit = parseInt($('.storage')[0].attributes[3].value);
+                  for (var i = 0; i < markerArray.length; i++) {
+                    markerArray[i].setMap(null);
+                  }
+                  markerArray = [];
+                  bounds = new google.maps.LatLngBounds();
                   displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
                 }, function() {
                   handleLocationError(true, map, map.getCenter());
@@ -158,18 +163,21 @@
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
-              debugger;
-              // Problème si on réupère qu'un seul élément
                 // numbers need to be in float
+                // iterate over data that is rendered by the controller
                 for( i = 0; i < ((data.length) -1); i++ ) {
+                  // Setup the position of the marker dynamically via it's info
                     var position = new google.maps.LatLng(parseFloat(data[i].listeERP_latitude), parseFloat(data[i].listeERP_longitude));
+                    // extends bounds of the map to the position of the marker
                     bounds.extend(position);
-                    marker = new google.maps.Marker({
+                    // create a blue marker everytime
+                    var marker = new google.maps.Marker({
                       map: map,
                       position: position,
                       icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                       info: data[i].liste_ERP_nom_erp,
                     });
+                    // extends the map to fit bounds so we have every marker displayed on the map
                     map.fitBounds(bounds);
                     //foreach marker, create an event that open a window with the name of the erp (through info)
                     var infowindow = new google.maps.InfoWindow();
@@ -183,17 +191,17 @@
                 var last = data.pop();
                 var position = new google.maps.LatLng(parseFloat(last.listeERP_latitude), parseFloat(last.listeERP_longitude));
                 bounds.extend(position);
-                marker = new google.maps.Marker({
+                var marker = new google.maps.Marker({
                   map: map,
                   position: position,
                   info: last.liste_ERP_nom_erp,
                 });
                 var infowindow = new google.maps.InfoWindow();
-                // add an info winwdow on each marker on a click event with the info from marker
                 google.maps.event.addListener(marker, 'click', function () {
                   infowindow.setContent(this.info);
                   infowindow.open(map, this);
                 });
+                // Push every marker into an array so i can reset the array and clear the map for another research
                 markerArray.push(marker);
                 map.fitBounds(bounds);
             });
@@ -212,12 +220,10 @@
                         map: resultsMap,
                         position: results[0].geometry.location
                     });
-                    //var markers = []; // Setup an array to push marker's in, not useful actually
                     markerArray.push(marker);
                     // Retrive lat and lng of marker and push it in data attr
                     document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                     document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
-                    // debugger;
                 } else {
                 }
             });
