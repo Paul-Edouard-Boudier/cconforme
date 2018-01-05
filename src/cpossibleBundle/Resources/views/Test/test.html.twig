@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+<body>
+
+<form id="form" action="" method="post">
+    <input type="text" id="test" name="test">
+    <input type="submit" id="test_submit" value="test">
+</form>
+
+<div id="map" style="height: 500px;" class="col-lg-10 mx-auto">
+
+</div>
+
+<table class="table-bordered table-striped" id="result" border='1'>
+    <tr>
+    </tr>
+</table>
+
+<div style="text-align: center" id="message">
+
+
+</div>
+
+<script>
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 45.750000, lng: 4.850000},
+            zoom: 13
+        });
+        var input = /** @type {!HTMLInputElement} */(
+            document.getElementById('test'));
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+            map: map,
+            anchorPoint: new google.maps.Point(0, -29)
+        });
+
+        autocomplete.addListener('place_changed', function() {
+            infowindow.close();
+            marker.setVisible(false);
+            var form = $('#form')
+            var result = $('#result')
+            var message = $('#message')
+            $.ajax( {
+                type: 'POST',
+                url: "{{ path('dbalisteerp_test') }}",
+                data: form.serialize(),
+                dataType: "json",
+                success: function(response) {
+
+                    document.getElementById('result').innerHTML = "";
+
+                    var trHTML = '';
+
+                    console.log(response)
+
+                        $.each(response, function (i, item) {
+
+                            trHTML += '<tr><td>' + response[i].name + '</td></tr>';
+
+                            if (response.length > 1) {
+
+                                message.removeClass('alert alert-danger')
+                                message.addClass('alert alert-success col-lg-10 mx-auto')
+                                document.getElementById('message').innerHTML = response.length + " établissement à cette adresse"
+
+                            } else {
+
+                                trHTML = "";
+
+                                message.removeClass('alert alert-danger')
+                                message.addClass('alert alert-success col-lg-10 mx-auto')
+                                document.getElementById('message').innerHTML = " Le demandeur " + response[i].demandeur +
+                                " s’est engagé à rendre l’établissement " + response[i].name + ", situé au " + response[i].adress +
+                                " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " +
+                                response[i].date + "."
+
+                            }
+
+                        })
+
+                    $('#result').append(trHTML);
+
+                },
+                error: function(response) {
+
+                    var message = $('#message')
+
+                    document.getElementById('result').innerHTML = "";
+                    console.log(response)
+                    console.log('test')
+
+                    message.removeClass('alert alert-success')
+                    message.addClass('alert alert-danger col-lg-10 mx-auto')
+                    document.getElementById('message').innerHTML = "Aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche " +
+                    "de mise en accessibilité."
+
+                }
+            })
+
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                window.alert("No details available for input: '" + place.name + "'");
+                return;
+            }
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+            }
+            marker.setIcon(/** @type {google.maps.Icon} */({
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(35, 35)
+            }));
+            marker.setPosition(place.geometry.location);
+            marker.setVisible(true);
+
+            var address = '';
+            if (place.address_components) {
+                address = [
+                    (place.address_components[0] && place.address_components[0].short_name || ''),
+                    (place.address_components[1] && place.address_components[1].short_name || ''),
+                    (place.address_components[2] && place.address_components[2].short_name || '')
+                ].join(' ');
+            }
+
+            infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+            infowindow.open(map, marker);
+        });
+    }
+
+</script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script>
+
+</body>
+</html>

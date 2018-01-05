@@ -57,46 +57,46 @@ abstract class AbstractErpController extends Controller
 
         $date_explode = explode("-", $date);
 
-        $date_explode[2] = $date_explode[2] + $delai;
+        $date_explode[0] = $date_explode[0] + $delai;
 
         $date = implode("-", $date_explode);
 
         switch ($date_explode[1]) {
             case "01":
-                $date = "Janvier" . " " . $date_explode[2];
+                $date = "Janvier" . " " . $date_explode[0];
                 break;
             case "02":
-                $date = "Février" . " " . $date_explode[2];
+                $date = "Février" . " " . $date_explode[0];
                 break;
             case "03":
-                $date = "Mars" . " " . $date_explode[2];
+                $date = "Mars" . " " . $date_explode[0];
                 break;
             case "04":
-                $date = "Avril" . " " . $date_explode[2];
+                $date = "Avril" . " " . $date_explode[0];
                 break;
             case "05":
-                $date = "Mai" . " " . $date_explode[2];
+                $date = "Mai" . " " . $date_explode[0];
                 break;
             case "06":
-                $date = "Juin" . " " . $date_explode[2];
+                $date = "Juin" . " " . $date_explode[0];
                 break;
             case "07":
-                $date = "Juillet" . " " . $date_explode[2];
+                $date = "Juillet" . " " . $date_explode[0];
                 break;
             case "08":
-                $date = "Août" . " " . $date_explode[2];
+                $date = "Août" . " " . $date_explode[0];
                 break;
             case "09":
-                $date = "Septembre" . " " . $date_explode[2];
+                $date = "Septembre" . " " . $date_explode[0];
                 break;
             case "10":
-                $date = "Octobre" . " " . $date_explode[2];
+                $date = "Octobre" . " " . $date_explode[0];
                 break;
             case "11":
-                $date = "Novembre" . " " . $date_explode[2];
+                $date = "Novembre" . " " . $date_explode[0];
                 break;
             case "12":
-                $date = "Décembre" . " " . $date_explode[2];
+                $date = "Décembre" . " " . $date_explode[0];
                 break;
         }
 

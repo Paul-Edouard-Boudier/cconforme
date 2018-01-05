@@ -34,3 +34,7 @@ ERP_Autocomplete_name:
 ERP_Autocomplete_adress:
     path: /autocomplete_adress
     defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}
+
+dbalisteerp_test:
+    path:     /test
+    defaults: { _controller: "cpossibleBundle:Test:test"}

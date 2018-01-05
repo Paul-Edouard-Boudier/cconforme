@@ -26,11 +26,19 @@
             </form>
         </div>
         <br>
+
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
-                <div id="result" class="alert"></div>
+                <div id="message" class="alert"></div>
             </div>
             <div class="col-10 mx-auto" id="map"></div>
+            <br><br>
+            <div class="col-11 col-lg-10 mx-auto">
+            <table style="margin-top: 20px" class="col-lg-12 table-bordered table-striped" id="result" border='1'>
+                <tr>
+                </tr>
+            </table>
+            </div>
         </div>
 
         <br>
@@ -66,6 +74,7 @@
 
             $('#form').on('submit', function() {
                 var result = $('#result')
+                var message = $('#message')
                 var address = document.getElementById('adress').value
                 var name = document.getElementById('name').value
                 data = address ? address : null
@@ -77,16 +86,17 @@
                     data: {data : data},
                     dataType: 'json',
                     success: function(data) {
-                        result.html(data.message)
+                        document.getElementById('result').innerHTML = ""
+                        message.html(data.message)
                         switch (data.status) {
                             case 'ok':
-                                result.removeClass('alert-danger')
-                                result.addClass('alert-success')
+                                message.removeClass('alert-danger')
+                                message.addClass('alert-success')
                                 console.log(result)
                                 break
                             case 'ko':
-                                result.removeClass('alert-success')
-                                result.addClass('alert-danger')
+                                message.removeClass('alert-success')
+                                message.addClass('alert-danger')
                                 console.log(result)
                                 break
                         }
@@ -125,6 +135,65 @@
                 infowindow.close();
                 marker.setVisible(false);
                 var place = autocomplete.getPlace();
+                var form = $('#form')
+                var result = $('#result')
+                var message = $('#message')
+                $.ajax( {
+                    type: 'POST',
+                    url: "{{ path('dbalisteerp_test') }}",
+                    data: form.serialize(),
+                    dataType: "json",
+                    success: function(response) {
+
+                        document.getElementById('result').innerHTML = "";
+
+                        var trHTML = '';
+
+                        console.log(response)
+
+                        $.each(response, function (i, item) {
+
+                            trHTML += '<tr><td>' + response[i].name + '</td></tr>';
+
+                            if (response.length > 1) {
+
+                                message.removeClass(' alert-danger')
+                                message.addClass('alert-success')
+                                document.getElementById('message').innerHTML = response.length + " établissement à cette adresse"
+
+                            } else {
+
+                                trHTML = "";
+
+                                message.removeClass('alert-danger')
+                                message.addClass('alert-success')
+                                document.getElementById('message').innerHTML = " Le demandeur " + response[i].demandeur +
+                                    " s’est engagé à rendre l’établissement " + response[i].name + ", situé au " + response[i].adress +
+                                    " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " +
+                                    response[i].date + "."
+
+                            }
+
+                        })
+
+                        result.append(trHTML);
+
+                    },
+                    error: function(response) {
+
+                        var message = $('#message')
+
+                        document.getElementById('result').innerHTML = "";
+                        console.log(response)
+                        console.log('test')
+
+                        message.removeClass('alert alert-success')
+                        message.addClass('alert alert-danger col-lg-10 mx-auto')
+                        document.getElementById('message').innerHTML = "Aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche " +
+                            "de mise en accessibilité."
+
+                    }
+                })
                 if (!place.geometry) {
                     window.alert("No details available for input: '" + place.name + "'");
                     return;

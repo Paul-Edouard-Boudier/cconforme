@@ -202,7 +202,7 @@ class HomeController extends AbstractErpController
                 $response['status'] = 'ok';
                 if ($erp['type'] == 'adap' or 'at-adap') {
                     $response["message"] = $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
-                        " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
+                        " s’est engagé à rendre l’établissement " . $erp["name"] . ", situé au " . $erp["adress"] .
                         " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " .
                         $erp["date"] . ".";
                 } else {
