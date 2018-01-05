@@ -29,11 +29,17 @@
                 </button>
             </form>
         </div>
+        <form class="" action="/around" method="post">
+          <input type="text" name="lat" value="45.750000">
+          <input type="text" name="lng" value="4.850000">
+          <input type="submit" name="" value="">
+        </form>
         <!-- <form class="around" action="" method="post">
           <input class="storage" data-lat="45.7613227" data-lng="4.826694800000041" type="hidden" name="" value="">
           <input type="submit" name="" value="Autour de ce point">
         </form> -->
-        <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="2">Atour de ce point / moi</div>
+        <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34">Atour de ce point</div>
+        <div class="location-browser">Autour de moi</div>
         <br>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
@@ -69,8 +75,6 @@
 
 
     <script>
-    //var markers = [];
-
 
         $(document).ready(function() {
 
@@ -107,36 +111,7 @@
                 })
                 return false;
             })
-
-            // $('.storage').on('click', function() {
-            //   debugger;
-            //   //console.log('hello');
-            //     var lat = parseFloat($(this)[0].attributes[1].value);
-            //     var lng = parseFloat($(this)[0].attributes[2].value);
-            //     // debugger;
-            //     $.post('/around',{'lat':lat,'lng':lng}).done(function(data) {
-            //           // DisplayMultipleMarkers();
-            //           console.log('it works');
-            //           //debugger;
-            //           // var bounds = new google.maps.LatLngBounds();
-            //           // var map = new google.maps.Map(document.getElementById('map'), {
-            //           //     zoom: 16,
-            //           //     center: {lat: 45.750000, lng: 4.850000}
-            //           // });
-            //           for( i = 0; i < data.length; i++ ) {
-            //
-            //             var position = new google.maps.LatLng(data[i][0], data[i][1]);
-            //             bounds.extend(position);
-            //             marker = new google.maps.Marker({
-            //               map: map,
-            //               position: position,
-            //             });
-            //             map.fitBounds(bounds);
-            //             //markerArray.push(marker);
-            //           }
-            //         });
-            //     });
-            })
+        })
 
         function initMap() {
             var markerArray = [];// Array of google map marker object
@@ -161,11 +136,30 @@
               bounds = new google.maps.LatLngBounds();
               displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
             })
+
+            $('.location-browser').on('click', function() {
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                  //debugger;
+                  var lat = position.coords.latitude;
+                  var lng = position.coords.longitude;
+                  var limit = parseInt($('.storage')[0].attributes[3].value);
+                  displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+                }, function() {
+                  handleLocationError(true, map, map.getCenter());
+                });
+              } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false, map, map.getCenter());
+                //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+              }
+            })
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
-                console.log('it works');
+              debugger;
+              // Problème si on réupère qu'un seul élément
                 // numbers need to be in float
                 for( i = 0; i < ((data.length) -1); i++ ) {
                     var position = new google.maps.LatLng(parseFloat(data[i].listeERP_latitude), parseFloat(data[i].listeERP_longitude));
@@ -186,14 +180,16 @@
                     markerArray.push(marker);
                 }
                 //Keep the color for the last one that represent the location from where the user is searching
-                var position = new google.maps.LatLng(parseFloat(data[limit].listeERP_latitude), parseFloat(data[limit].listeERP_longitude));
+                var last = data.pop();
+                var position = new google.maps.LatLng(parseFloat(last.listeERP_latitude), parseFloat(last.listeERP_longitude));
                 bounds.extend(position);
                 marker = new google.maps.Marker({
                   map: map,
                   position: position,
-                  info: data[limit].liste_ERP_nom_erp,
+                  info: last.liste_ERP_nom_erp,
                 });
                 var infowindow = new google.maps.InfoWindow();
+                // add an info winwdow on each marker on a click event with the info from marker
                 google.maps.event.addListener(marker, 'click', function () {
                   infowindow.setContent(this.info);
                   infowindow.open(map, this);

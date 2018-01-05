@@ -30,48 +30,86 @@ class HomeController extends AbstractErpController
     }
 
     public function aroundAction(Request $request) {
+      // ligne en dessou a décommenter
       if ($request->isXMLHttpRequest()) {
+        //$limit = 34;
         $lat = floatval($request->get('lat'));
         $lng = floatval($request->get('lng'));
         $limit = intval($request->get('limit'));
-        $longmin = $lng - 0.003;
-        $longmax = $lng + 0.003;
-        $latmin = $lat - 0.003;
-        $latmax = $lat + 0.003;
+        //to limit the search to a certain distance:
+        // $longmin = $lng - 0.003;
+        // $longmax = $lng + 0.003;
+        // $latmin = $lat - 0.003;
+        // $latmax = $lat + 0.003;
 
-        //dump($request);die;
-        // Query looks like that:
-        // Select all from listeerp where lat < lat + 0.05 && lat > lat - 0.05 && lng < lng + 0.05 && lng > lng +0.05
         $conn = $this->getDoctrine()->getManager()
                       ->getConnection();
-        //$sql = "SELECT * FROM articles WHERE id = ? LIMIT 6";
-        $sql = "SELECT listeERP_latitude, listeERP_longitude, liste_ERP_nom_erp FROM resicadminresic.dba_listeERP
-          WHERE listeERP_longitude > ?
-          AND listeERP_longitude < ?
-          AND listeERP_latitude > ?
-          AND listeERP_latitude < ?
-          LIMIT $limit;";
+
+        // pour tester les item dans un cercle de rayon r
+        // $centre: centreX: $lat cebtreY: $lng
+        // $r = "moncul";
+        // distance au carré = (x-x0)^2 + (y-y0)^2
+        // order by distance
+        //get "limit item"
+
+
+        // $sql = "SELECT listeERP_latitude, listeERP_longitude, liste_ERP_nom_erp FROM resicadminresic.dba_listeERP
+        //   WHERE listeERP_longitude > ?
+        //   AND listeERP_longitude < ?
+        //   AND listeERP_latitude > ?
+        //   AND listeERP_latitude < ?
+        //   LIMIT $limit;";
+        //Trying with circle and distance request
+        $sql = "SELECT listeERP_latitude, listeERP_longitude, liste_ERP_nom_erp FROM resicadminresic.dba_listeERP;";
         $stmt = $conn->prepare($sql);
         // find a way to bind everything at the same time, cause it's ugly
-        $stmt->bindValue(1, $longmin);
-        $stmt->bindValue(2, $longmax);
-        $stmt->bindValue(3, $latmin);
-        $stmt->bindValue(4, $latmax);
-        //$stmt->bindValue(5, $limit);
+        // $stmt->bindValue(1, $longmin);
+        // $stmt->bindValue(2, $longmax);
+        // $stmt->bindValue(3, $latmin);
+        // $stmt->bindValue(4, $latmax);
         $stmt->execute();
-        // $markers = [];
-        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'vous êtes ici'];
-        //array_push($markers, $actualLocation);
-        $result = $stmt->fetchAll();
-        array_push($result, $actualLocation);
 
-        return new JsonResponse($result);
-        //return new JsonResponse($request);
+        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'vous êtes ici'];
+
+        $result = $stmt->fetchAll();
+
+        // Circle test
+        $rayon = 0.002;
+        $markers = []; // The array that hold every single item retrieved by query
+        // array_push($result, $actualLocation);
+        foreach ($result as $item) {
+          $ilat = floatval($item['listeERP_latitude']);
+          $ilong = floatval($item['listeERP_longitude']);
+          //dump(($ilat - $lat) ** 2);die;
+          $distanceAuCarre = (($ilat - $lat) ** 2) + (($ilong - $lng) ** 2);
+          //dump($distanceAuCarre);die;
+          $distance = sqrt($distanceAuCarre);
+          //dump($distance);die;
+          if ($distance <= $rayon) {
+            $item['distance'] = $distance;
+            array_push($markers, $item);
+          }
+        }
+        $distance = [];
+        foreach ($markers as $key => $row) {
+
+          $distance[$key] = $row['distance'];
+          //$distance['lat'] = $row['listeERP_latitude'];
+        }
+        // dump($markers);die;
+        array_multisort($distance, SORT_ASC, $markers);
+        // dump($price);die;
+        $markersSlicedWithLimit = array_slice($markers, 0, $limit, true); // The array i want to display on the map
+        //dump($markersSlicedWithLimit);die;
+        array_push($markersSlicedWithLimit, $actualLocation);
+        return new JsonResponse($markersSlicedWithLimit);
+        // End circle test
+
+        //return new JsonResponse($result);
+        //3 lignes en dessous à décommenter
       } else {
         return "Failed";
       }
-      // dump($lat);die;
-      //return $this->render('cpossibleBundle:Home:accueil.html.twig');
     }
 
     public function fetchAction ()
