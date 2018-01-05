@@ -14,7 +14,7 @@ class ERPController extends AbstractErpController
         $response->setData($erps);
         return $response;
     }
-
+/*
     public function autocomplete_adressAction(Request $request)
     {
         $entities = $this->getErpByType('listeerpNomVoie', $request->get('term'));
@@ -23,4 +23,5 @@ class ERPController extends AbstractErpController
         $response->setData($erps);
         return $response;
     }
+*/
 }
