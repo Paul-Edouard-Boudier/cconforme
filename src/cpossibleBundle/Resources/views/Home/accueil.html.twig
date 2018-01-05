@@ -17,21 +17,23 @@
                     <label for="adress"><h2>Rechercher une adresse</h2></label><br>
                     <input style="text-align: center" class="form-control" type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus><br><br>
                 </div>
-                <div class="col-12">
-                  <a href="/report/new">Signaler une adresse</a>
-                </div>
 
                 <button id="search-btn" type="submit" class="animated bounceInLeft btn btn-success btn-lg" name="button"><i class="fa fa-search" aria-hidden="true"></i>
                      Rechercher</button>
                 <br><br>
-                <button class="animated bounceInRight btn btn-danger btn-lg"><a style="color: #FFFFFF; padding: 0.5em" href="/report/new"><i class="fa fa-flag" aria-hidden="true"></i>
+                <div class="col-12">
+                  <a href="/report/new"><button class="animated bounceInRight btn btn-danger btn-lg" type="button" name="button"><i class="fa fa-flag" aria-hidden="true"></i> Signaler une adresse</button></a>
+                </div>
+                <!-- <button type ="button" class="animated bounceInRight btn btn-danger btn-lg"><a style="color: #FFFFFF; padding: 0.5em" href="/report/new"><i class="fa fa-flag" aria-hidden="true"></i>
                         Signaler une adresse</a>
-                </button>
+                </button> -->
             </form>
         </div>
-        <button class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" type="button" name="button" >Atour de ce point</button>
+        <br>
+        <br>
+        <button class="btn btn-secondary storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" type="button" name="button" >Autour de ce point</button>
         <!-- <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34">Atour de ce point</div> -->
-        <div class="location-browser">Autour de moi</div>
+        <button class="btn btn-secondary location-browser">Autour de moi</button>
         <br>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
