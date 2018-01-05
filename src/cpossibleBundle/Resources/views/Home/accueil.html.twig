@@ -149,8 +149,6 @@
 
                         var trHTML = '';
 
-                        console.log(response)
-
                         $.each(response, function (i, item) {
 
                             trHTML += '<tr><td>' + response[i].name + '</td></tr>';
@@ -167,10 +165,23 @@
 
                                 message.removeClass('alert-danger')
                                 message.addClass('alert-success')
-                                document.getElementById('message').innerHTML = " Le demandeur " + response[i].demandeur +
-                                    " s’est engagé à rendre l’établissement " + response[i].name + ", situé au " + response[i].adress +
-                                    " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " +
-                                    response[i].date + "."
+
+                                if (response[i].type === 'attestation') {
+
+                                    document.getElementById('message').innerHTML = " Le demandeur " + response[i].demandeur +
+                                        " a déclaré l’établissement " + response[i].name + ", situé au " + response[i].adress +
+                                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap."
+
+                                } else {
+
+                                    console.log('test');
+
+                                    document.getElementById('message').innerHTML = " Le demandeur " + response[i].demandeur +
+                                        " s’est engagé à rendre l’établissement " + response[i].name + ", situé au " + response[i].adress +
+                                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " +
+                                        response[i].date + "."
+
+                                }
 
                             }
 
