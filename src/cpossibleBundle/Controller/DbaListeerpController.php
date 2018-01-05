@@ -185,7 +185,7 @@ class DbaListeerpController extends Controller
                       ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
               }
             }
-            var_dump($_SESSION['request']);die;
+            //var_dump($_SESSION['request']);die;
 
 
             $dbaListeerps = $queryBuilder->getQuery();
