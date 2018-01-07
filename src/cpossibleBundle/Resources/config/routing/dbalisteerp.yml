@@ -38,3 +38,7 @@ ERP_Autocomplete_adress:
 dbalisteerp_test:
     path:     /test
     defaults: { _controller: "cpossibleBundle:Test:test"}
+
+dbalisteerp_testActivite:
+    path:     /testActivite
+    defaults: { _controller: "cpossibleBundle:Test:testActivite"}

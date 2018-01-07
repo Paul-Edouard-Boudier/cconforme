@@ -16,6 +16,35 @@
                     <label for="adress"><h2>Rechercher une adresse</h2></label><br>
                     <input style="text-align: center" class="form-control" type="text" id="adress" name="adress" placeholder="Entrez une adresse..." autofocus><br><br>
                 </div>
+                <div class="col-lg-12 col-sm-12 col-md-12 mx-auto col-12">
+                    <select name="activite" id="activite" class="form-control">
+                        <option value="Choisissez une activité">Choisissez une activité</option>
+                        <option value="Structures d’accueils personnes agées ou handicapés">Structures d’accueils personnes agées ou handicapés</option>
+                        <option value="Salles de réunions, spectacle, concert, confédérations">Salles de réunions, spectacle, concert, confédérations</option>
+                        <option value="Magasins de vente, centres commerciaux">Magasins de vente, centres commerciaux</option>
+                        <option value="Restaurants débits de boisson">Restaurants débits de boisson</option>
+                        <option value="Hotels et pensions de famille">Hotels et pensions de famille</option>
+                        <option value="Salles de danse et salles de jeux">Salles de danse et salles de jeux</option>
+                        <option value="Etablissements d’enseignement, colonies de vacances">Etablissements d’enseignement, colonies de vacances</option>
+                        <option value="Bibliothèques, centres de documentation">Bibliothèques, centres de documentation</option>
+                        <option value="Salles d’exposition">Salles d’exposition</option>
+                        <option value="Etablissements sanitaires">Etablissements sanitaires</option>
+                        <option value="Etablissements de culte">Etablissements de culte</option>
+                        <option value="Administrations, banques, bureaux">Administrations, banques, bureaux</option>
+                        <option value="Etablissements sportifs couverts">Etablissements sportifs couverts</option>
+                        <option value="Musées">Musées</option>
+                        <option value="Etablissements de plein air">Etablissements de plein air</option>
+                        <option value="Chapiteaux, tentes et structures itinérantes">Chapiteaux, tentes et structures itinérantes</option>
+                        <option value="Structures gonflables">Structures gonflables</option>
+                        <option value="Parcs de stationnement couverts">Parcs de stationnement couverts</option>
+                        <option value="Hotels-restaurants d’altitude">Hotels-restaurants d’altitude</option>
+                        <option value="Gares accessiblesau public">Gares accessiblesau public</option>
+                        <option value="Etablissements flottants, bateaux stationnaires">Etablissements flottants, bateaux stationnaires</option>
+                        <option value="Refuges de montagne">Refuges de montagne</option>
+                    </select>
+                </div>
+
+                <br>
 
                 <button id="search-btn" type="submit" class="animated bounceInLeft btn btn-success btn-lg" name="button"><i class="fa fa-search" aria-hidden="true"></i>
                      Rechercher</button>
@@ -72,7 +101,7 @@
 
         $(function() {
 
-            $('#form').on('submit', function() {
+            $('#form').change(function() {
                 var result = $('#result')
                 var message = $('#message')
                 var address = document.getElementById('adress').value
@@ -107,6 +136,83 @@
                 })
                 return false;
             })
+        })
+
+        $(function() {
+
+            $('#form').on('submit', function() {
+                var form = $('#form')
+                var message = $('#message')
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 45.750000, lng: 4.850000},
+                    zoom: 13
+                });
+                var infowindow = new google.maps.InfoWindow();
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ path('dbalisteerp_testActivite') }}",
+                    data: form.serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+
+                        document.getElementById('result').innerHTML = "";
+
+                        var trHTML = '';
+
+                        $.each(response, function (i, item) {
+
+                            trHTML += '<tr><td>' + response[i].name + ' ' + '|' + ' ' + response[i].adress + '</td></tr>';
+
+                            if (typeof response[i].latitude !== 'undefined') {
+
+                                var locations = [
+                                    [response[i].latitude, response[i].longitude],
+                                ]
+
+                            }
+
+                            var marker, o;
+
+                            for (o = 0; o <= locations.length - 1; o++) {
+
+                                console.log(locations[o])
+
+                                marker = new google.maps.Marker({
+                                    position: new google.maps.LatLng(locations[o][0], locations[o][1]),
+                                    map: map
+                                })
+
+                                google.maps.event.addListener(marker, 'click', (function(marker, o) {
+                                    return function() {
+                                        infowindow.setContent(response[i].adress + ' ');
+                                        infowindow.open(map, marker);
+                                    }
+                                })(marker, o));
+
+                            }
+
+                        })
+
+                        message.removeClass('alert alert-danger')
+                        message.addClass('alert alert-success col-lg-10 mx-auto')
+                        document.getElementById('message').innerHTML = response.length + " établissements."
+
+                        $('#result').append(trHTML);
+
+                        console.log(response);
+                        return false
+
+                    },
+                    error: function(response) {
+
+                        console.log(response);
+                        return false
+
+                    }
+                })
+                return false
+            })
+            return false
         })
 
         function initMap() {

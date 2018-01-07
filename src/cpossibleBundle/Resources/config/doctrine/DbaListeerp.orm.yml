@@ -38,6 +38,12 @@ cpossibleBundle\Entity\DbaListeerp:
         listeERP_siret:
             columns:
                 - listeERP_siret
+        listeERP_latitude:
+            columns:
+                - listeERP_latitude
+        listeERP_idx_longitude:
+            columns:
+                - listeERP_longitude
     id:
         listeerpId:
             type: integer
@@ -208,4 +214,16 @@ cpossibleBundle\Entity\DbaListeerp:
             options:
                 unsigned: false
             column: listeERP_statut
+        listeerpLongitude:
+            type: float
+            nullable: true
+            precision: 16
+            scale: 9
+            column: listeERP_longitude
+        listeerpLatitude:
+            type: float
+            nullable: true
+            precision: 16
+            scale: 9
+            column: listeERP_latitude
     lifecycleCallbacks: {  }

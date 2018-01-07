@@ -13,53 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class DbaTypeactivite
 {
     /**
-     * @return int
-     */
-    public function getTypeactiviteId()
-    {
-        return $this->typeactiviteId;
-    }
-
-    /**
-     * @param int $typeactiviteId
-     */
-    public function setTypeactiviteId($typeactiviteId)
-    {
-        $this->typeactiviteId = $typeactiviteId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeactiviteCode()
-    {
-        return $this->typeactiviteCode;
-    }
-
-    /**
-     * @param string $typeactiviteCode
-     */
-    public function setTypeactiviteCode($typeactiviteCode)
-    {
-        $this->typeactiviteCode = $typeactiviteCode;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeactiviteNom()
-    {
-        return $this->typeactiviteNom;
-    }
-
-    /**
-     * @param string $typeactiviteNom
-     */
-    public function setTypeactiviteNom($typeactiviteNom)
-    {
-        $this->typeactiviteNom = $typeactiviteNom;
-    }
-    /**
      * @var integer
      *
      * @ORM\Column(name="typeActivite_id", type="integer")

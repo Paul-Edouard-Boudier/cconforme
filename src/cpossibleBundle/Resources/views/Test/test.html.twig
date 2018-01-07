@@ -23,6 +23,31 @@
 
 <form id="form" action="" method="post">
     <input type="text" id="test" name="test">
+    <select name="activite" id="activite">
+        <option value="Choisissez une activité">Choisissez une activité</option>
+        <option value="Structures d’accueils personnes agées ou handicapés">Structures d’accueils personnes agées ou handicapés</option>
+        <option value="Salles de réunions, spectacle, concert, confédérations">Salles de réunions, spectacle, concert, confédérations</option>
+        <option value="Magasins de vente, centres commerciaux">Magasins de vente, centres commerciaux</option>
+        <option value="Restaurants débits de boisson">Restaurants débits de boisson</option>
+        <option value="Hotels et pensions de famille">Hotels et pensions de famille</option>
+        <option value="Salles de danse et salles de jeux">Salles de danse et salles de jeux</option>
+        <option value="Etablissements d’enseignement, colonies de vacances">Etablissements d’enseignement, colonies de vacances</option>
+        <option value="Bibliothèques, centres de documentation">Bibliothèques, centres de documentation</option>
+        <option value="Salles d’exposition">Salles d’exposition</option>
+        <option value="Etablissements sanitaires">Etablissements sanitaires</option>
+        <option value="Etablissements de culte">Etablissements de culte</option>
+        <option value="Administrations, banques, bureaux">Administrations, banques, bureaux</option>
+        <option value="Etablissements sportifs couverts">Etablissements sportifs couverts</option>
+        <option value="Musées">Musées</option>
+        <option value="Etablissements de plein air">Etablissements de plein air</option>
+        <option value="Chapiteaux, tentes et structures itinérantes">Chapiteaux, tentes et structures itinérantes</option>
+        <option value="Structures gonflables">Structures gonflables</option>
+        <option value="Parcs de stationnement couverts">Parcs de stationnement couverts</option>
+        <option value="Hotels-restaurants d’altitude">Hotels-restaurants d’altitude</option>
+        <option value="Gares accessiblesau public">Gares accessiblesau public</option>
+        <option value="Etablissements flottants, bateaux stationnaires">Etablissements flottants, bateaux stationnaires</option>
+        <option value="Refuges de montagne">Refuges de montagne</option>
+    </select>
     <input type="submit" id="test_submit" value="test">
 </form>
 
@@ -40,7 +65,15 @@
 
 </div>
 
+{% if response is defined %}
+
+{{ dump(response) }}
+
+{% endif %}
+
 <script>
+
+
 
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -75,8 +108,6 @@
                     document.getElementById('result').innerHTML = "";
 
                     var trHTML = '';
-
-                    console.log(response)
 
                         $.each(response, function (i, item) {
 

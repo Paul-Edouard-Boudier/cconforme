@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * DbaListeerp
  *
- * @ORM\Table(name="dba_listeERP", indexes={@ORM\Index(name="fk_dba_listeERP_user1_idx", columns={"listeERP_demandeur"}), @ORM\Index(name="fk_dba_listeERP_user2_idx", columns={"liste_ERP_nom_erp"}), @ORM\Index(name="fk_dba_listeERP_ext1_idx", columns={"listeERP_type"}), @ORM\Index(name="fk_dba_listeERP_ext2_idx", columns={"listeERP_numero_voie"}), @ORM\Index(name="fk_dba_listeERP_ext3_idx", columns={"listeERP_complement_voie"}), @ORM\Index(name="fk_dba_listeERP_ext4_idx", columns={"listeERP_nom_voie"}), @ORM\Index(name="fk_dba_listeERP_ext5_idx", columns={"listeERP_alias_nom_voie"}), @ORM\Index(name="fk_dba_listeERP_ext6_idx", columns={"listeERP_lieu_dit"}), @ORM\Index(name="fk_dba_listeERP_ext7_idx", columns={"listeERP_code_postal"}), @ORM\Index(name="fk_dba_listeERP_ext8_idx", columns={"listeERP_nom_commune"}), @ORM\Index(name="fk_dba_listeERP_ext9_idx", columns={"listeERP_departement"}), @ORM\Index(name="listeERP_siret", columns={"listeERP_siret"})})
+ * @ORM\Table(name="dba_listeERP", indexes={@ORM\Index(name="fk_dba_listeERP_user1_idx", columns={"listeERP_demandeur"}), @ORM\Index(name="fk_dba_listeERP_user2_idx", columns={"liste_ERP_nom_erp"}), @ORM\Index(name="fk_dba_listeERP_ext1_idx", columns={"listeERP_type"}), @ORM\Index(name="fk_dba_listeERP_ext2_idx", columns={"listeERP_numero_voie"}), @ORM\Index(name="fk_dba_listeERP_ext3_idx", columns={"listeERP_complement_voie"}), @ORM\Index(name="fk_dba_listeERP_ext4_idx", columns={"listeERP_nom_voie"}), @ORM\Index(name="fk_dba_listeERP_ext5_idx", columns={"listeERP_alias_nom_voie"}), @ORM\Index(name="fk_dba_listeERP_ext6_idx", columns={"listeERP_lieu_dit"}), @ORM\Index(name="fk_dba_listeERP_ext7_idx", columns={"listeERP_code_postal"}), @ORM\Index(name="fk_dba_listeERP_ext8_idx", columns={"listeERP_nom_commune"}), @ORM\Index(name="fk_dba_listeERP_ext9_idx", columns={"listeERP_departement"}), @ORM\Index(name="listeERP_siret", columns={"listeERP_siret"}), @ORM\Index(name="listeERP_latitude", columns={"listeERP_latitude"}), @ORM\Index(name="listeERP_idx_longitude", columns={"listeERP_longitude"})})
  * @ORM\Entity
  */
 class DbaListeerp
@@ -181,6 +181,20 @@ class DbaListeerp
      * @ORM\Column(name="listeERP_statut", type="integer", nullable=true)
      */
     private $listeerpStatut;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="listeERP_longitude", type="float", precision=16, scale=9, nullable=true)
+     */
+    private $listeerpLongitude;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="listeERP_latitude", type="float", precision=16, scale=9, nullable=true)
+     */
+    private $listeerpLatitude;
 
     /**
      * @return int
@@ -566,6 +580,37 @@ class DbaListeerp
         $this->listeerpStatut = $listeerpStatut;
     }
 
+    /**
+     * @return float
+     */
+    public function getListeerpLongitude()
+    {
+        return $this->listeerpLongitude;
+    }
+
+    /**
+     * @param float $listeerpLongitude
+     */
+    public function setListeerpLongitude($listeerpLongitude)
+    {
+        $this->listeerpLongitude = $listeerpLongitude;
+    }
+
+    /**
+     * @return float
+     */
+    public function getListeerpLatitude()
+    {
+        return $this->listeerpLatitude;
+    }
+
+    /**
+     * @param float $listeerpLatitude
+     */
+    public function setListeerpLatitude($listeerpLatitude)
+    {
+        $this->listeerpLatitude = $listeerpLatitude;
+    }
 
 }
 
