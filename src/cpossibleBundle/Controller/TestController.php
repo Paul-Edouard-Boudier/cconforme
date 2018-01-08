@@ -477,7 +477,9 @@ class TestController extends AbstractController
 
                     if (isset($result['activite'])) {
 
-                        if ($result['activite'] == $activite) {
+                        $use = explode("/", $result['activite']);
+
+                        if ($use[0] == $activite) {
                             $res[] = $result;
                         }
 
