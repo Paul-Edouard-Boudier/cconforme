@@ -291,13 +291,16 @@ class DbaListeerpController extends Controller
                 $dbaListeerp = new Dbalisteerp();
                 $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
                 $form->handleRequest($request);
-
                 if ($form->isSubmitted() && $form->isValid()) {
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($dbaListeerp);
-                    $em->flush();
-
-                    return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                  $types = "";
+                  foreach ($dbaListeerp->getListeerpType() as $key => $type) {
+                    $types .= $type."/";
+                  }
+                  $dbaListeerp->setListeerpType($types);
+                  $em = $this->getDoctrine()->getManager();
+                  $em->persist($dbaListeerp);
+                  $em->flush();
+                  return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
                 }
 
                 return $this->render('dbalisteerp/new.html.twig', array(
