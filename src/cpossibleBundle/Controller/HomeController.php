@@ -75,6 +75,30 @@ class HomeController extends AbstractErpController
         return "Failed";
       }
     }
+    // Function that display all erp that the user want to see
+    public function search_listAction(Request $request) {
+      if ($request->isXMLHttpRequest()) {
+        //dump($request);die;
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+        $queryBuilder
+            ->andWhere('dba.listeerpNomCommune LIKE :Commune')
+            ->andWhere('dba.listeErpNomErp LIKE :Nom')
+            ->setParameter('Commune', '%' . $request->get('commune') . '%' )
+            ->setParameter('Nom', '%' . $request->get('nom') . '%');
+        $result = $queryBuilder->getQuery();
+        //dump($result);die;
+        $erps = $result->getArrayResult();
+        //dump($erps);die;
+        return new JsonResponse($erps);
+      }
+      else {
+        return "Failed";
+      }
+      // return $this->render('cpossibleBundle:Home:test.html.twig', array(
+      //     'erps' => $erps,
+      // ));
+    }
 
     public function fetchAction ()
     {

@@ -35,6 +35,18 @@
         <!-- <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34">Atour de ce point</div> -->
         <button class="btn btn-secondary location-browser">Autour de moi</button>
         <br>
+        <!-- <div class="search-bar">
+          <label for="">Cherchez un/des erp </label>
+          <input type="text" name="commune" value="" placeholder="nom de commune">
+          <input type="text" name="nom" value="" placeholder="nom du bâtiment">
+          <button type="button" class="searchitems" name="button">Recherchez</button>
+        </div> -->
+        <form class="searchitems" action="" method="post">
+          <label for="">Critères de recherches</label>
+          <input type="text" name="commune" value="" placeholder="nom de commune" required>
+          <input type="text" name="nom" value="" placeholder="nom du bâtiment" required>
+          <input type="submit" name="submit" value="">
+        </form>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
                 <div id="result" class="alert"></div>
@@ -105,7 +117,31 @@
                 })
                 return false;
             })
-        })
+
+            $('.searchitems').on('submit', function(event) {
+              event.preventDefault();
+              var commune = $(this)[0][0].value;
+              var nom = $(this)[0][1].value;
+              debugger;
+              //$.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
+              $.post('/search_list',{'commune':commune,'nom':nom}).done(function(data) {
+                document.getElementById('result').innerHTML = "";
+                  var result = '';
+              //     $.each(data, function (i, item) {
+              //         result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
+              //         if (typeof data[i].latitude !== 'undefined') {
+              //             var locations = [
+              //                 [data[i].latitude, data[i].longitude],
+              //             ]
+              //         }
+              //   // debugger;
+              // })
+                for (var i = 0; i < data.length; i++) {
+                  result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
+                }
+              })
+            })
+          })
 
         function initMap() {
             var markerArray = [];// Array of google map marker object

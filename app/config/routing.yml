@@ -24,6 +24,7 @@ fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix: /profile
 
+# I'm trying to setup all routes to Home controller as routes that are interacting with the homepage
 cpossible_home:
     path: /accueil
     defaults: { _controller: cpossibleBundle:Home:accueil }
@@ -40,6 +41,11 @@ cpossible_around:
     path: /around
     defaults: { _controller: cpossibleBundle:Home:around }
     methods: POST
+
+cpossible_list:
+  path: /search_list
+  defaults: { _controller: cpossibleBundle:Home:search_list}
+  methods: POST
 
 
 report_index:
@@ -67,16 +73,3 @@ report_delete:
 annot:
     resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
     type:     annotation
-
-# report_index:
-#     path:     /report
-#     defaults: { _controller: cpossibleBundle:Report:index }
-#
-# report_form:
-#     path: /report/new
-#     defaults: { _controller: cpossibleBundle:Report:form }
-#
-# report_new:
-#     path: /report/insert
-#     defaults: { _controller: cpossibleBundle:Report:insertOne }
-#     methods: POST

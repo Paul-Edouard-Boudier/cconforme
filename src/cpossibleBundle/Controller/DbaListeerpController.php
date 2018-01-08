@@ -185,7 +185,6 @@ class DbaListeerpController extends Controller
                       ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
               }
             }
-            //var_dump($_SESSION['request']);die;
 
 
             $dbaListeerps = $queryBuilder->getQuery();
@@ -294,7 +293,7 @@ class DbaListeerpController extends Controller
                 if ($form->isSubmitted() && $form->isValid()) {
                   $types = "";
                   foreach ($dbaListeerp->getListeerpType() as $key => $type) {
-                    $types .= $type."/";
+                    $types .= $type.",";
                   }
                   $dbaListeerp->setListeerpType($types);
                   $em = $this->getDoctrine()->getManager();
