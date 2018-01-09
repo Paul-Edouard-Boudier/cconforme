@@ -129,7 +129,6 @@ class HomeController extends AbstractErpController
         $em = $this->getDoctrine()->getManager();
         $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
         $typesErp = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
-        // dump($typesErp);die;
         return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
             'dbaListeerps' => $dbaListeerps,
             'typesErp' => $typesErp,

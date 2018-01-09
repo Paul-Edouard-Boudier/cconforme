@@ -21,33 +21,36 @@
                 <button id="search-btn" type="submit" class="animated bounceInLeft btn btn-success btn-lg" name="button"><i class="fa fa-search" aria-hidden="true"></i>
                      Rechercher</button>
                 <br><br>
-                <!-- <div class="col-12">
-                  <a href="/report/new"><button class="animated bounceInRight btn btn-danger btn-lg" type="button" name="button"><i class="fa fa-flag" aria-hidden="true"></i> Signaler une adresse</button></a>
-                </div> -->
             </form>
         </div>
         <br>
         <br>
-        <br>
-        <!-- <div class="search-bar">
-          <label for="">Cherchez un/des erp </label>
-          <input type="text" name="commune" value="" placeholder="nom de commune">
-          <input type="text" name="nom" value="" placeholder="nom du bâtiment">
-          <button type="button" class="searchitems" name="button">Recherchez</button>
-        </div> -->
-        <!-- ADD required if we need  -->
-        <form class="searchitems" action="" method="post">
-          <label for="">Critères de recherches</label>
-          <input type="text" name="commune" value="" placeholder="nom de commune" >
-          <input type="text" name="nom" value="" placeholder="nom du bâtiment" >
-          <select class="" name="type">
-            <option value="null">Non précisé</option>
-            {% for type in typesErp %}
+        <a href="#" class="criteres">
+          Autres critères de recherche
+        </a>
+        <div class="col-lg-6 col-sm-8 col-md-8 mx-auto col-12">
+          <form class="searchitems hidden" action="" method="post">
+            <div class="form-row">
+              <div class="form-group col-md-5">
+                <label for="commune">Nom de commune</label>
+                <input type="text" name="commune" value="" placeholder="Lyon">
+              </div>
+              <div class="form-group col-md-5 offset-md-1">
+                <label for="nom">Nom du bâtiment</label>
+                <input type="text" name="nom" value="" placeholder="nom du bâtiment" >
+              </div>
+            </div>
+            <label for="">Type de bâtiment</label>
+            <select class="form-control" name="type">
+              <option value="null">Non précisé</option>
+              {% for type in typesErp %}
               <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
-            {% endfor %}
-          </select>
-          <input type="submit" name="submit" value="Recherche avec ces critères">
-        </form>
+              {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary" name="button" value="submit">Recherche avec ces critères</button>
+            <!-- <input type="submit" name="submit" value="Recherche avec ces critères"> -->
+          </form>
+        </div>
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
         <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
         <div class="row">
@@ -128,61 +131,19 @@
                 return false;
             })
 
-            $('.searchitems').on('submit', function(event) {
-              event.preventDefault();
-              var commune = $(this)[0][0].value;
-              var nom = $(this)[0][1].value;
-              var type = $(this)[0][2].value;
-              // debugger;
-              var result = $('#result')
-              var message = $('#message')
-              $.post('/search_list',{'commune':commune,'nom':nom, 'type':type}).done(function(data) {
-                document.getElementById('result').innerHTML = "";
-                var result = '';
-                //debugger;
-              // /!\ A MODIFIER SI ON VEUT DISPLAY LES MARKERS A CHAQUE FOIS /!\
-
-              // if (typeof data[i].latitude !== 'undefined') {
-              //    var locations = [
-              //        [data[i].latitude, data[i].longitude],
-              //    ]
-              // }
-              // var marker, o
-              // for (o = 0; o <= locations.length - 1; o++) {
-              //    console.log(locations[o])
-              //    marker = new google.maps.Marker({
-              //        position: new google.maps.LatLng(locations[o][0], locations[o][1]),
-              //        map: map
-              //    })
-              //    google.maps.event.addListener(marker, 'click', (function(marker, o) {
-              //        return function() {
-              //            infowindow.setContent(data[i].adress + ' ');
-              //            infowindow.open(map, marker);
-              //        }
-              //    })(marker, o));
-              // }
-
-              // /!\ FIN MODIFICATION /!\
-
-                for (var i = 0; i < data.length; i++) {
-                  result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
-                }
-                message.removeClass('alert alert-danger')
-                message.addClass('alert alert-success col-lg-10 mx-auto')
-                document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche."
-                $('#result').append(result);
-              })
-            })
+            var isBtnClicked = 0;
+            $('.criteres').click(function(e){
+                e.preventDefault();
+                isBtnClicked = !isBtnClicked;
+                isBtnClicked ? $('.criteres').html('Réduire') : $('.criteres').html('Autres critères');
+                $('.searchitems').toggle();
+                clearFields();
+            });
+            // $('.criteres').on('click', function() {
+            //   $('.searchitems').fadeIn("slow");
+            //   $('.searchitems').removeClass('hidden');
+            // })
           })
-
-          var chicago = {lat: 41.85, lng: -87.65};
-
-          /**
-           * The CenterControl adds a control to the map that recenters the map on
-           * Chicago.
-           * This constructor takes the control DIV as an argument.
-           * @constructor
-           */
 
         function initMap() {
 
@@ -250,55 +211,31 @@
                 document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                 document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
             });
-            // $('.storage').on('click', function() {
-            //   var lat = parseFloat($('this')[0].attributes[1].value);
-            //   var lng = parseFloat($('this')[0].attributes[2].value);
-            //   var limit = parseInt($('this')[0].attributes[3].value);
-            //   for (var i = 0; i < markerArray.length; i++) {
-            //     markerArray[i].setMap(null);
-            //   }
-            //   markerArray = [];
-            //   bounds = new google.maps.LatLngBounds();
-            //   displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-            // })
-            //
-            // $('.location-browser').on('click', function() {
-            //   if (navigator.geolocation) {
-            //     navigator.geolocation.getCurrentPosition(function(position) {
-            //       // get current position
-            //       var lat = position.coords.latitude;
-            //       var lng = position.coords.longitude;
-            //       var limit = parseInt($('.storage')[0].attributes[3].value);
-            //       for (var i = 0; i < markerArray.length; i++) {
-            //         markerArray[i].setMap(null);
-            //       }
-            //       markerArray = [];
-            //       bounds = new google.maps.LatLngBounds();
-            //       displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-            //     }, function() {
-            //       handleLocationError(true, map, map.getCenter());
-            //     });
-            //   } else {
-            //     // Browser doesn't support Geolocation
-            //     handleLocationError(false, map, map.getCenter());
-            //     //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-            //   }
-            // })
 
             var aroundMeControlDiv = document.createElement('div');
             var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
             aroundMeControlDiv.index = 1;
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(aroundMeControlDiv);
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(aroundMeControlDiv);
 
             var aroundThisLocationDiv = document.createElement('div');
             var aroundThisLocationControl = new AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray);
-            aroundThisLocationDiv.index = 1;
-            map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(aroundThisLocationDiv);
+            aroundThisLocationDiv.index = 2;
+            map.controls[google.maps.ControlPosition.LEFT_TOP].push(aroundThisLocationDiv);
 
             var reportAdressControlDiv = document.createElement('div');
             var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
-            reportAdressControlDiv.index = 1;
-            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(reportAdressControlDiv);
+            reportAdressControlDiv.index = 3;
+            map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(reportAdressControlDiv);
+
+            $('.searchitems').on('submit', function(event) {
+              event.preventDefault();
+              var commune = $(this)[0][0].value;
+              var nom = $(this)[0][1].value;
+              var type = $(this)[0][2].value;
+              var result = $('#result');
+              var message = $('#message');
+              search_criteria(commune, nom, type, map, bounds, markerArray, message);
+            })
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
@@ -495,5 +432,86 @@
           });
 
         }
+
+        function search_criteria(commune, nom, type, map, bounds, markerArray, message) {
+          $.post('/search_list',{'commune':commune,'nom':nom, 'type':type}).done(function(data) {
+            //debugger;
+            document.getElementById('result').innerHTML = "";
+            var result = '';
+            for (var i = 0; i < markerArray.length; i++) {
+              markerArray[i].setMap(null);
+            }
+            markerArray = [];
+          // var locations = [];
+            for (var i = 0; i < data.length; i++) {
+              // debugger;
+              result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
+
+              if (parseFloat(data[i].listeerpLatitude) != 0) {
+                // console.log(data[i]);
+                var position = new google.maps.LatLng(parseFloat(data[i].listeerpLatitude), parseFloat(data[i].listeerpLongitude));
+
+                // // extends bounds of the map to the position of the marker
+                bounds.extend(position);
+                //
+                var marker = new google.maps.Marker({
+                  map: map,
+                  position: position,
+                  //icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                  info: data[i].listeErpNomErp,
+                });
+                // // extends the map to fit bounds so we have every marker displayed on the map
+                map.fitBounds(bounds);
+                // //foreach marker, create an event that open a window with the name of the erp (through info)
+                var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, 'click', function () {
+                  infowindow.setContent(this.info);
+                  infowindow.open(map, this);
+                });
+                markerArray.push(marker);
+              }
+            }
+          //debugger;
+          message.removeClass('alert alert-danger')
+          message.addClass('alert alert-success col-lg-10 mx-auto')
+          document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche."
+          $('#result').append(result);
+
+          })
+        }
+        // $('.storage').on('click', function() {
+        //   var lat = parseFloat($('this')[0].attributes[1].value);
+        //   var lng = parseFloat($('this')[0].attributes[2].value);
+        //   var limit = parseInt($('this')[0].attributes[3].value);
+        //   for (var i = 0; i < markerArray.length; i++) {
+        //     markerArray[i].setMap(null);
+        //   }
+        //   markerArray = [];
+        //   bounds = new google.maps.LatLngBounds();
+        //   displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+        // })
+        //
+        // $('.location-browser').on('click', function() {
+        //   if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(function(position) {
+        //       // get current position
+        //       var lat = position.coords.latitude;
+        //       var lng = position.coords.longitude;
+        //       var limit = parseInt($('.storage')[0].attributes[3].value);
+        //       for (var i = 0; i < markerArray.length; i++) {
+        //         markerArray[i].setMap(null);
+        //       }
+        //       markerArray = [];
+        //       bounds = new google.maps.LatLngBounds();
+        //       displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+        //     }, function() {
+        //       handleLocationError(true, map, map.getCenter());
+        //     });
+        //   } else {
+        //     // Browser doesn't support Geolocation
+        //     handleLocationError(false, map, map.getCenter());
+        //     //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+        //   }
+        // })
     </script>
 {% endblock %}

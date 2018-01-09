@@ -51,7 +51,12 @@ class ReportController extends Controller
       $em->persist($report);
       $em->flush();
 
-      return $this->render('cpossibleBundle:Home:accueil.html.twig');
+      $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+      $typesErp = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+      return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+          'dbaListeerps' => $dbaListeerps,
+          'typesErp' => $typesErp,
+      ));
     }
 
     public function deleteOneAction($id) {

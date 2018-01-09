@@ -340,6 +340,21 @@ ul.ui-autocomplete{
 
 /* ************** /!\ FIN ERP forumlaire index /!\ ************** */
 
+/* ************** /!\ Formulaire avec select + options /!\ ************** */
+.searchitems {
+ display:block;
+ transition: all .2s ease-out;
+}
+
+.searchitems input {
+  width: 100%;
+}
+
+.hidden {
+ display:none;
+}
+
+/* ************** /!\ FIN Formulaire avec select + options /!\ ************** */
 /* ********** /!\ FOOTER /!\ ********* */
 .footer {
   /* position: absolute;
