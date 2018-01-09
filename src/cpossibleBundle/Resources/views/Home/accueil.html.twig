@@ -212,6 +212,7 @@
                 document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
             });
 
+            // Those are buttons on the google map:
             var aroundMeControlDiv = document.createElement('div');
             var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
             aroundMeControlDiv.index = 1;
@@ -227,19 +228,40 @@
             reportAdressControlDiv.index = 3;
             map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(reportAdressControlDiv);
 
+            // selector for the form that hold 3 criteria
             $('.searchitems').on('submit', function(event) {
               event.preventDefault();
               var commune = $(this)[0][0].value;
               var nom = $(this)[0][1].value;
               var type = $(this)[0][2].value;
-              var result = $('#result');
-              var message = $('#message');
-              search_criteria(commune, nom, type, map, bounds, markerArray, message);
+
+              if ((type == "null") && ((commune || nom) == "")) {
+                return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères !";
+              }
+              // if ((commune || nom) == "") {
+              //   return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères !";
+              // }
+              // else if ((type != null) && ((commune && nom ) = "")) {
+              //   return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères !";
+              // }
+
+              // var result = $('#result');
+              // var message = $('#message');
+              // for (var i = 0; i < markerArray.length; i++) {
+              //   markerArray[i].setMap(null);
+              // }
+              // markerArray = [];
+              // search_criteria(commune, nom, type, map, bounds, markerArray, message);
             })
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
+            // for (var i = 0; i < markerArray.length; i++) {
+            //   markerArray[i].setMap(null);
+            // }
+            // markerArray = [];
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
+
                 // numbers need to be in float
                 // iterate over data that is rendered by the controller
                 for( i = 0; i < ((data.length) -1); i++ ) {
@@ -438,17 +460,11 @@
             //debugger;
             document.getElementById('result').innerHTML = "";
             var result = '';
-            for (var i = 0; i < markerArray.length; i++) {
-              markerArray[i].setMap(null);
-            }
-            markerArray = [];
-          // var locations = [];
             for (var i = 0; i < data.length; i++) {
-              // debugger;
               result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
 
+              // If the erp has latitude and long in ddb we take it, otherise we don't display it on the map
               if (parseFloat(data[i].listeerpLatitude) != 0) {
-                // console.log(data[i]);
                 var position = new google.maps.LatLng(parseFloat(data[i].listeerpLatitude), parseFloat(data[i].listeerpLongitude));
 
                 // // extends bounds of the map to the position of the marker
