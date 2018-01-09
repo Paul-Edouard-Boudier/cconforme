@@ -14,8 +14,11 @@ class HomeController extends AbstractErpController
     {
         $em = $this->getDoctrine()->getManager();
         $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+        $typesErp = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+        dump($typesErp);die;
         return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
             'dbaListeerps' => $dbaListeerps,
+            'typesErp' => $typesErp,
         ));
     }
 
@@ -79,6 +82,7 @@ class HomeController extends AbstractErpController
     public function search_listAction(Request $request) {
       if ($request->isXMLHttpRequest()) {
         //dump($request);die;
+        //dump($request->get('type'));die;
         $em = $this->getDoctrine()->getManager();
         $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
         $queryBuilder
@@ -86,18 +90,18 @@ class HomeController extends AbstractErpController
             ->andWhere('dba.listeErpNomErp LIKE :Nom')
             ->setParameter('Commune', '%' . $request->get('commune') . '%' )
             ->setParameter('Nom', '%' . $request->get('nom') . '%');
+        if ($request->get('type') !== 'null') {
+          //dump(true);die;
+          $queryBuilder->andWhere('dba.listeerpType LIKE :Type')
+            ->setParameter('Type', '%' . $request->get('type') . '%');
+        }
         $result = $queryBuilder->getQuery();
-        //dump($result);die;
         $erps = $result->getArrayResult();
-        //dump($erps);die;
         return new JsonResponse($erps);
       }
       else {
         return "Failed";
       }
-      // return $this->render('cpossibleBundle:Home:test.html.twig', array(
-      //     'erps' => $erps,
-      // ));
     }
 
     public function fetchAction ()
@@ -122,8 +126,14 @@ class HomeController extends AbstractErpController
             $res->setData($response);
             return $res;
         }
-
-        return $this->render('cpossibleBundle:Home:accueil.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+        $typesErp = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+        // dump($typesErp);die;
+        return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+            'dbaListeerps' => $dbaListeerps,
+            'typesErp' => $typesErp,
+        ));
 
     }
 

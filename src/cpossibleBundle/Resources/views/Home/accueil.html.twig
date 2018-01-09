@@ -21,19 +21,13 @@
                 <button id="search-btn" type="submit" class="animated bounceInLeft btn btn-success btn-lg" name="button"><i class="fa fa-search" aria-hidden="true"></i>
                      Rechercher</button>
                 <br><br>
-                <div class="col-12">
+                <!-- <div class="col-12">
                   <a href="/report/new"><button class="animated bounceInRight btn btn-danger btn-lg" type="button" name="button"><i class="fa fa-flag" aria-hidden="true"></i> Signaler une adresse</button></a>
-                </div>
-                <!-- <button type ="button" class="animated bounceInRight btn btn-danger btn-lg"><a style="color: #FFFFFF; padding: 0.5em" href="/report/new"><i class="fa fa-flag" aria-hidden="true"></i>
-                        Signaler une adresse</a>
-                </button> -->
+                </div> -->
             </form>
         </div>
         <br>
         <br>
-        <button class="btn btn-secondary storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" type="button" name="button" >Autour de ce point</button>
-        <!-- <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34">Atour de ce point</div> -->
-        <button class="btn btn-secondary location-browser">Autour de moi</button>
         <br>
         <!-- <div class="search-bar">
           <label for="">Cherchez un/des erp </label>
@@ -41,17 +35,33 @@
           <input type="text" name="nom" value="" placeholder="nom du bâtiment">
           <button type="button" class="searchitems" name="button">Recherchez</button>
         </div> -->
+        <!-- ADD required if we need  -->
         <form class="searchitems" action="" method="post">
           <label for="">Critères de recherches</label>
-          <input type="text" name="commune" value="" placeholder="nom de commune" required>
-          <input type="text" name="nom" value="" placeholder="nom du bâtiment" required>
-          <input type="submit" name="submit" value="">
+          <input type="text" name="commune" value="" placeholder="nom de commune" >
+          <input type="text" name="nom" value="" placeholder="nom du bâtiment" >
+          <select class="" name="type">
+            <option value="null">Non précisé</option>
+            {% for type in typesErp %}
+              <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
+            {% endfor %}
+          </select>
+          <input type="submit" name="submit" value="Recherche avec ces critères">
         </form>
+        <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
+        <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
-                <div id="result" class="alert"></div>
+                <div id="message" class="alert"></div>
             </div>
             <div class="col-10 mx-auto" id="map"></div>
+            <br><br>
+            <div class="col-11 col-lg-10 mx-auto">
+            <table style="margin-top: 20px" class="col-lg-12 table-bordered table-striped" id="result" border='1'>
+                <tr>
+                </tr>
+            </table>
+            </div>
         </div>
 
         <br>
@@ -122,34 +132,69 @@
               event.preventDefault();
               var commune = $(this)[0][0].value;
               var nom = $(this)[0][1].value;
-              debugger;
-              //$.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
-              $.post('/search_list',{'commune':commune,'nom':nom}).done(function(data) {
+              var type = $(this)[0][2].value;
+              // debugger;
+              var result = $('#result')
+              var message = $('#message')
+              $.post('/search_list',{'commune':commune,'nom':nom, 'type':type}).done(function(data) {
                 document.getElementById('result').innerHTML = "";
-                  var result = '';
-              //     $.each(data, function (i, item) {
-              //         result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
-              //         if (typeof data[i].latitude !== 'undefined') {
-              //             var locations = [
-              //                 [data[i].latitude, data[i].longitude],
-              //             ]
-              //         }
-              //   // debugger;
-              // })
+                var result = '';
+                //debugger;
+              // /!\ A MODIFIER SI ON VEUT DISPLAY LES MARKERS A CHAQUE FOIS /!\
+
+              // if (typeof data[i].latitude !== 'undefined') {
+              //    var locations = [
+              //        [data[i].latitude, data[i].longitude],
+              //    ]
+              // }
+              // var marker, o
+              // for (o = 0; o <= locations.length - 1; o++) {
+              //    console.log(locations[o])
+              //    marker = new google.maps.Marker({
+              //        position: new google.maps.LatLng(locations[o][0], locations[o][1]),
+              //        map: map
+              //    })
+              //    google.maps.event.addListener(marker, 'click', (function(marker, o) {
+              //        return function() {
+              //            infowindow.setContent(data[i].adress + ' ');
+              //            infowindow.open(map, marker);
+              //        }
+              //    })(marker, o));
+              // }
+
+              // /!\ FIN MODIFICATION /!\
+
                 for (var i = 0; i < data.length; i++) {
                   result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
                 }
+                message.removeClass('alert alert-danger')
+                message.addClass('alert alert-success col-lg-10 mx-auto')
+                document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche."
+                $('#result').append(result);
               })
             })
           })
 
+          var chicago = {lat: 41.85, lng: -87.65};
+
+          /**
+           * The CenterControl adds a control to the map that recenters the map on
+           * Chicago.
+           * This constructor takes the control DIV as an argument.
+           * @constructor
+           */
+
         function initMap() {
+
+            // aroundMeButton.index = 1; // Idk the f* is this
+            // aroundThisLocationButton.index = 1;
             var markerArray = [];// Array of google map marker object
             var bounds = new google.maps.LatLngBounds();
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 45.750000, lng: 4.850000},
                 zoom: 13
             });
+
             var input = /** @type {!HTMLInputElement} */(
                 document.getElementById('adress'));
 
@@ -160,7 +205,6 @@
                 var geocoder = new google.maps.Geocoder();
                 geocodeAddress(geocoder, map, markerArray);
             });
-
 
             var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
@@ -206,46 +250,55 @@
                 document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                 document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
             });
+            // $('.storage').on('click', function() {
+            //   var lat = parseFloat($('this')[0].attributes[1].value);
+            //   var lng = parseFloat($('this')[0].attributes[2].value);
+            //   var limit = parseInt($('this')[0].attributes[3].value);
+            //   for (var i = 0; i < markerArray.length; i++) {
+            //     markerArray[i].setMap(null);
+            //   }
+            //   markerArray = [];
+            //   bounds = new google.maps.LatLngBounds();
+            //   displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+            // })
+            //
+            // $('.location-browser').on('click', function() {
+            //   if (navigator.geolocation) {
+            //     navigator.geolocation.getCurrentPosition(function(position) {
+            //       // get current position
+            //       var lat = position.coords.latitude;
+            //       var lng = position.coords.longitude;
+            //       var limit = parseInt($('.storage')[0].attributes[3].value);
+            //       for (var i = 0; i < markerArray.length; i++) {
+            //         markerArray[i].setMap(null);
+            //       }
+            //       markerArray = [];
+            //       bounds = new google.maps.LatLngBounds();
+            //       displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+            //     }, function() {
+            //       handleLocationError(true, map, map.getCenter());
+            //     });
+            //   } else {
+            //     // Browser doesn't support Geolocation
+            //     handleLocationError(false, map, map.getCenter());
+            //     //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+            //   }
+            // })
 
+            var aroundMeControlDiv = document.createElement('div');
+            var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
+            aroundMeControlDiv.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(aroundMeControlDiv);
 
+            var aroundThisLocationDiv = document.createElement('div');
+            var aroundThisLocationControl = new AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray);
+            aroundThisLocationDiv.index = 1;
+            map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(aroundThisLocationDiv);
 
-
-
-
-            $('.storage').on('click', function() {
-              var lat = parseFloat($(this)[0].attributes[1].value);
-              var lng = parseFloat($(this)[0].attributes[2].value);
-              var limit = parseInt($(this)[0].attributes[3].value);
-              for (var i = 0; i < markerArray.length; i++) {
-                markerArray[i].setMap(null);
-              }
-              markerArray = [];
-              bounds = new google.maps.LatLngBounds();
-              displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-            })
-
-            $('.location-browser').on('click', function() {
-              if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                  // get current position
-                  var lat = position.coords.latitude;
-                  var lng = position.coords.longitude;
-                  var limit = parseInt($('.storage')[0].attributes[3].value);
-                  for (var i = 0; i < markerArray.length; i++) {
-                    markerArray[i].setMap(null);
-                  }
-                  markerArray = [];
-                  bounds = new google.maps.LatLngBounds();
-                  displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-                }, function() {
-                  handleLocationError(true, map, map.getCenter());
-                });
-              } else {
-                // Browser doesn't support Geolocation
-                handleLocationError(false, map, map.getCenter());
-                //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-              }
-            })
+            var reportAdressControlDiv = document.createElement('div');
+            var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
+            reportAdressControlDiv.index = 1;
+            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(reportAdressControlDiv);
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
@@ -321,148 +374,126 @@
                 }
             });
         }
-    </script>
 
 
+        function AroundMeControl(aroundMeControlDiv, bounds, map, markerArray) {
 
+          // Set CSS for the aroundmecontrol border.
+          var aroundMeUI = document.createElement('div');
+          aroundMeUI.style.backgroundColor = '#fff';
+          aroundMeUI.style.border = '2px solid #fff';
+          aroundMeUI.style.borderRadius = '3px';
+          aroundMeUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          aroundMeUI.style.cursor = 'pointer';
+          aroundMeUI.style.marginBottom = '22px';
+          aroundMeUI.style.textAlign = 'center';
+          aroundMeUI.title = 'Cliquez pour savoir quel(s) erp(s) est(sont) à proximité(s) de vous';
+          aroundMeControlDiv.appendChild(aroundMeUI);
 
-    <!-- <div class="" id="warnings-panel"></div> -->
+          // Set CSS for the control interior.
+          var aroundMeText = document.createElement('div');
+          aroundMeText.style.color = 'rgb(25,25,25)';
+          aroundMeText.style.fontFamily = 'Roboto,Arial,sans-serif';
+          aroundMeText.style.fontSize = '12px';
+          aroundMeText.style.lineHeight = '30px';
+          aroundMeText.style.paddingLeft = '5px';
+          aroundMeText.style.paddingRight = '5px';
+          aroundMeText.innerHTML = 'Autour de moi';
+          aroundMeUI.appendChild(aroundMeText);
 
-<!-- *************** SCRIPT RECUPERÉ ************** -->
-    <!-- <script>
-
-        function initMap() {
-          var geocoder = new google.maps.Geocoder();
-          var directionsService = new google.maps.DirectionsService;
-          var directionsDisplay = new google.maps.DirectionsRenderer;
-          var map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 14,
-              center: {lat: 45.750000, lng: 4.850000}
-          });
-          var bounds = new google.maps.LatLngBounds();
-          var markers = []; // array of position
-          var markerArray = []; // array of marker object
-          var stepDisplay = new google.maps.InfoWindow;
-          directionsDisplay.setMap(map);
-          document.getElementById('search-btn').addEventListener('click', function() {
-              geocodeAddress(geocoder, map, markerArray);
-          });
-          $('.directions-btn').on('click', function() {
-            getAndDisplayDirection(map, bounds, markers, markerArray);
-          })
-          $('.route').on('click', function() {
-             calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map)
-          })
-          //******************************
-          // *** INITIALISAITON ***
-          // *** END INITIALISATION ***
-           //  document.getElementById('search-btn').addEventListener('click', function() {
-           //     geocodeAddress(geocoder, map, markers);
-           // });
-        }
-        function geocodeAddress(geocoder, resultsMap, markerArray) {
-            var address = document.getElementById('adress').value;
-            geocoder.geocode({'address': address}, function(results, status) {
-                if (status === 'OK') {
-                  for (var i = 0; i < markerArray.length; i++) {
-                    markerArray[i].setMap(null);
-                  }
-                  markerArray = [];
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: resultsMap,
-                        position: results[0].geometry.location,
-                    });
-                    markerArray.push(marker);
-                    // console.log(markerArray);
-                } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
+          // Setup the click event listeners: locate the user
+          aroundMeUI.addEventListener('click', function() {
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+                // get current position
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                var limit = parseInt($('.storage')[0].attributes[3].value);
+                for (var i = 0; i < markerArray.length; i++) {
+                  markerArray[i].setMap(null);
                 }
-            });
+                markerArray = [];
+                bounds = new google.maps.LatLngBounds();
+                displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+              }, function() {
+                handleLocationError(true, map, map.getCenter());
+              });
+              } else {
+              // Browser doesn't support Geolocation
+              handleLocationError(false, map, map.getCenter());
+              //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+              }
+          });
+
         }
-        function calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map) {
-          if (markerArray.length > 0) {
-            // First, remove any existing markers from the map.
+
+        function AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray) {
+
+          // Set CSS for the control border.
+          var aroundThisLocationUI = document.createElement('div');
+          aroundThisLocationUI.style.backgroundColor = '#fff';
+          aroundThisLocationUI.style.border = '2px solid #fff';
+          aroundThisLocationUI.style.borderRadius = '3px';
+          aroundThisLocationUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          aroundThisLocationUI.style.cursor = 'pointer';
+          aroundThisLocationUI.style.marginBottom = '22px';
+          aroundThisLocationUI.style.textAlign = 'center';
+          aroundThisLocationUI.title = 'Cliquez pour savoir quel(s) erp(s) est(sont) à proximité(s) de ce point';
+          aroundThisLocationDiv.appendChild(aroundThisLocationUI);
+
+          // Set CSS for the control interior.
+          var aroundThisLocationText = document.createElement('div');
+          aroundThisLocationText.style.color = 'rgb(25,25,25)';
+          aroundThisLocationText.style.fontFamily = 'Roboto,Arial,sans-serif';
+          aroundThisLocationText.style.fontSize = '12px';
+          aroundThisLocationText.style.lineHeight = '30px';
+          aroundThisLocationText.style.paddingLeft = '5px';
+          aroundThisLocationText.style.paddingRight = '5px';
+          aroundThisLocationText.innerHTML = 'Autour de ce point';
+          aroundThisLocationUI.appendChild(aroundThisLocationText);
+
+          // Setup the click event listeners: geolocate the user
+          aroundThisLocationUI.addEventListener('click', function() {
+            var lat = parseFloat($('.storage')[0].attributes[1].value);
+            var lng = parseFloat($('.storage')[0].attributes[2].value);
+            var limit = parseInt($('.storage')[0].attributes[3].value);
             for (var i = 0; i < markerArray.length; i++) {
               markerArray[i].setMap(null);
             }
-            var origin = markerArray[0];
-            var destination = markerArray[1];
-            directionsService.route({
-              origin: {lat: origin.position.lat(), lng: origin.position.lng()},
-              destination: {lat: destination.position.lat(), lng: destination.position.lng()},
-              travelMode: 'WALKING'
-            }, function(response, status) {
-              if (status === 'OK') {
-                directionsDisplay.setDirections(response);
-                showSteps(response, markerArray, stepDisplay, map);
-              } else {
-                window.alert('Directions request failed due to ' + status);
-              }
-            });
-          }
+            markerArray = [];
+            bounds = new google.maps.LatLngBounds();
+            displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
+          });
+
         }
-        function showSteps(directionResult, markerArray, stepDisplay, map) {
-        // For each step, place a marker, and add the text to the marker's infowindow.
-        // Also attach the marker to an array so we can keep track of it and remove it
-        // when calculating new routes.
-        var myRoute = directionResult.routes[0].legs[0];
-        // display distance and duration:
-        // directionResult.routes[0].legs[0].distance.text
-        // directionResult.routes[0].legs[0].duration.text
-        // Warning :
-        // directionResult.routes[0].warnings[0]
-        for (var i = 0; i < myRoute.steps.length; i++) {
-          var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
-          marker.setMap(map);
-          marker.setPosition(myRoute.steps[i].start_location);
-          attachInstructionText(
-              stepDisplay, marker, myRoute.steps[i].instructions, map);
-          // start and end location of each step:
-          // directionResult.routes[0].legs[0].steps[i].start_location.lat()
-          // directionResult.routes[0].legs[0].steps[i].start_location.lng()
-          //
-          // directionResult.routes[0].legs[0].steps[i].end_location.lat()
-          // directionResult.routes[0].legs[0].steps[i].end_location.lng()
-          // debugger;
+
+        function ReportAdressControl(reportAdressControlDiv) {
+
+          var reportAdressUI = document.createElement('div');
+          reportAdressUI.style.backgroundColor = '#fff';
+          reportAdressUI.style.border = '2px solid #fff';
+          reportAdressUI.style.borderRadius = '3px';
+          reportAdressUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          reportAdressUI.style.cursor = 'pointer';
+          reportAdressUI.style.marginBottom = '22px';
+          reportAdressUI.style.textAlign = 'center';
+          reportAdressUI.title = 'Cliquez pour savoir quel(s) erp(s) est(sont) à proximité(s) de ce point';
+          reportAdressControlDiv.appendChild(reportAdressUI);
+
+          var reportAdressText = document.createElement('div');
+          reportAdressText.style.color = 'rgb(25,25,25)';
+          reportAdressText.style.fontFamily = 'Roboto,Arial,sans-serif';
+          reportAdressText.style.fontSize = '12px';
+          reportAdressText.style.lineHeight = '30px';
+          reportAdressText.style.paddingLeft = '5px';
+          reportAdressText.style.paddingRight = '5px';
+          reportAdressText.innerHTML = 'Signalez une adresse';
+          reportAdressUI.appendChild(reportAdressText);
+
+          reportAdressUI.addEventListener('click', function() {
+            window.location = "/report/new";
+          });
+
         }
-      }
-      function attachInstructionText(stepDisplay, marker, text, map) {
-       google.maps.event.addListener(marker, 'click', function() {
-         // Open an info window when the marker is clicked on, containing the text
-         // of the step.
-         stepDisplay.setContent(text);
-         stepDisplay.open(map, marker);
-       });
-     }
-        function getAndDisplayDirection(map, bounds, markers, markerArray) {
-          // console.log(markerArray);
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-              // array instead of object {}
-              var pos = [position.coords.latitude,position.coords.longitude];
-              var center = [45.750000,4.850000];
-              markers.push(pos);
-              markers.push(center);
-              // Multiple markers on a single map
-              for( i = 0; i < markers.length; i++ ) {
-                var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
-                bounds.extend(position);
-                marker = new google.maps.Marker({
-                  map: map,
-                  position: position,
-                });
-                map.fitBounds(bounds);
-                markerArray.push(marker);
-              }
-            }, function() {
-              handleLocationError(true, map, map.getCenter());
-            });
-          } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, map, map.getCenter());
-          }
-          //********************************
-        }
-    </script>-->
+    </script>
 {% endblock %}
