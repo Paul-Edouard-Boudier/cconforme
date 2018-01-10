@@ -350,6 +350,10 @@ ul.ui-autocomplete{
   width: 100%;
 }
 
+.search-btn-criteres {
+  margin: 15px 0px;
+}
+
 .hidden {
  display:none;
 }

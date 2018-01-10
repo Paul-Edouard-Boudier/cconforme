@@ -45,7 +45,7 @@ class HomeController extends AbstractErpController
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
-        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'Vous êtes ici'];
+        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'Point de départ du rayon de recherche'];
 
         // we could set this dynamically aswell
         // the distance from the point where we are actually seraching items
