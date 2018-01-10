@@ -155,14 +155,14 @@ class HomeController extends AbstractErpController
         $annee = date("Y",$time);
         $messageText = [
             'standard' => "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, ",
-            'pending' => "l'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
-            'none' => "aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche de mise en accessibilité."
+            'pending' => "L'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
+            'none' => "Aucun établissement situé à cette adresse n’a déclaré être rentré dans la démarche de mise en accessibilité."
         ];
         switch($status){
             case 'ok':
                 $response['status'] = 'ok';
                 if ($erp['type'] == 'adap') {
-                    $response["message"] = $messageText['standard'] . $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
+                    $response["message"] = $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
                         " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
                         " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " .
                         $mois . " " .$annee. ".";
@@ -175,7 +175,7 @@ class HomeController extends AbstractErpController
                 return $response;
             case 'ko':
                 return [
-                    "message" => $messageText['standard'] . $messageText['none'],
+                    "message" => $messageText['none'],
                     "status" => 'ko'
                 ];
             default:
