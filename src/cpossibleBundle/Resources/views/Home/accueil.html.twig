@@ -115,17 +115,14 @@
                             case 'ok':
                                 result.removeClass('alert-danger')
                                 result.addClass('alert-success')
-                                console.log(result)
                                 break
                             case 'ko':
                                 result.removeClass('alert-success')
                                 result.addClass('alert-danger')
-                                console.log(result)
                                 break
                         }
                     },
                     error: function(data) {
-                        console.log(data)
                     }
                 })
                 return false;
@@ -139,16 +136,9 @@
                 $('.searchitems').toggle();
                 clearFields();
             });
-            // $('.criteres').on('click', function() {
-            //   $('.searchitems').fadeIn("slow");
-            //   $('.searchitems').removeClass('hidden');
-            // })
           })
 
         function initMap() {
-
-            // aroundMeButton.index = 1; // Idk the f* is this
-            // aroundThisLocationButton.index = 1;
             var markerArray = [];// Array of google map marker object
             var bounds = new google.maps.LatLngBounds();
             var map = new google.maps.Map(document.getElementById('map'), {
@@ -243,10 +233,6 @@
                 message.addClass('alert-danger col-lg-10 mx-auto');
                 return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
               }
-              // si commune is filled and type is filled:
-              // expr1 && expr2 return exprA wich is false,
-              // then it proceeds to do exprA || expr3 which return true
-              // That's why we need parentheses
               else if (type == "null" && (commune.length == 0 || nom.length == 0)) {
                   message.removeClass('alert-success col-lg-10 mx-auto');
                   message.addClass('alert-danger col-lg-10 mx-auto');
@@ -504,39 +490,5 @@
 
           })
         }
-        // $('.storage').on('click', function() {
-        //   var lat = parseFloat($('this')[0].attributes[1].value);
-        //   var lng = parseFloat($('this')[0].attributes[2].value);
-        //   var limit = parseInt($('this')[0].attributes[3].value);
-        //   for (var i = 0; i < markerArray.length; i++) {
-        //     markerArray[i].setMap(null);
-        //   }
-        //   markerArray = [];
-        //   bounds = new google.maps.LatLngBounds();
-        //   displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-        // })
-        //
-        // $('.location-browser').on('click', function() {
-        //   if (navigator.geolocation) {
-        //     navigator.geolocation.getCurrentPosition(function(position) {
-        //       // get current position
-        //       var lat = position.coords.latitude;
-        //       var lng = position.coords.longitude;
-        //       var limit = parseInt($('.storage')[0].attributes[3].value);
-        //       for (var i = 0; i < markerArray.length; i++) {
-        //         markerArray[i].setMap(null);
-        //       }
-        //       markerArray = [];
-        //       bounds = new google.maps.LatLngBounds();
-        //       displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-        //     }, function() {
-        //       handleLocationError(true, map, map.getCenter());
-        //     });
-        //   } else {
-        //     // Browser doesn't support Geolocation
-        //     handleLocationError(false, map, map.getCenter());
-        //     //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
-        //   }
-        // })
     </script>
 {% endblock %}
