@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Unirest;
 
 
 
@@ -407,6 +408,41 @@ class DbaListeerpController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    public function tpsAction() {
+      //$procedure = $response->body->procedure;
+      // On peut très bien faire une requete de procédure dynamique (donc en checkant le dpt par ex)
+      // Et faire une requete de dossier pour chaque dossier trouvé
+      $procedure = '1998';
+      $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
+
+      // On récupère tous les dossiers d'une procédure (donc tous les dossier de cahque batiments)
+      // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
+      // $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
+      // $dossiers =$response->body->dossiers;
+      // foreach ($dossiers as $dossier) {
+      //   $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
+      //   $entity = $subResponse->body->dossier;
+        // On joue ici avec chaque entité afin de l'ajouter à la ddb
+        // dump($entity->champs);
+        //$type = $entity->champs[2]->value;
+        echo '<pre>';
+        $types = '["N : Restaurant et débit de boisson", "O : Hôtel, pension de famille, résidence de tourisme"]';
+        var_dump($types);die;
+        //$typesArray = explode(" ", $types);
+        //var_dump($typesArray);die;
+        // $em = $this->getDoctrine()->getManager();
+        // $erp = new Dbalisteerp();
+        // $erp->setListeerpDemandeur($entity->champs[0]->value);
+        // $erp->setListeErpNomErp($entity->champs[11]->value);
+        // $erp->setListeerpNature($entity->champs[15]->value);
+        // // $em->persist($erp);
+        // // $em->flush();
+        // dump($erp);
+      //}
+      //dump('fin');die;
+      return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
     }
 
 }
