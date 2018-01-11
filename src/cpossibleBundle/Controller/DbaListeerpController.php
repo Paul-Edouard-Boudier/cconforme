@@ -226,54 +226,6 @@ class DbaListeerpController extends Controller
 
         return $this->redirectToRoute('fos_user_security_login');
       }
-
-        // instantiation, when using it as a component
-
-        // $serializer = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
-        // // dump($serializer);die;
-        // // instantiation, when using it inside the Symfony framework
-        // // $serializer = $container->get('serializer');
-        // $em = $this->getDoctrine()->getManager();
-        //
-        // $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
-        //
-        // if($request->query->getAlnum('adap')){
-        //     $queryBuilder
-        //         ->where('dba.listeerpIdAdap LIKE :listeerpIdAdap')
-        //         ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
-        // }
-        //
-        // if($request->query->getAlnum('commune')){
-        //     $queryBuilder
-        //         ->where('dba.listeerpNomCommune LIKE :listeerpNomCommune')
-        //         ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
-        // }
-        //
-        // if($request->query->getAlnum('demandeur')){
-        //     $queryBuilder
-        //         ->where('dba.listeerpDemandeur LIKE :listeerpDemandeur')
-        //         ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
-        // }
-        //
-        // if($request->query->getAlnum('nom_erp')){
-        //     $queryBuilder
-        //         ->where('dba.listeErpNomErp LIKE :listeErpNomErp')
-        //         ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
-        // }
-        //
-        // if($request->query->getAlnum('nom_voie')){
-        //     $queryBuilder
-        //         ->where('dba.listeerpNomVoie LIKE :listeerpNomVoie')
-        //         ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
-        // }
-        //
-        // $data = strval($queryBuilder->getQuery());
-        //
-        // // encoding contents in CSV format
-        // $serializer->encode($data, 'csv');
-
-        // decoding CSV contents
-        // $data = $serializer->decode(file_get_contents('data.csv'), 'csv');
     }
     /**
      * Creates a new dbaListeerp entity.
@@ -411,37 +363,123 @@ class DbaListeerpController extends Controller
     }
 
     public function tpsAction() {
+      echo '<pre>';
       //$procedure = $response->body->procedure;
       // On peut très bien faire une requete de procédure dynamique (donc en checkant le dpt par ex)
       // Et faire une requete de dossier pour chaque dossier trouvé
-      $procedure = '1998';
+      $procedure = '2004';
       $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
 
-      // On récupère tous les dossiers d'une procédure (donc tous les dossier de cahque batiments)
+      // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
       // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
-      // $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
-      // $dossiers =$response->body->dossiers;
-      // foreach ($dossiers as $dossier) {
-      //   $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
-      //   $entity = $subResponse->body->dossier;
+      $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
+      $dossiers =$response->body->dossiers;
+      $em = $this->getDoctrine()->getManager();
+      foreach ($dossiers as $dossier) {
+        $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
+        $entity = $subResponse->body->dossier;
+        $erp = new Dbalisteerp();
         // On joue ici avec chaque entité afin de l'ajouter à la ddb
-        // dump($entity->champs);
-        //$type = $entity->champs[2]->value;
-        echo '<pre>';
-        $types = '["N : Restaurant et débit de boisson", "O : Hôtel, pension de famille, résidence de tourisme"]';
-        var_dump($types);die;
-        //$typesArray = explode(" ", $types);
-        //var_dump($typesArray);die;
-        // $em = $this->getDoctrine()->getManager();
-        // $erp = new Dbalisteerp();
-        // $erp->setListeerpDemandeur($entity->champs[0]->value);
-        // $erp->setListeErpNomErp($entity->champs[11]->value);
-        // $erp->setListeerpNature($entity->champs[15]->value);
-        // // $em->persist($erp);
-        // // $em->flush();
-        // dump($erp);
-      //}
-      //dump('fin');die;
+
+        // Here's how we get the entries
+        foreach ($entity->champs as $champ) {
+          $libelle = $champ->type_de_champ->libelle;
+          $value = $champ->value;
+          // /!\ CURRENTLY WORKING /!\
+
+          if ($libelle == 'Département') {
+            // Regex to get the first 1 to 3 digits that hold the dpt number
+            $selector = "/[0-9]{1,3}/";
+            preg_match($selector, $value, $departement);
+            // dump($departement[0]);
+            $erp->setListeerpDepartement($departement[0]);
+          }
+          if ($libelle == "Type d'établissement") {
+            $nature = strtolower($value);
+            // dump($nature);
+            $erp->setListeerpNature($nature);
+          }
+          if ($libelle == "Catégorie") {
+            $selector = "/[0-9]{1,2}/";
+            preg_match($selector, $value, $categorie);
+            // dump($categorie[0]);
+            $erp->setListeerpCategorie($categorie[0]);
+          }
+          if ($libelle == "Date de mise en conformité") {
+            // Not sure if it's the right date
+            // dump($value);
+            $erp->setListeerpDateValidAdap($value);
+          }
+          if ($libelle == "Durée de la dérogation en année") {
+            if (!empty($value)) {
+              // dump($value);
+              $erp->setListeerpDelaiAdap($value);
+            }
+          }
+          if ($libelle == "Numéro d'adap") {
+            if (!empty($value)) {
+              // dump($value);
+              $erp->setListeerpIdAdap($value);
+            }
+          }
+          if ($libelle == "Nom de l'établissement, enseigne") {
+            // dump($value);
+            $erp->setListeErpNomErp($value);
+          }
+          if ($libelle == "Siret") {
+            if (empty($value)) {
+              // dump($value);
+              $erp->setListeerpSiret(0);
+            }
+            else {
+              // dump(intval($value));
+              $erp->setListeerpSiret(intval($value));
+            }
+          }
+          if ($libelle == "Type de déclaration") {
+            //dump(strtolower($value));
+            $erp->setListeerpTypedossier(strtolower($value));
+          }
+          if ($libelle == "Types d'activités") {
+            // select all character of $value between A-Z followed by whitespace
+            $selector = "/[A-Z]\s/";
+            preg_match_all($selector, $value, $typesUgly);
+            // delete whitespace from string that the previous regex returns us
+            $typesBeautified = preg_replace('/\s+/', '', $typesUgly[0]);
+            $types = "";
+            $last = count($typesBeautified);
+            $i = 0;
+            foreach ($typesBeautified as $type) {
+              if ($i == $last - 1) {
+                $types .= $type;
+              }
+              else {
+                $types .= $type.',';
+              }
+              $i ++;
+            }
+            // dump($types);
+            $erp->setListeerpType($types);
+          }
+          if ($libelle == "Identification de l'établissement") {
+            //listeERP_id_ign ?
+            $erp->setListeerpIdIgn($value);
+          }
+          // For now status is always 0:
+          $erp->setListeerpStatut(0);
+          // /!\ END CURRENTLY WORKING /!\
+          // if ($libelle == "Nom de l'entreprise") {
+          //   listeERP_demandeur ?
+          // }
+          // if ($libelle == "propriétaire/exploitant de l'ERP") {
+          //   listeERP_demandeur ?
+          // }
+          // $em->persist($erp);
+          // $em->flush();
+        }
+        dump($erp);
+      }
+      dump('fin');die;
       return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
     }
 
