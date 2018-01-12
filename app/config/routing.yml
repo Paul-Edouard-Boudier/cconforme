@@ -71,7 +71,7 @@ report_delete:
 
 tps_index:
   path: /tps
-  defaults: { _controller: cpossibleBundle:DbaListeerp:tps }
+  defaults: { _controller: cpossibleBundle:Tps:tps }
 
 
 annot:
