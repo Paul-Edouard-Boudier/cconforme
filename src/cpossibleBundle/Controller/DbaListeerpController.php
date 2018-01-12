@@ -361,7 +361,10 @@ class DbaListeerpController extends Controller
             ->getForm()
         ;
     }
-
+    /**
+     * Function that will retrieve infos from the tps procedure and all the dossiers it has
+     * and then update the database if the element doesn't exist already
+     */
     public function tpsAction() {
       echo '<pre>';
       //$procedure = $response->body->procedure;
@@ -379,7 +382,6 @@ class DbaListeerpController extends Controller
         $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
         $entity = $subResponse->body->dossier;
         $erp = new Dbalisteerp();
-        // On joue ici avec chaque entité afin de l'ajouter à la ddb
 
         // Here's how we get the entries
         foreach ($entity->champs as $champ) {
@@ -387,100 +389,138 @@ class DbaListeerpController extends Controller
           $value = $champ->value;
           // /!\ CURRENTLY WORKING /!\
 
-          if ($libelle == 'Département') {
-            // Regex to get the first 1 to 3 digits that hold the dpt number
-            $selector = "/[0-9]{1,3}/";
-            preg_match($selector, $value, $departement);
-            // dump($departement[0]);
-            $erp->setListeerpDepartement($departement[0]);
-          }
-          if ($libelle == "Type d'établissement") {
-            $nature = strtolower($value);
-            // dump($nature);
-            $erp->setListeerpNature($nature);
-          }
-          if ($libelle == "Catégorie") {
-            $selector = "/[0-9]{1,2}/";
-            preg_match($selector, $value, $categorie);
-            // dump($categorie[0]);
-            $erp->setListeerpCategorie($categorie[0]);
-          }
-          if ($libelle == "Date de mise en conformité") {
-            // Not sure if it's the right date
-            // dump($value);
-            $erp->setListeerpDateValidAdap($value);
-          }
-          if ($libelle == "Durée de la dérogation en année") {
-            if (!empty($value)) {
-              // dump($value);
-              $erp->setListeerpDelaiAdap($value);
-            }
-          }
-          if ($libelle == "Numéro d'adap") {
-            if (!empty($value)) {
-              // dump($value);
-              $erp->setListeerpIdAdap($value);
-            }
-          }
-          if ($libelle == "Nom de l'établissement, enseigne") {
-            // dump($value);
-            $erp->setListeErpNomErp($value);
-          }
-          if ($libelle == "Siret") {
-            if (empty($value)) {
-              // dump($value);
-              $erp->setListeerpSiret(0);
-            }
-            else {
-              // dump(intval($value));
-              $erp->setListeerpSiret(intval($value));
-            }
-          }
-          if ($libelle == "Type de déclaration") {
-            //dump(strtolower($value));
-            $erp->setListeerpTypedossier(strtolower($value));
-          }
-          if ($libelle == "Types d'activités") {
-            // select all character of $value between A-Z followed by whitespace
-            $selector = "/[A-Z]\s/";
-            preg_match_all($selector, $value, $typesUgly);
-            // delete whitespace from string that the previous regex returns us
-            $typesBeautified = preg_replace('/\s+/', '', $typesUgly[0]);
-            $types = "";
-            $last = count($typesBeautified);
-            $i = 0;
-            foreach ($typesBeautified as $type) {
-              if ($i == $last - 1) {
-                $types .= $type;
-              }
-              else {
-                $types .= $type.',';
-              }
-              $i ++;
-            }
-            // dump($types);
-            $erp->setListeerpType($types);
-          }
-          if ($libelle == "Identification de l'établissement") {
-            //listeERP_id_ign ?
-            $erp->setListeerpIdIgn($value);
-          }
-          // For now status is always 0:
-          $erp->setListeerpStatut(0);
-          // /!\ END CURRENTLY WORKING /!\
-          // if ($libelle == "Nom de l'entreprise") {
-          //   listeERP_demandeur ?
+          // if ($libelle == 'Département') {
+          //   // Regex to get the first 1 to 3 digits that hold the dpt number
+          //   $selector = "/[0-9]{1,3}/";
+          //   preg_match($selector, $value, $departement);
+          //   // dump($departement[0]);
+          //   $erp->setListeerpDepartement($departement[0]);
           // }
-          // if ($libelle == "propriétaire/exploitant de l'ERP") {
-          //   listeERP_demandeur ?
+          // if ($libelle == "Type d'établissement") {
+          //   $nature = strtolower($value);
+          //   // dump($nature);
+          //   $erp->setListeerpNature($nature);
+          // }
+          // if ($libelle == "Catégorie") {
+          //   $selector = "/[0-9]{1,2}/";
+          //   preg_match($selector, $value, $categorie);
+          //   // dump($categorie[0]);
+          //   $erp->setListeerpCategorie($categorie[0]);
+          // }
+          // if ($libelle == "Date de mise en conformité") {
+          //   // Not sure if it's the right date
+          //   // dump($value);
+          //   $erp->setListeerpDateValidAdap($value);
+          // }
+          // if ($libelle == "Durée de la dérogation en année") {
+          //   if (!empty($value)) {
+          //     // dump($value);
+          //     $erp->setListeerpDelaiAdap($value);
+          //   }
+          // }
+          // if ($libelle == "Numéro d'adap") {
+          //   if (!empty($value)) {
+          //     // dump($value);
+          //     $erp->setListeerpIdAdap($value);
+          //   }
+          // }
+          // if ($libelle == "Nom de l'établissement, enseigne") {
+          //   // dump($value);
+          //   $erp->setListeErpNomErp($value);
+          // }
+          // if ($libelle == "Siret") {
+          //   if (empty($value)) {
+          //     // dump($value);
+          //     $erp->setListeerpSiret(0);
+          //   }
+          //   else {
+          //     // dump(intval($value));
+          //     $erp->setListeerpSiret(intval($value));
+          //   }
+          // }
+          // if ($libelle == "Type de déclaration") {
+          //   //dump(strtolower($value));
+          //   $erp->setListeerpTypedossier(strtolower($value));
+          // }
+          // if ($libelle == "Types d'activités") {
+          //   // select all character of $value between A-Z followed by whitespace
+          //   $selector = "/[A-Z]{1,3}\s/";
+          //   preg_match_all($selector, $value, $typesUgly);
+          //   // delete whitespace from string that the previous regex returns us
+          //   $typesBeautified = preg_replace('/\s+/', '', $typesUgly[0]);
+          //   $types = "";
+          //   $last = count($typesBeautified);
+          //   $i = 0;
+          //   foreach ($typesBeautified as $type) {
+          //     if ($i == $last - 1) {
+          //       $types .= $type;
+          //     }
+          //     else {
+          //       $types .= $type.',';
+          //     }
+          //     $i ++;
+          //   }
+          //   // dump($types);
+          //   $erp->setListeerpType($types);
+          // }
+          // // For now status is always 0:
+          // $erp->setListeerpStatut(0);
+          // // /!\ END CURRENTLY WORKING /!\
+          // if ($libelle == "Nom de l'entreprise") {
+          //   $erp->setListeerpDemandeur($value);
           // }
           // $em->persist($erp);
           // $em->flush();
+          if ($libelle == "Adresse") {
+            // Regex that split a string like this:
+            // 11 Place de l'Europe 69006 Lyon
+            // into an array like this:
+            // ["full_adress_here","11", "Place de l'Europe", "69006", "Lyon"];
+            $selector = "/(\d{1,4})\s?([a-zA-ZÀ-Ÿ',\s]*\s?)?\s?([0-9]{5})\s?([a-zA-ZÀ-Ÿ',\/]*\s*)/";
+            preg_match($selector, $value, $splitedAdress);
+            $numero_de_voie = $splitedAdress[1];
+            $erp->setListeerpNumeroVoie($numero_de_voie);
+            // // Adress that we need to write like "PL DE L'EUROPE"
+            // My regex select the last whitespace so i'm kinda fucked here
+            $tempAdress = $splitedAdress[2]; // Here: "Place de l'Europe "
+            $adressExploded = explode(" ",$tempAdress);
+            $intitule_voie = $adressExploded[0]; // "Place"
+
+            // We search in ddb the "intitulevoie" that match with what we get from the "dossier"
+            $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+            $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+              ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+            $result = $q->getQuery();
+            // Here we want to get the name of voie as we wish to put in ddb like "PL"
+            $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+            $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+            $fulladress = "";
+            $fulladress .= $voie;
+            for ($i=1; $i < count($adressExploded) ; $i++) {
+              $fulladress .= " " .strtoupper($adressExploded[$i]);
+            }
+            // supress the last whitespace form the stirng
+            $erp->setListeerpNomVoie(rtrim($fulladress));
+
+            $codePostal = $splitedAdress[3];
+            $erp->setListeerpCodePostal($codePostal);
+          }
         }
         dump($erp);
       }
       dump('fin');die;
       return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
     }
+
+    // private function alreadyExist() {
+    //   $em = $this->getDoctrine()->getManager();
+    //   $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+    //   $queryBuilder
+    //       ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
+    //       ->setParameter('listeErpNomErp', '%' . $_SESSION['request']['siret'] . '%' );
+    // }
+    //
+    //
+    // $dbaListeerps = $queryBuilder->getQuery();
 
 }
