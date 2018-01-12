@@ -442,11 +442,11 @@ class DbaListeerpController extends Controller
           if ($libelle == "Siret") {
             if (empty($value)) {
               // dump($value);
-              $erp->setListeerpSiret(0);
+              $erp->setListeerpSiret('0');
             }
             else {
               // dump(intval($value));
-              $erp->setListeerpSiret(intval($value));
+              $erp->setListeerpSiret($value);
             }
           }
           if ($libelle == "Type de déclaration") {
@@ -555,13 +555,19 @@ class DbaListeerpController extends Controller
           // For now status is always 0:
           $erp->setListeerpStatut(0);
 
-          // $em->persist($erp);
-          // $em->flush();
+          $em->persist($erp);
+          $em->flush();
         }
-        dump($erp);
+        // dump($erp);
       }
-      dump('fin');die;
-      return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
+      // dump('fin');die;
+      // return $this->render('cpossibleBundle:TPS:index.html.twig', ['procedure' => $procedure]);
+      $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+      $typesErp = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+      return $this->render('cpossibleBundle:Home:accueil.html.twig', array(
+          'dbaListeerps' => $dbaListeerps,
+          'typesErp' => $typesErp,
+      ));
     }
 
     // private function alreadyExist() {
