@@ -152,14 +152,5 @@
             </div>
         </div>
         <br>
-        <div class="col-10 mx-auto">
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-danger btn-lg">
-                    <i class="fa fa-sign-out" aria-hidden="true"></i>
-                    Déconnexion
-                </a>
-            {% else %}
-            {% endif %}
-        </div>
     </div>
 {% endblock %}

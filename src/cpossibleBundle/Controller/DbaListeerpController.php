@@ -463,48 +463,50 @@ class DbaListeerpController extends Controller
           //   // dump($types);
           //   $erp->setListeerpType($types);
           // }
-          // // For now status is always 0:
-          // $erp->setListeerpStatut(0);
-          // // /!\ END CURRENTLY WORKING /!\
+          // if ($libelle == "Adresse") {
+          //   // Regex that split a string like this:
+          //   // 11 Place de l'Europe 69006 Lyon
+          //   // into an array like this:
+          //   // ["full_adress_here","11", "Place de l'Europe", "69006", "Lyon"];
+          //   $selector = "/(\d{1,4})\s?([a-zA-ZÀ-Ÿ',\s]*\s?)?\s?([0-9]{5})\s?([a-zA-ZÀ-Ÿ',\/]*\s*)/";
+          //   preg_match($selector, $value, $splitedAdress);
+          //   $numero_de_voie = $splitedAdress[1];
+          //   $erp->setListeerpNumeroVoie($numero_de_voie);
+          //   // // Adress that we need to write like "PL DE L'EUROPE"
+          //   $tempAdress = $splitedAdress[2]; // Here: "Place de l'Europe "
+          //   $adressExploded = explode(" ",$tempAdress);
+          //   $intitule_voie = $adressExploded[0]; // "Place"
+          //
+          //   // We search in ddb the "intitulevoie" that match with what we get from the "dossier"
+          //   $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+          //   $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+          //     ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+          //   $result = $q->getQuery();
+          //   // Here we want to get the name of voie as we wish to put in ddb like "PL"
+          //   $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+          //   $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+          //   $fulladress = "";
+          //   $fulladress .= $voie;
+          //   for ($i=1; $i < count($adressExploded) ; $i++) {
+          //     $fulladress .= " " .strtoupper($adressExploded[$i]);
+          //   }
+          //   // supress the last whitespace form the stirng
+          //   $erp->setListeerpNomVoie(rtrim($fulladress));
+          //
+          //   $codePostal = $splitedAdress[3];
+          //   $erp->setListeerpCodePostal($codePostal);
+
+          // TODO: retrieve adresse and ask googlemap api to have the commune + long and lat
+          // }
           // if ($libelle == "Nom de l'entreprise") {
           //   $erp->setListeerpDemandeur($value);
           // }
+          // // For now status is always 0:
+          // $erp->setListeerpStatut(0);
+          // // /!\ END CURRENTLY WORKING /!\
+
           // $em->persist($erp);
           // $em->flush();
-          if ($libelle == "Adresse") {
-            // Regex that split a string like this:
-            // 11 Place de l'Europe 69006 Lyon
-            // into an array like this:
-            // ["full_adress_here","11", "Place de l'Europe", "69006", "Lyon"];
-            $selector = "/(\d{1,4})\s?([a-zA-ZÀ-Ÿ',\s]*\s?)?\s?([0-9]{5})\s?([a-zA-ZÀ-Ÿ',\/]*\s*)/";
-            preg_match($selector, $value, $splitedAdress);
-            $numero_de_voie = $splitedAdress[1];
-            $erp->setListeerpNumeroVoie($numero_de_voie);
-            // // Adress that we need to write like "PL DE L'EUROPE"
-            // My regex select the last whitespace so i'm kinda fucked here
-            $tempAdress = $splitedAdress[2]; // Here: "Place de l'Europe "
-            $adressExploded = explode(" ",$tempAdress);
-            $intitule_voie = $adressExploded[0]; // "Place"
-
-            // We search in ddb the "intitulevoie" that match with what we get from the "dossier"
-            $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
-            $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-              ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
-            $result = $q->getQuery();
-            // Here we want to get the name of voie as we wish to put in ddb like "PL"
-            $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
-            $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
-            $fulladress = "";
-            $fulladress .= $voie;
-            for ($i=1; $i < count($adressExploded) ; $i++) {
-              $fulladress .= " " .strtoupper($adressExploded[$i]);
-            }
-            // supress the last whitespace form the stirng
-            $erp->setListeerpNomVoie(rtrim($fulladress));
-
-            $codePostal = $splitedAdress[3];
-            $erp->setListeerpCodePostal($codePostal);
-          }
         }
         dump($erp);
       }
