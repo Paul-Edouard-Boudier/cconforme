@@ -63,6 +63,34 @@ class DbaDepartement
      */
     private $departementNomSoundex;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="departement_token", type="string", length=45, nullable=true)
+     */
+    private $departementToken;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="departement_procedure", type="string", length=45, nullable=true)
+     */
+    private $departementProcedure;
+
+    /**
+     * @return string
+     */
+    public function getDepartementToken()
+    {
+        return $this->departementToken;
+    }
+    /**
+     * @return string
+     */
+    public function getDepartementProcedure()
+    {
+        return $this->departementProcedure;
+    }
+
 
 }
-

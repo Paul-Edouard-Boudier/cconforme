@@ -3,25 +3,45 @@ namespace cpossibleBundle\Controller;
 
 use cpossibleBundle\Entity\DbaListeerp;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Unirest;
 
 class TpsController extends Controller
 {
+
+  public function tpsAction() {
+    return $this->render('cpossibleBundle:TPS:index.html.twig');
+  }
   /**
    * Function that will retrieve infos from the tps procedure and all the dossiers it has
    * and then update the database if the element doesn't exist already
    */
-  public function tpsAction() {
+  public function newAction(Request $request) {
     $em = $this->getDoctrine()->getManager();
+    // dump($request->request->get('procedure'));die;
+    // $departement = $request->request->get('departement');
+    // $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $request->request->get('departement')]);
+    $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
+    // $procedure = $dpt->departementCode();
+    dump($dpts);die;
     //$procedure = $response->body->procedure;
     // On peut très bien faire une requete de procédure dynamique (donc en checkant le dpt par ex)
     // Et faire une requete de dossier pour chaque dossier trouvé
-    $procedure = '2004';
+    // Check first if intval of $procedure is a number, otherwise it might cause some bug
+    // $procedure = '2004';
+    // if (!$procédureChecked) {
+    //   $error = "veuillez entrer un nombre entier valide";
+    //   return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error]);
+    // }
     $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
 
     // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
     // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
     $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
+    if (!$response) {
+      $error = "Le numéro de procédure que vous avez renseigné ne correspone à aucune procédure TPS actuelle";
+      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error]);
+    }
     $dossiers =$response->body->dossiers;
     $erpsArray = []; // array to count how many was inserted.
     foreach ($dossiers as $dossier) {
@@ -33,7 +53,7 @@ class TpsController extends Controller
       }
     }
     $count = count($erpsArray);
-    return $this->render('cpossibleBundle:TPS:index.html.twig', ['erpsArray' => $erpsArray, 'count' => $count]);
+    return $this->render('cpossibleBundle:TPS:new.html.twig', ['erpsArray' => $erpsArray, 'count' => $count]);
   }
 
   /**

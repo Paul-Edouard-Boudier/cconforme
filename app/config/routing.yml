@@ -70,9 +70,13 @@ report_delete:
     defaults: { _controller: cpossibleBundle:Report:deleteOne }
 
 tps_index:
-  path: /tps
+  path: /tps/form
   defaults: { _controller: cpossibleBundle:Tps:tps }
 
+tps_new:
+  path: /tps/new
+  defaults: { _controller: cpossibleBundle:Tps:new}
+  methods: POST
 
 annot:
     resource: "@cpossibleBundle/Controller/DbaListeerpController.php"
