@@ -99,9 +99,9 @@ class DbaListeerp
     private $listeerpIdIgn;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="listeERP_siret", type="integer", nullable=true)
+     * @ORM\Column(name="listeERP_siret", type="string", length="14", nullable=true)
      */
     private $listeerpSiret;
 
@@ -389,7 +389,7 @@ class DbaListeerp
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getListeerpSiret()
     {
@@ -397,7 +397,7 @@ class DbaListeerp
     }
 
     /**
-     * @param int $listeerpSiret
+     * @param string $listeerpSiret
      */
     public function setListeerpSiret($listeerpSiret)
     {

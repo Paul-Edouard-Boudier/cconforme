@@ -92,5 +92,21 @@ class DbaDepartement
         return $this->departementProcedure;
     }
 
+    /**
+     * @param string $token
+     */
+    public function setDepartementToken($token)
+    {
+        $this->listeerpId = $token;
+    }
+
+    /**
+     * @param string $procedure
+     */
+    public function setDepartementProcedure($procedure)
+    {
+        $this->listeerpId = $procedure;
+    }
+
 
 }

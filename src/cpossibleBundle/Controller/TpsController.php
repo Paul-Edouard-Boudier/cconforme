@@ -18,22 +18,15 @@ class TpsController extends Controller
    */
   public function newAction(Request $request) {
     $em = $this->getDoctrine()->getManager();
-    // dump($request->request->get('procedure'));die;
-    // $departement = $request->request->get('departement');
-    // $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $request->request->get('departement')]);
-    $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
-    // $procedure = $dpt->departementCode();
-    dump($dpts);die;
-    //$procedure = $response->body->procedure;
-    // On peut très bien faire une requete de procédure dynamique (donc en checkant le dpt par ex)
-    // Et faire une requete de dossier pour chaque dossier trouvé
+    $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $request->request->get('departement')]);
+    $procedure = $dpt->getDepartementProcedure();
+    $token = $dpt->getDepartementToken();
     // Check first if intval of $procedure is a number, otherwise it might cause some bug
-    // $procedure = '2004';
     // if (!$procédureChecked) {
     //   $error = "veuillez entrer un nombre entier valide";
     //   return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error]);
     // }
-    $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
+    // $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
 
     // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
     // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé

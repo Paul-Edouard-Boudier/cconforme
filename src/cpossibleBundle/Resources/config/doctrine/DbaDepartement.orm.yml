@@ -67,4 +67,18 @@ cpossibleBundle\Entity\DbaDepartement:
             options:
                 fixed: false
             column: departement_nom_soundex
+        departementToken:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: false
+            column: departement_token
+        departementProcedure:
+            type: string
+            nullable: true
+            length: 45
+            options:
+                fixed: flase
+            column: departement_procedure
     lifecycleCallbacks: {  }

@@ -127,7 +127,8 @@ cpossibleBundle\Entity\DbaListeerp:
                 fixed: false
             column: listeERP_id_ign
         listeerpSiret:
-            type: integer
+            type: string
+            length: 14
             nullable: true
             options:
                 unsigned: false
