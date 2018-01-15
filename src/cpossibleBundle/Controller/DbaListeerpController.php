@@ -208,7 +208,6 @@ class DbaListeerpController extends Controller
 
                 $rows[] = implode(';', $data);
             }
-            // dump($rows);die;
 
             $content = implode("\n", $rows);
             $response = new Response($content);
