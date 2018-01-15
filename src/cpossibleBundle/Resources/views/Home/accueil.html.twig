@@ -310,6 +310,10 @@
 
         function geocodeAddress(geocoder, resultsMap, markerArray) {
           //debugger;
+            document.getElementById('result').innerHTML = "";
+            document.getElementById('message').innerHTML = "";
+            $('#message').removeClass('alert-danger');
+            $('#message').removeClass('alert-success');
             var address = document.getElementById('adress').value
             var name = document.getElementById('name').value
             data = address ? address : null
@@ -486,9 +490,9 @@
               }
             }
             //debugger;
-            message.removeClass('alert-danger')
-            message.addClass('alert-success col-lg-10 mx-auto')
-            document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche."
+            message.removeClass('alert-danger');
+            message.addClass('alert-success col-lg-10 mx-auto');
+            document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche.";
             // Removing classes in case there were any, because of previous search
             $('#result').removeClass('alert-success');
             $('#result').removeClass('alert-danger');
