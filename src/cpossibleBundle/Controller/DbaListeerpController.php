@@ -206,8 +206,9 @@ class DbaListeerpController extends Controller
             foreach ($csv as $event) {
                 $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
 
-                $rows[] = implode(',', $data);
+                $rows[] = implode(';', $data);
             }
+            // dump($rows);die;
 
             $content = implode("\n", $rows);
             $response = new Response($content);

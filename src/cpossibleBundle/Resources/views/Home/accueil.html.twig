@@ -32,15 +32,15 @@
           <form class="searchitems hidden" action="" method="post">
             <div class="form-row">
               <div class="form-group col-md-5">
-                <label for="commune">Nom de commune</label>
+                <label for="commune">Saisir le nom de commune</label>
                 <input type="text" name="commune" value="" placeholder="Lyon">
               </div>
               <div class="form-group col-md-5 offset-md-1">
-                <label for="nom">Nom du bâtiment</label>
-                <input type="text" name="nom" value="" placeholder="École" >
+                <label for="nom">Sasir le nom de l'établissement</label>
+                <input type="text" name="nom" value="" placeholder="Sasir le nom de l'établissement" >
               </div>
             </div>
-            <label for="">Type de bâtiment</label>
+            <label for="">Type d'activités</label>
             <select class="form-control" name="type">
               <option value="null">Non précisé</option>
               {% for type in typesErp %}
@@ -213,7 +213,7 @@
             var aroundMeControlDiv = document.createElement('div');
             var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
             aroundMeControlDiv.index = 1;
-            map.controls[google.maps.ControlPosition.TOP_CENTER].push(aroundMeControlDiv);
+            map.controls[google.maps.ControlPosition.LEFT_CENTER].push(aroundMeControlDiv);
 
             var aroundThisLocationDiv = document.createElement('div');
             var aroundThisLocationControl = new AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray);
@@ -223,7 +223,7 @@
             var reportAdressControlDiv = document.createElement('div');
             var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
             reportAdressControlDiv.index = 3;
-            map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(reportAdressControlDiv);
+            map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
 
             // selector for the form that hold 3 criteria
             $('.searchitems').on('submit', function(event) {
@@ -341,8 +341,8 @@
 
           // Set CSS for the aroundmecontrol border.
           var aroundMeUI = document.createElement('div');
-          aroundMeUI.style.backgroundColor = '#fff';
-          aroundMeUI.style.border = '2px solid #fff';
+          aroundMeUI.style.backgroundColor = 'rgb(255, 147, 67)';
+          aroundMeUI.style.border = '2px solid rgb(255, 147, 67)';
           aroundMeUI.style.borderRadius = '3px';
           aroundMeUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
           aroundMeUI.style.cursor = 'pointer';
@@ -392,8 +392,8 @@
 
           // Set CSS for the control border.
           var aroundThisLocationUI = document.createElement('div');
-          aroundThisLocationUI.style.backgroundColor = '#fff';
-          aroundThisLocationUI.style.border = '2px solid #fff';
+          aroundThisLocationUI.style.backgroundColor = 'rgb(255, 147, 67)';
+          aroundThisLocationUI.style.border = '2px solid rgb(255, 147, 67)';
           aroundThisLocationUI.style.borderRadius = '3px';
           aroundThisLocationUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
           aroundThisLocationUI.style.cursor = 'pointer';
@@ -431,8 +431,8 @@
         function ReportAdressControl(reportAdressControlDiv) {
 
           var reportAdressUI = document.createElement('div');
-          reportAdressUI.style.backgroundColor = '#fff';
-          reportAdressUI.style.border = '2px solid #fff';
+          reportAdressUI.style.backgroundColor = 'rgb(255, 147, 67)';
+          reportAdressUI.style.border = '2px solid rgb(255, 147, 67)';
           reportAdressUI.style.borderRadius = '3px';
           reportAdressUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
           reportAdressUI.style.cursor = 'pointer';
