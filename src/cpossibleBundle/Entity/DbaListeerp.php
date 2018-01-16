@@ -73,13 +73,6 @@ class DbaListeerp
     /**
      * @var string
      *
-     * @ORM\Column(name="listeERP_date_declaration", type="string", length=15, nullable=true)
-     */
-    // private $listeerpDateDeclaration;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="listeERP_date_valid_adap", type="string", length=15, nullable=true)
      */
     private $listeerpDateValidAdap;
@@ -323,22 +316,6 @@ class DbaListeerp
     {
         $this->listeerpType = $listeerpType;
     }
-
-    // /**
-    //  * @return string
-    //  */
-    // public function getListeerpDateDeclaration()
-    // {
-    //     return $this->listeerpDateDeclaration;
-    // }
-    //
-    // /**
-    //  * @param string $listeerpDateDeclaration
-    //  */
-    // public function setListeerpDateDeclaration($listeerpDateDeclaration)
-    // {
-    //     $this->listeerpDateDeclaration = $listeerpDateDeclaration;
-    // }
 
     /**
      * @return string
