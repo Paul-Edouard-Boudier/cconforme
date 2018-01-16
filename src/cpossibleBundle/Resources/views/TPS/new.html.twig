@@ -1,7 +1,13 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-  <h1>TPS</h1>
-  <p>{{ count }} erp(s) ajouté(s) à la base de donées.</p>
-  <a href="/liste/index">Retour</a>
+  {% if error %}
+	{{ error }}
+  {% else %}
+    <h1>TPS</h1>
+    <p>{{ count }} erp(s) ajouté(s) à la base de donées.</p>
+  {% endif %}
+  <br>
+  <a href="/tps/form">Retour</a>
+
 {% endblock %}
