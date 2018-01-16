@@ -357,6 +357,10 @@ ul.ui-autocomplete{
 .hidden {
  display:none;
 }
+/*  Height of the div between 'autres critères' and map in homepage */
+.basicHeight {
+  height: 42px;
+}
 
 /* ************** /!\ FIN Formulaire avec select + options /!\ ************** */
 /* ********** /!\ FOOTER /!\ ********* */
