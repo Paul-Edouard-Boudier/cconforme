@@ -43,7 +43,6 @@ class DbaListeerpType extends AbstractType
                 'OA' => "OA", 'GA' => "GA", 'EF' => "EF", 'REF' => "REF"],
               'multiple' => true,
               ])
-          ->add('listeerpDateDeclaration')
           ->add('listeerpDateValidAdap')
           ->add('listeerpDelaiAdap')
           ->add('listeerpIdIgn')

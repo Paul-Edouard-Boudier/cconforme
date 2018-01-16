@@ -133,6 +133,9 @@
                 e.preventDefault();
                 isBtnClicked = !isBtnClicked;
                 isBtnClicked ? $('.criteres').html('Réduire') : $('.criteres').html('Autres critères');
+                isBtnClicked ? $('#result').removeClass('hidden') : $('#result').addClass('hidden');
+                isBtnClicked ? $('#message').parent().removeClass('basicHeight') : $('#message').parent().addClass('basicHeight');
+                isBtnClicked ? $('#message').removeClass('hidden') : $('#message').addClass('hidden');
                 $('.searchitems').toggle();
                 clearFields();
             });

@@ -10,7 +10,9 @@ class TpsController extends Controller
 {
 
   public function tpsAction() {
-    return $this->render('cpossibleBundle:TPS:index.html.twig');
+    $em = $this->getDoctrine()->getManager();
+    $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
+    return $this->render('cpossibleBundle:TPS:index.html.twig', ['dpts' => $dpts]);
   }
   /**
    * Function that will retrieve infos from the tps procedure and all the dossiers it has
@@ -18,24 +20,48 @@ class TpsController extends Controller
    */
   public function newAction(Request $request) {
     $em = $this->getDoctrine()->getManager();
-    $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $request->request->get('departement')]);
-    $procedure = $dpt->getDepartementProcedure();
-    $token = $dpt->getDepartementToken();
-    // Check first if intval of $procedure is a number, otherwise it might cause some bug
-    // if (!$procédureChecked) {
-    //   $error = "veuillez entrer un nombre entier valide";
-    //   return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error]);
+    $errors = [];
+    $departement = $request->request->get('departement');
+
+    // /!\ CHECKING fucking useless since i'll go woth option select... dumbass /!\
+    // if ($departement == "0") {
+    //   $errors['departement'] = "Veuillez entrer un numéro de département valide.";
     // }
-    // $token = '85cc86ebbca4d1b518db1f597256b365df4465de';
+    // if (strlen($departement) == 1) {
+    //   $departement = "0".$departement;
+    // }
+    
+
+    $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
+    // if ($dpt == null) {
+    //   $errors['dptvalide'] = "Aucun département n'a été trouvé";
+    //   $procedure = null;
+    //   $token = null;
+    // } else {
+      $procedure = $dpt->getDepartementProcedure();
+      $token = $dpt->getDepartementToken();      
+    // }
+
+    if ($procedure == null) {
+        $errors['procedure'] = "Le département que vous avez indiqué ne contient aucune procédure actuellement.";
+    }
+    elseif ($token == null) {
+        $errors['token'] = "Le département renseigné n'a pas donné accès au token administratif.";
+    }
+
+    if (!empty($errors)) {
+      $count = null;
+      $error = array_values($errors)[0];
+      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count]);
+    }
+    // /!\ END CHECKING /!\
 
     // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
     // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
     $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
-    if (!$response) {
-      $error = "Le numéro de procédure que vous avez renseigné ne correspone à aucune procédure TPS actuelle";
-      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error]);
-    }
-    $dossiers =$response->body->dossiers;
+
+
+    $dossiers = $response->body->dossiers;
     $erpsArray = []; // array to count how many was inserted.
     foreach ($dossiers as $dossier) {
       $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
@@ -46,7 +72,8 @@ class TpsController extends Controller
       }
     }
     $count = count($erpsArray);
-    return $this->render('cpossibleBundle:TPS:new.html.twig', ['erpsArray' => $erpsArray, 'count' => $count]);
+    $error = [];
+    return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count]);
   }
 
   /**
