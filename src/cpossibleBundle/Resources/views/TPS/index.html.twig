@@ -1,8 +1,13 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-  <form class="" action="/tps/new" method="post">
-    <input type="number" min='0' step='1' name="departement" value="departement" placeholder="numéro de votre département">
-    <input type="submit" name="" value="submit">
-  </form>
+	<h3>Mettez à jour la base de données en renseignant votre département</h3>
+	<form class="" action="/tps/new" method="post">
+		<select name="departement">
+			{% for dpt in dpts %}
+				<option value="{{dpt.departementCode}}">{{dpt.departementNom}}</option>
+			{% endfor %}
+		</select>
+		<input type="submit" class="btn btn-success" name="" value="Mise à jour">
+	</form>
 {% endblock %}

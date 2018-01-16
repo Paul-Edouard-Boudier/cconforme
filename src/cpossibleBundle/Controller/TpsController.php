@@ -11,9 +11,8 @@ class TpsController extends Controller
 
   public function tpsAction() {
     $em = $this->getDoctrine()->getManager();
-    $test = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
-    // dump($test);die;
-    return $this->render('cpossibleBundle:TPS:index.html.twig', ['test' => $test]);
+    $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
+    return $this->render('cpossibleBundle:TPS:index.html.twig', ['dpts' => $dpts]);
   }
   /**
    * Function that will retrieve infos from the tps procedure and all the dossiers it has
@@ -24,24 +23,24 @@ class TpsController extends Controller
     $errors = [];
     $departement = $request->request->get('departement');
 
-    // /!\ CHECKING /!\
-    if ($departement == "0") {
-      $errors['departement'] = "Veuillez entrer un numéro de département valide.";
-    }
-    if (strlen($departement) == 1) {
-      $departement = "0".$departement;
-    }
+    // /!\ CHECKING fucking useless since i'll go woth option select... dumbass /!\
+    // if ($departement == "0") {
+    //   $errors['departement'] = "Veuillez entrer un numéro de département valide.";
+    // }
+    // if (strlen($departement) == 1) {
+    //   $departement = "0".$departement;
+    // }
     
 
     $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
-    if ($dpt == null) {
-      $errors['dptvalide'] = "Aucun département n'a été trouvé";
-      $procedure = null;
-      $token = null;
-    } else {
+    // if ($dpt == null) {
+    //   $errors['dptvalide'] = "Aucun département n'a été trouvé";
+    //   $procedure = null;
+    //   $token = null;
+    // } else {
       $procedure = $dpt->getDepartementProcedure();
       $token = $dpt->getDepartementToken();      
-    }
+    // }
 
     if ($procedure == null) {
         $errors['procedure'] = "Le département que vous avez indiqué ne contient aucune procédure actuellement.";

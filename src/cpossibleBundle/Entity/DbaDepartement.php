@@ -84,6 +84,7 @@ class DbaDepartement
     {
         return $this->departementToken;
     }
+
     /**
      * @return string
      */
@@ -93,20 +94,36 @@ class DbaDepartement
     }
 
     /**
+     * @return string
+     */
+    public function getDepartementCode()
+    {
+        return $this->departementCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartementNom()
+    {
+        return $this->departementNom;
+    }
+
+    /**
      * @param string $token
      */
-    public function setDepartementToken($token)
-    {
-        $this->listeerpId = $token;
-    }
+    // public function setDepartementToken($token)
+    // {
+    //     $this->listeerpId = $token;
+    // }
 
     /**
      * @param string $procedure
      */
-    public function setDepartementProcedure($procedure)
-    {
-        $this->listeerpId = $procedure;
-    }
+    // public function setDepartementProcedure($procedure)
+    // {
+    //     $this->listeerpId = $procedure;
+    // }
 
 
 }
