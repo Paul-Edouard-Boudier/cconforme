@@ -98,13 +98,13 @@ cpossibleBundle\Entity\DbaListeerp:
             options:
                 fixed: false
             column: listeERP_type
-        listeerpDateDeclaration:
-            type: string
-            nullable: true
-            length: 15
-            options:
-                fixed: false
-            column: listeERP_date_declaration
+        # listeerpDateDeclaration:
+        #     type: string
+        #     nullable: true
+        #     length: 15
+        #     options:
+        #         fixed: false
+        #     column: listeERP_date_declaration
         listeerpDateValidAdap:
             type: string
             nullable: true
