@@ -6,7 +6,7 @@
     <div class="container-fluid" id="formulaire1">
 
         <div class="col-lg-4 col-sm-8 col-md-8 mx-auto col-12" id="search-address-wrap">
-            <form action="" method="POST" id="form">
+            <form action="/" method="POST" id="form">
 
                 <div class="col-lg-12 col-sm-12 col-md-12 mx-auto col-12">
                     <label for="name"><h2>Recherchez un Nom</h2></label><br>
@@ -53,6 +53,7 @@
         </div>
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
         <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
+        <div class="adresse_autocomplete" data-adress=""></div>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
                 <div id="message" class="alert"></div>
@@ -101,7 +102,8 @@
                 var result = $('#result')
                 var address = document.getElementById('adress').value
                 var name = document.getElementById('name').value
-                data = address ? address : null
+                var data = address ? address : null
+                debugger;
                 if(!data) data = name ? name : null
                 data = data.split("|")[1]
                 $.ajax({
@@ -110,6 +112,7 @@
                     data: {data : data},
                     dataType: 'json',
                     success: function(data) {
+                        console.log('data:' +data);
                         result.html(data.message)
                         switch (data.status) {
                             case 'ok':
@@ -155,7 +158,8 @@
             var autocomplete = new google.maps.places.Autocomplete(input);
             autocomplete.bindTo('bounds', map);
 
-            document.getElementById('search-btn').addEventListener('click', function() {
+            document.getElementById('search-btn').addEventListener('click', function(e) {
+                // e.preventDefault();
                 var geocoder = new google.maps.Geocoder();
                 // If we want to delete all markers before displaying the one geocoded:
                 // remove every marker then setup the array to null
@@ -261,10 +265,6 @@
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
-            // for (var i = 0; i < markerArray.length; i++) {
-            //   markerArray[i].setMap(null);
-            // }
-            // markerArray = [];
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
 
                 // numbers need to be in float
@@ -312,7 +312,6 @@
         }
 
         function geocodeAddress(geocoder, resultsMap, markerArray) {
-          //debugger;
             document.getElementById('result').innerHTML = "";
             document.getElementById('message').innerHTML = "";
             $('#message').removeClass('alert-danger');
@@ -330,7 +329,6 @@
                         position: results[0].geometry.location
                     });
                     markerArray.push(marker);
-                    //debugger;
                     // Retrive lat and lng of marker and push it in data attr
                     document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                     document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
@@ -462,7 +460,6 @@
 
         function search_criteria(commune, nom, type, map, bounds, markerArray, message) {
           $.post('/search_list',{'commune':commune,'nom':nom, 'type':type}).done(function(data) {
-            //debugger;
             document.getElementById('result').innerHTML = "";
             var result = '';
             for (var i = 0; i < data.length; i++) {
@@ -492,7 +489,6 @@
                 markerArray.push(marker);
               }
             }
-            //debugger;
             message.removeClass('alert-danger');
             message.addClass('alert-success col-lg-10 mx-auto');
             document.getElementById('message').innerHTML = data.length + " établissements correspondant à votre recherche.";

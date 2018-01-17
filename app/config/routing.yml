@@ -25,17 +25,10 @@ fos_user_change_password:
     prefix: /profile
 
 # I'm trying to setup all routes to Home controller as routes that are interacting with the homepage
-cpossible_home:
-    path: /accueil
-    defaults: { _controller: cpossibleBundle:Home:accueil }
 
 cpossible_fetch:
     path:      /
     defaults:  { _controller: cpossibleBundle:Home:fetch }
-
-cpossible_map:
-    path: /map
-    defaults: { _controller: cpossibleBundle:Home:showMarkers}
 
 cpossible_around:
     path: /around
@@ -60,11 +53,7 @@ report_new:
     path: /report/insert
     defaults: { _controller: cpossibleBundle:Report:insertOne }
     methods: POST
-
-# report_delete:
-#     path: /report/{id}/delete
-#     defaults: { _controller: cpossibleBundle:Report:deleteOne }
-#     method: GET
+    
 report_delete:
     path: /report/{id}/delete
     defaults: { _controller: cpossibleBundle:Report:deleteOne }

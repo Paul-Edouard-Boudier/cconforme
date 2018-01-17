@@ -23,66 +23,11 @@
         <link rel="stylesheet" href="{{ asset('css/style_footer.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style_login.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {# <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" /> #}
 
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-
-        <script>
-            $(function() {
-                function log( message ) {
-                    $( "<div>" ).text( message ).prependTo( "#log" );
-                    $( "#log" ).scrollTop( 0 );
-                }
-                $( "#name" ).autocomplete({
-                    source: function (request, response) {
-                        $.get("liste/autocomplete_name",  {
-                            term: request.term
-                        }, function (data) {
-                            var strings = []
-                            $.each(data, function(i, e) {
-                                strings[i] = e["name"] + " | " + e["adress"]
-
-                            })
-                            if (strings)response(strings);
-                        });
-                    },
-                    minLength: 1,
-                    select: function( event, ui ) {
-                        log( ui.item ?
-                            "Selected: " + ui.item.value + " aka " + ui.item.id :
-                            "Nothing selected, input was " + this.value );
-                    }
-                });
-            });
-            $(function() {
-                function log( message ) {
-                    $( "<div>" ).text( message ).prependTo( "#log2" );
-                    $( "#log" ).scrollTop( 0 );
-                }
-                $( "#adress" ).autocomplete({
-                    source: function (request, response) {
-                        $.get("liste/autocomplete_adress", {
-                            term: request.term
-                        }, function (data) {
-                            var strings = []
-                            $.each(data, function(i, e) {
-                                strings[i] = e["name"] + " | " + e["adress"]
-
-                            })
-                            if (strings)response(strings);
-                        });
-                    },
-                    minLength: 1,
-                    select: function( event, ui ) {
-                        log( ui.item ?
-                            "Selected: " + ui.item.value + " aka " + ui.item.id :
-                            "Nothing selected, input was " + this.value );
-                    }
-                });
-            });
-        </script>
 
     {% endblock %}
 
@@ -109,22 +54,9 @@
         </div>
 
     </a>
-    <!-- <div class="form-control col-4">
-        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-
-        {% else %}
-        {% endif %}
-    </div> -->
 
     {% if is_granted("IS_AUTHENTICATED_FULLY") %}
         <div class="row">
-            <!-- <div class="col-md-4"></div>
-            <div class="col-md-4">
-              <div class="action-nav">
-                  <a href="/">Espace Clients</a> //
-                  <a href="/liste/index">Liste ERP</a>
-              </div>
-            </div> -->
             <div class="col-md-4"></div>
             <div class="col-md-2 action-nav">
                 <a href="/report">Liste signalements</a>
@@ -159,6 +91,34 @@
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
     </script>
+     <script>
+            $(function() {
+                function log( message ) {
+                    $( "<div>" ).text( message ).prependTo( "#log" );
+                    $( "#log" ).scrollTop( 0 );
+                }
+                $( "#name" ).autocomplete({
+                    source: function (request, response) {
+                        $.get("liste/autocomplete_name",  {
+                            term: request.term
+                        }, function (data) {
+                            var strings = []
+                            $.each(data, function(i, e) {
+                                strings[i] = e["name"] + " | " + e["adress"]
+
+                            })
+                            if (strings)response(strings);
+                        });
+                    },
+                    minLength: 1,
+                    select: function( event, ui ) {
+                        log( ui.item ?
+                            "Selected: " + ui.item.value + " aka " + ui.item.id :
+                            "Nothing selected, input was " + this.value );
+                    }
+                });
+            });
+        </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script> -->
 {% endblock %}
 </body>

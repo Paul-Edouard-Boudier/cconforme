@@ -8,7 +8,7 @@ class ERPController extends AbstractErpController
 {
     public function autocomplete_nameAction(Request $request)
     {
-        $entities = $this->getErpByType('listeErpNomErp', $request->get('term'));
+        $entities = $this->getErpByType('listeErpNomErp', $_GET['term']);
         $erps = $this->parseErpEntities($entities);
         $response = new JsonResponse();
         $response->setData($erps);
