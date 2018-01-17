@@ -53,53 +53,53 @@ class DbaListeerpController extends Controller
 
                 $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
                 $_SESSION['request'] = [];
-                if($request->query->getAlnum('adap')){
-                  $_SESSION['request']['adap'] = $request->query->getAlnum('adap');
+                if(isset($_GET['adap'])){
+                  $_SESSION['request']['adap'] = $_GET['adap'];
                     $queryBuilder
                         ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
-                        ->setParameter('listeerpIdAdap', '%' . $request->query->getAlnum('adap') . '%' );
+                        ->setParameter('listeerpIdAdap', '%' . $_GET['adap'] . '%' );
                 }
 
-                if($request->query->getAlnum('commune')){
-                  $_SESSION['request']['commune'] = $request->query->getAlnum('commune');
+                if(isset($_GET['commune'])){
+                  // $_SESSION['request']['commune'] = $request->query->getAlnum('commune');
+                  $_SESSION['request']['commune'] = $_GET['commune'];
                     $queryBuilder
                         ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
-                        ->setParameter('listeerpNomCommune', '%' . $request->query->getAlnum('commune') . '%' );
+                        ->setParameter('listeerpNomCommune', '%' . $_GET['commune'] . '%' );
                 }
 
-                if($request->query->getAlnum('demandeur')){
-                  $_SESSION['request']['demandeur'] = $request->query->getAlnum('demandeur');
+                if(isset($_GET['demandeur'])){
+                  $_SESSION['request']['demandeur'] = $_GET['demandeur'];
                     $queryBuilder
                         ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
-                        ->setParameter('listeerpDemandeur', '%' . $request->query->getAlnum('demandeur') . '%' );
+                        ->setParameter('listeerpDemandeur', '%' . $_GET['demandeur'] . '%' );
                 }
 
-                if($request->query->getAlnum('nom_erp')){
-                  $_SESSION['request']['nom_erp'] = $request->query->getAlnum('nom_erp');
+                if(isset($_GET['nom_erp'])){
+                  $_SESSION['request']['nom_erp'] = $_GET['nom_erp'];
                     $queryBuilder
                         ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
-                        ->setParameter('listeErpNomErp', '%' . $request->query->getAlnum('nom_erp') . '%' );
+                        ->setParameter('listeErpNomErp', '%' . $_GET['nom_erp'] . '%' );
                 }
 
-                if($request->query->getAlnum('nom_voie')){
-                  $_SESSION['request']['nom_voie'] = $request->query->getAlnum('nom_voie');
+                if(isset($_GET['nom_voie'])){
+                  $_SESSION['request']['nom_voie'] = $_GET['nom_voie'];
                     $queryBuilder
                         ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
-                        ->setParameter('listeerpNomVoie', '%' . $request->query->getAlnum('nom_voie') . '%' );
+                        ->setParameter('listeerpNomVoie', '%' . $_GET['nom_voie'] . '%' );
                 }
 
-                if($request->query->getAlnum('siret')){
-                  $_SESSION['request']['siret'] = $request->query->getAlnum('siret');
+                if(isset($_GET['siret'])){
+                  $_SESSION['request']['siret'] = $_GET['siret'];
                     $queryBuilder
                         ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
-                        ->setParameter('listeerpSiret', '%' . $request->query->getAlnum('siret') . '%' );
+                        ->setParameter('listeerpSiret', '%' . $_GET['siret'] . '%' );
                 }
 
                 $dbaListeerps = $queryBuilder->getQuery();
                 if (empty($_SESSION['request'])) {
                   $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
                 }
-
                 $paginator = $this->get('knp_paginator');
 
 
