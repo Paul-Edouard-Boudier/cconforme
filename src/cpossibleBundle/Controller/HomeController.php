@@ -58,10 +58,12 @@ class HomeController extends AbstractErpController
       }
     }
     // Function that display all erp that the user want to see
+    /**
+     * @param $request
+     * @return JSON response with all erps
+     */
     public function search_listAction(Request $request) {
       if ($request->isXMLHttpRequest()) {
-        //dump($request);die;
-        //dump($request->get('type'));die;
         $em = $this->getDoctrine()->getManager();
         $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
         $queryBuilder
@@ -82,28 +84,20 @@ class HomeController extends AbstractErpController
         return "Failed";
       }
     }
-
     public function fetchAction ()
     {
         $request = Request::createFromGlobals();
         $search = $request->request;
-        // $test = $search->get('data');
+        // data is holding the id of the erp that the user clicked on
         if($request->isMethod('post') &&
             $search->get('data')
         ) {
-            // if($response = $this->getSingleErp($search->get('data'))) {
-            //     if ($response !== null) {
-            //         $response = $this->parseErpEntity($response);
-            //         $response = $this->constructResponseMessage('ok', $response);
-            //     }
-            //   } else {
-            //         $response = $this->constructResponseMessage('ko');
-            //   };
-            if ($this->getSingleErp($search->get('data')) == null) {
-                $response = $this->constructResponseMessage('ko');
+            $response = $this->getSingleErp($search->get('data'));
+            if ($response == null) {
+                $response = ['message' => 'Aucun erp trouvé.', 'error' => true];
             } else {
                 $response = $this->parseErpEntity($response);
-                $response = $this->constructResponseMessage('ok', $response);
+                $response = $this->constructResponseMessage($response);
             }
 
             $res = new JsonResponse();
@@ -125,47 +119,112 @@ class HomeController extends AbstractErpController
      * @param null $erp ErpEntity
      * @return array
      */
-    private function constructResponseMessage($status, $erp = null) {
-        if ($erp !== null) {
+    private function constructResponseMessage($erp = null) {
+        $erp['accessible'] = 'est accessible';
+        $lat = $erp['lat'];
+        $lng = $erp['lng'];
+        unset($erp['lat'], $erp['lng']);
+        // unsetting keys allow me to have only 4 keys of the erp, therefore only 16 cases to check
+        if ($erp['date'] != null && $erp['delai'] != null) {
+            $erp['accessible'] = null;
             setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
             $date = $erp["date"];
             $delai = $erp["delai"];
             //
             $date = new DateTime($date);
-            $mois = ucfirst(strftime("%B", $date->getTimestamp()));
+            $mois = ucfirst(strftime("%B", $date->getTimestamp())); // usefull
             //
             $date->add(new DateInterval('P'.$delai.'Y'));
             $newdate =  $date->format('d-m-Y');
             $time = strtotime($newdate);
-            $annee = date("Y",$time);
+            $annee = date("Y",$time); // usefull
         }
-        $messageText = [
-            'standard' => "Sauf erreur et en prenant en compte les précautions d’usage listées ci-dessus, ",
-            'pending' => "L'établissement situé à cette adresse a déclaré être rentrés dans la démarche de mise en accessibilité.",
-            'none' => "L'établissement indiqué n'a renseigné aucune adresse."
-        ];
-        switch($status){
-            case 'ok':
-                $response['status'] = 'ok';
-                if ($erp['type'] == 'adap') {
-                    $response["message"] = $messageText['pending'] . " Le demandeur " . $erp["demandeur"] .
-                        " s’est engagé à rendre l’ERP " . $erp["name"] . ", situé au " . $erp["adress"] .
-                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant " .
-                        $mois . " " .$annee. ".";
-                } else {
-                    $response["message"] = "Le demandeur " . $erp["demandeur"] . "a déclaré l’établissement " .
-                        $erp['name'] . ", situé au " . $erp["adress"] .
-                        " conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
-                }
-                // TODO create method getCloseErpFromGeo
+        $nom = $erp['name'];
+        unset($erp['name']);
+        // if no date or no delay, then we consider that the erp is 'reachable'/accessible 
+        unset($erp['date'], $erp['delai']);
+        // $status is here to check wich key are filled up and looks like "1101", each number representing a key of the $erp
+        // in the order given by parseEntity ('adress', 'commune', 'demandeur', 'date')
+        // if date = 1 then it is 'reachable/accessible'
+        $status = $this->fillVariable($erp);
+        // sure enough there is another cleaner solution for this but right now i have many things to do, and not so much 
+        // time to invest in finding this sort of stuff
+        $response['lat'] = $lat;
+        $response['lng'] = $lng;
+        $response['commune'] = $erp['commune'];
+        switch($status) {
+            case $status == "0000":
+                $response['message'] = "Pas assez de données n'ont été renseignées pour cet établissement";
                 return $response;
-            case 'ko':
-                return [
-                    "message" => $messageText['none'],
-                    "status" => 'ko'
-                ];
-            default:
-                return;
+                break;
+            case $status == "0001":
+                $response['message'] = "L'erp '".$nom."' s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee."."; 
+                return $response;
+                break;
+            case $status == "0010":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."' conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "0011":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."', a déclaré l'erp '".$nom."' conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "0100":
+                $response['message'] = "L'erp '".$nom."' situé à ".$erp['commune']." s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "0101":
+                $response['message'] = "L'erp '".$nom."' situé à ".$erp['commune']." a été déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "0110":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."', s'est engagé à rendre l'erp '".$nom."', situé à ".$erp['commune']." conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "0111":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."', à déclaré l'erp '".$nom."', situé à ".$erp['commune'].", comforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "1000":
+                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "1001":
+                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", a été déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "1010":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', situé au ".$erp['adress'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "1011":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', situé au ".$erp['adress'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "1100":
+                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].",  s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "1101":
+                $response['message'] = "L'erp '".$nom."' situé au ".$erp['adress'].", ".$erp['commune'].", a déclaré être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
+            case $status == "1110":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                return $response;
+                break;
+            case $status == "1111":
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                return $response;
+                break;
         }
+    }
+
+    private function fillVariable($array) {
+        $var = "";
+        foreach($array as $keys) {
+            !empty($keys)? $var.="1":$var.="0";
+        }
+        return $var;
     }
 }

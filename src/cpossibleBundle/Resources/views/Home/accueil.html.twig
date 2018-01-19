@@ -54,9 +54,13 @@
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
         <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
         <div class="adresse_autocomplete" data-adress=""></div>
+        <div class="id_autocomplete" data-iditem=""></div>
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
                 <div id="message" class="alert"></div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
+                <div id="error_location" class="alert"></div>
             </div>
             <div class="col-10 mx-auto" id="map"></div>
             <br><br>
@@ -98,38 +102,73 @@
 
         $(document).ready(function() {
 
-            $('#form').on('submit', function() {
-                var result = $('#result')
-                var address = document.getElementById('adress').value
-                var name = document.getElementById('name').value
-                var data = address ? address : null
-                debugger;
-                if(!data) data = name ? name : null
-                data = data.split("|")[1]
-                $.ajax({
-                    method: 'post',
-                    url: '',
-                    data: {data : data},
-                    dataType: 'json',
-                    success: function(data) {
-                        console.log('data:' +data);
-                        result.html(data.message)
-                        switch (data.status) {
-                            case 'ok':
-                                result.removeClass('alert-danger')
-                                result.addClass('alert-success')
-                                break
-                            case 'ko':
-                                result.removeClass('alert-success')
-                                result.addClass('alert-danger')
-                                break
-                        }
-                    },
-                    error: function(data) {
-                    }
-                })
-                return false;
-            })
+            // $('#form').on('submit', function() {
+            //     var result = $('#result')
+            //     var address = document.getElementById('adress').value
+            //     var name = document.getElementById('name').value
+            //     var data = address ? address : null
+            //     debugger;
+            //     if(!data) data = name ? name : null
+            //     data = data.split("|")[1]
+                // $.ajax({
+                //     method: 'post',
+                //     url: '',
+                //     data: {data : data},
+                //     dataType: 'json',
+                //     success: function(data) {
+                //         console.log('data:' +data);
+                //         result.html(data.message)
+                //         switch (data.status) {
+                //             case 'ok':
+                //                 result.removeClass('alert-danger')
+                //                 result.addClass('alert-success')
+                //                 break
+                //             case 'ko':
+                //                 result.removeClass('alert-success')
+                //                 result.addClass('alert-danger')
+                //                 break
+                //         }
+                //     },
+                //     error: function(data) {
+                //     }
+                // })
+            //     return false;
+            // })
+            // $('#form').on('submit', function() {
+            //     var id = $('.id_autocomplete').data('iditem');
+            //     var result = $('#result');
+            //     // debugger;
+            //     $.ajax({
+            //         method: 'post',
+            //         url: '',
+            //         data: {data : id},
+            //         dataType: 'json',
+            //         success: function(data) {
+            //             // console.log('data:' +data);
+            //             result.html(data.message);
+            //             result.removeClass('alert-danger');
+            //             result.addClass('alert-success');
+            //             if (data.error == true) {
+            //                 result.html(data.message);
+            //                 result.removeClass('alert-success');
+            //                 result.addClass('alert-danger');
+            //             }
+            //             if (data.lat !== "0" || data.lng !== "0") {
+            //                 // var marker = new google.maps.Marker({
+            //                 //     map: resultsMap,
+            //                 //     position: results[0].geometry.location
+            //                 // });
+            //                 // markerArray.push(marker);
+            //                 // // Retrive lat and lng of marker and push it in data attr
+            //                 // document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
+            //                 // document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+            //             }
+            //         },
+            //         error: function(data) {
+            //         }
+            //     })
+            //     return false;
+            // })
 
             var isBtnClicked = 0;
             $('.criteres').click(function(e){
@@ -151,6 +190,7 @@
                 center: {lat: 45.750000, lng: 4.850000},
                 zoom: 13
             });
+            var geocoder = new google.maps.Geocoder();
 
             var input = /** @type {!HTMLInputElement} */(
                 document.getElementById('adress'));
@@ -158,18 +198,18 @@
             var autocomplete = new google.maps.places.Autocomplete(input);
             autocomplete.bindTo('bounds', map);
 
-            document.getElementById('search-btn').addEventListener('click', function(e) {
-                // e.preventDefault();
-                var geocoder = new google.maps.Geocoder();
-                // If we want to delete all markers before displaying the one geocoded:
-                // remove every marker then setup the array to null
-                // Removing marker inside a funciton deosn't seems to work, strangely
-                for (var i = 0; i < markerArray.length; i++) {
-                  markerArray[i].setMap(null);
-                }
-                markerArray = [];
-                geocodeAddress(geocoder, map, markerArray);
-            });
+            // document.getElementById('search-btn').addEventListener('click', function(e) {
+            //     // e.preventDefault();
+            //     var geocoder = new google.maps.Geocoder();
+            //     // If we want to delete all markers before displaying the one geocoded:
+            //     // remove every marker then setup the array to null
+            //     // Removing marker inside a funciton deosn't seems to work, strangely
+            //     for (var i = 0; i < markerArray.length; i++) {
+            //       markerArray[i].setMap(null);
+            //     }
+            //     markerArray = [];
+            //     geocodeAddress(geocoder, map, markerArray);
+            // });
 
             var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
@@ -234,33 +274,44 @@
 
             // selector for the form that hold 3 criteria
             $('.searchitems').on('submit', function(event) {
-              event.preventDefault();
-              var commune = $(this)[0][0].value;
-              var nom = $(this)[0][1].value;
-              var type = $(this)[0][2].value;
-              var result = $('#result');
-              var message = $('#message');
+                event.preventDefault();
+                var commune = $(this)[0][0].value;
+                var nom = $(this)[0][1].value;
+                var type = $(this)[0][2].value;
+                var result = $('#result');
+                var message = $('#message');
 
-              // /!\ CHECK CONDITIONS /!\
-              if (type !== "null" && commune.length == 0 && nom.length == 0) {
-                message.removeClass('alert-success col-lg-10 mx-auto');
-                message.addClass('alert-danger col-lg-10 mx-auto');
-                return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
-              }
-              else if (type == "null" && (commune.length == 0 || nom.length == 0)) {
-                  message.removeClass('alert-success col-lg-10 mx-auto');
-                  message.addClass('alert-danger col-lg-10 mx-auto');
-                  return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
-              }
-              message.removeClass('alert-danger col-lg-10 mx-auto');
-              document.getElementById('message').innerHTML = "";
+                // /!\ CHECK CONDITIONS /!\
+                if (type !== "null" && commune.length == 0 && nom.length == 0) {
+                    message.removeClass('alert-success col-lg-10 mx-auto');
+                    message.addClass('alert-danger col-lg-10 mx-auto');
+                    return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
+                }
+                else if (type == "null" && (commune.length == 0 || nom.length == 0)) {
+                    message.removeClass('alert-success col-lg-10 mx-auto');
+                    message.addClass('alert-danger col-lg-10 mx-auto');
+                    return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
+                }
+                message.removeClass('alert-danger col-lg-10 mx-auto');
+                document.getElementById('message').innerHTML = "";
 
-              // /!\ END CHECK CONDITION /!\
-              for (var i = 0; i < markerArray.length; i++) {
-                markerArray[i].setMap(null);
-              }
-              markerArray = [];
-              search_criteria(commune, nom, type, map, bounds, markerArray, message);
+                // /!\ END CHECK CONDITION /!\
+                for (var i = 0; i < markerArray.length; i++) {
+                    markerArray[i].setMap(null);
+                }
+                markerArray = [];
+                search_criteria(commune, nom, type, map, bounds, markerArray, message);
+            })
+
+            $('#form').on('submit', function() {
+                var id = $('.id_autocomplete').data('iditem');
+                var result = $('#result');
+                for (var i = 0; i < markerArray.length; i++) {
+                    markerArray[i].setMap(null);
+                }
+                markerArray = [];
+                getSingleErpFromForm(id, result, map, markerArray, geocoder)
+                return false;
             })
         }
 
@@ -311,27 +362,34 @@
             });
         }
 
-        function geocodeAddress(geocoder, resultsMap, markerArray) {
-            document.getElementById('result').innerHTML = "";
-            document.getElementById('message').innerHTML = "";
-            $('#message').removeClass('alert-danger');
-            $('#message').removeClass('alert-success');
-            var address = document.getElementById('adress').value
+        function geocodeAddress(geocoder, map, markerArray) {
+            // document.getElementById('result').innerHTML = "";
+            // document.getElementById('message').innerHTML = "";
+            // $('#message').removeClass('alert-danger');
+            // $('#message').removeClass('alert-success');
+            // var address = document.getElementById('adress').value
             var name = document.getElementById('name').value
-            data = address ? address : null
-            if(!data) data = name ? name : null
-            data = data.split("|")[1]
+            // data = address ? address : null
+            // if(!data) data = name ? name : null
+            data = name;
+            data = data.split("|")[1];
+            if (data == " ") {
+                return false;
+            }
             geocoder.geocode({'address': data}, function(results, status) {
                 if (status === 'OK') {
-                    resultsMap.setCenter(results[0].geometry.location);
+                    map.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
-                        map: resultsMap,
+                        map: map,
                         position: results[0].geometry.location
                     });
                     markerArray.push(marker);
                     // Retrive lat and lng of marker and push it in data attr
                     document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                     document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+
+                    $('#error_location').removeClass('alert-danger');
+                    $('#error_location').html('');
                 } else {
                 }
             });
@@ -383,7 +441,6 @@
               } else {
               // Browser doesn't support Geolocation
               handleLocationError(false, map, map.getCenter());
-              //displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
               }
           });
 
@@ -497,6 +554,60 @@
             $('#result').removeClass('alert-danger');
             $('#result').append(result);
           })
+        }
+
+        function getSingleErpFromForm(id, result, map, markerArray, geocoder) {
+            $.ajax({
+                method: 'post',
+                url: '',
+                data: {data : id},
+                dataType: 'json',
+                success: function(data) {
+                    result.html(data.message);
+                    result.removeClass('alert-danger');
+                    result.addClass('alert-success');
+                    // debugger;
+                    if (data.error == true) {
+                        result.html(data.message);
+                        result.removeClass('alert-success');
+                        result.addClass('alert-danger');
+                    }
+                    geocodeAddress(geocoder, map, markerArray);
+                    if (geocodeAddress() == false) {
+                        if (data.lat == "0" || data.lng == "0") {
+                            if (data.commune) {
+                                geocoder.geocode( { 'address': data.commune }, function(results, status) {
+                                    if (status == google.maps.GeocoderStatus.OK) {
+                                        map.setCenter(results[0].geometry.location);
+                                        document.getElementsByClassName('storage')[0].attributes[1].value = results[0].geometry.location.lat();
+                                        document.getElementsByClassName('storage')[0].attributes[2].value = results[0].geometry.location.lng();
+                                        } 
+                                    else {
+                                        // alert("Could not find location: " + location);
+                                    }
+                                });
+                            }
+                            $('#error_location').html("impossible de localiser précisément l'erp");
+                            $('#error_location').addClass('alert-danger');
+                        }
+                        else if (data.lat !== "0" || data.lng !== "0") {
+                            var latLng = {lat: parseFloat(data.lat), lng: parseFloat(data.lng)};
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: latLng
+                            });
+                            map.setCenter(latLng);
+                            marker.setMap(map);
+                            markerArray.push(marker);
+                            // Retrive lat and lng of marker and push it in data attr
+                            document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
+                            document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                        }
+                    }
+                },
+                error: function(data) {
+                }
+            })
         }
     </script>
 {% endblock %}

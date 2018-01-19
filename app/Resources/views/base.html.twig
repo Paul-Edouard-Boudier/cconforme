@@ -93,7 +93,11 @@
     </script>
      <script>
             $(function() {
+                // function that add the item to the form on click
+                var idsitem = []; // array that holds id for item autocompleted
+                var strings = []; // array that holds value of item autocompleted
                 function log( message ) {
+                    // debugger;
                     $( "<div>" ).text( message ).prependTo( "#log" );
                     $( "#log" ).scrollTop( 0 );
                 }
@@ -102,21 +106,38 @@
                         $.get("liste/autocomplete_name",  {
                             term: request.term
                         }, function (data) {
-                            var strings = []
+                            strings = [];
+                            idsitem = [];
                             $.each(data, function(i, e) {
-                                strings[i] = e["name"] + " | " + e["adress"]
-
+                                strings[i] = e["name"] + " | " + e["adress"];
+                                idsitem[i] = e['id'];
                             })
-                            if (strings)response(strings);
+                            if (strings) {
+                                response(strings)
+                            };
                         });
                     },
                     minLength: 1,
-                    select: function( event, ui ) {
+                    select: function( event, ui) {
+                        var indexArr = arraySearch(strings, ui.item.value); // index of strings so we can retrieve the id of the item
+                        var id = idsitem[indexArr];
+                        // document.getElementsByClassName('id_autocomplete').attr('data-iditem').value = id;
+                        $('.id_autocomplete').data('iditem', id);
+                        // debugger;
                         log( ui.item ?
                             "Selected: " + ui.item.value + " aka " + ui.item.id :
                             "Nothing selected, input was " + this.value );
                     }
                 });
+
+
+                function arraySearch(arr,val) {
+                    // debugger;
+                    for (var i=0; i<arr.length; i++)
+                        if (arr[i] === val)                    
+                            return i;
+                    return false;
+                }
             });
         </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&callback=initAutocomplete"></script> -->
