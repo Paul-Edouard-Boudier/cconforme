@@ -25,7 +25,7 @@ abstract class AbstractErpController extends Controller
             'lng' => $erpEntity->getListeerpLongitude(),
         ];
         if ($erpEntity->getListeerpNumeroVoie() != '') $entity['adress'] = $erpEntity->
-            getListeerpNumeroVoie() . ' ' . $erpEntity->getListeerpNomVoie() . ' ' .
+            getListeerpNumeroVoie() . ' ' . $erpEntity->getListeerpNomVoie() . ', ' .
             $erpEntity->getListeerpCodePostal();
         return $entity;
     }
@@ -59,7 +59,7 @@ abstract class AbstractErpController extends Controller
                 'id' => $entity->getListeerpId(),
             ];
             if ($entity->getListeerpNumeroVoie() != '') $entities[$key]['adress'] = $entity->
-                getListeerpNumeroVoie() . ' ' . $entity->getListeerpNomVoie() . ' ' .
+                getListeerpNumeroVoie() . ' ' . $entity->getListeerpNomVoie() . ', ' .
                 $entity->getListeerpCodePostal();
         }
         return $entities;

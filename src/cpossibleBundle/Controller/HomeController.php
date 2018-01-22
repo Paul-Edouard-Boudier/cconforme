@@ -20,7 +20,7 @@ class HomeController extends AbstractErpController
 
         $conn = $this->getDoctrine()->getManager()
                       ->getConnection();
-        $sql = "SELECT listeERP_latitude, listeERP_longitude, liste_ERP_nom_erp FROM resicadminresic.dba_listeERP;";
+        $sql = "SELECT * FROM resicadminresic.dba_listeERP;";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -34,6 +34,8 @@ class HomeController extends AbstractErpController
         // that is the point where the user is searching
         // and then we push into [markers], every items that we want
         foreach ($result as $item) {
+          if ($item['listeERP_numero_voie'] != '') $item['address'] = $item['listeERP_numero_voie'] . ' ' . $item['listeERP_nom_voie'] . ', ' .
+            $item['listeERP_code_postal'].' '.$item['listeERP_nom_commune'];
           $ilat = floatval($item['listeERP_latitude']);
           $ilong = floatval($item['listeERP_longitude']);
           $distanceAuCarre = (($ilat - $lat) ** 2) + (($ilong - $lng) ** 2);
