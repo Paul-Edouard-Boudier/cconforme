@@ -102,13 +102,13 @@ class DbaListeerpController extends Controller
                 }
                 $paginator = $this->get('knp_paginator');
 
-
                 $result =$paginator->paginate(
                     $dbaListeerps,
                     $request->query->getInt('page', 1),
                     $request->query->getInt('limit', 10)
                 );
-
+                // $test = $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => 69031198]);
+                // dump($test);die;
                 return $this->render('dbalisteerp/index.html.twig', array(
                     'dbaListeerps' => $result,
                 ));

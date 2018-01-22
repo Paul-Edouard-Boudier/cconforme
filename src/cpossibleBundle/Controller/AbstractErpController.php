@@ -31,6 +31,9 @@ abstract class AbstractErpController extends Controller
     }
     // It's for autocomplete
     protected function getErpByType($type, $searchParam) {
+        // not sure if true (not my code) but:
+        // that thing is to supress html and php tag then delete white space from beggining and end of string
+        // then check if first term is a number, then delete it (i think so)
         $term = trim(strip_tags($searchParam));
         if (is_numeric(mb_substr($term, 0, 1))) {
             $term = explode(" ",$term);

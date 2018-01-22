@@ -322,6 +322,7 @@
                 // iterate over data that is rendered by the controller
                 for( i = 0; i < ((data.length) -1); i++ ) {
                   // Setup the position of the marker dynamically via it's info
+                  // try to geocode the erp via the full adress if known
                     var position = new google.maps.LatLng(parseFloat(data[i].listeERP_latitude), parseFloat(data[i].listeERP_longitude));
                     // extends bounds of the map to the position of the marker
                     bounds.extend(position);
@@ -524,6 +525,7 @@
 
               // If the erp has latitude and long in ddb we take it, otherise we don't display it on the map
               if (parseFloat(data[i].listeerpLatitude) != 0) {
+                // try to geocode via the full address if known (look end of file )
                 var position = new google.maps.LatLng(parseFloat(data[i].listeerpLatitude), parseFloat(data[i].listeerpLongitude));
 
                 // // extends bounds of the map to the position of the marker
