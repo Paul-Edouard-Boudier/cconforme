@@ -158,11 +158,11 @@ class HomeController extends AbstractErpController
                 return $response;
                 break;
             case $status == "0001":
-                $response['message'] = "L'erp '".$nom."' s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee."."; 
+                $response['message'] = "L'erp '".$nom."' sera conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee."."; 
                 return $response;
                 break;
             case $status == "0010":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."' conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."' conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "0011":
@@ -170,51 +170,51 @@ class HomeController extends AbstractErpController
                 return $response;
                 break;
             case $status == "0100":
-                $response['message'] = "L'erp '".$nom."' situé à ".$erp['commune']." s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "L'erp '".$nom."' (".$erp['commune'].") sera conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "0101":
-                $response['message'] = "L'erp '".$nom."' situé à ".$erp['commune']." a été déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "L'erp '".$nom."' (".$erp['commune'].") s'est déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
             case $status == "0110":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."', s'est engagé à rendre l'erp '".$nom."', situé à ".$erp['commune']." conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."', s'est engagé à rendre l'erp '".$nom."', (".$erp['commune'].") conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "0111":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."', à déclaré l'erp '".$nom."', situé à ".$erp['commune'].", comforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."', à déclaré l'erp '".$nom."', (".$erp['commune']."), comforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
             case $status == "1000":
-                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "L'erp '".$nom."', (".$erp['adress']."), sera conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "1001":
-                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", a été déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "L'erp '".$nom."', (".$erp['adress']."), s'est déclaré conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
             case $status == "1010":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', situé au ".$erp['adress'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', (".$erp['adress']."), conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "1011":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', situé au ".$erp['adress'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', (".$erp['adress']."), conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
             case $status == "1100":
-                $response['message'] = "L'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].",  s'est engagé à être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "L'erp '".$nom."', (".$erp['adress']."), ".$erp['commune'].",  sera conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "1101":
-                $response['message'] = "L'erp '".$nom."' situé au ".$erp['adress'].", ".$erp['commune'].", a déclaré être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "L'erp '".$nom."' (".$erp['adress']."), ".$erp['commune'].", a déclaré être conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
             case $status == "1110":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap avant ".$mois." ".$annee.".";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' s'est engagé à rendre l'erp '".$nom."', (".$erp['adress']."), ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap d'ici ".$mois." ".$annee.".";
                 return $response;
                 break;
             case $status == "1111":
-                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', situé au ".$erp['adress'].", ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
+                $response['message'] = "Le demandeur '".$erp['demandeur']."' a déclaré l'erp '".$nom."', (".$erp['adress']."), ".$erp['commune'].", conforme à la réglementation en matière d’accessibilité des personnes en situation de handicap.";
                 return $response;
                 break;
         }
