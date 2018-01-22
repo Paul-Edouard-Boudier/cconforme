@@ -9,10 +9,10 @@ cpossibleBundle\Entity\Report:
             generator:
                 strategy: AUTO
     fields:
-        adresseErp:
+        nomErp:
             type: string
             length: 200
-            column: adresse_erp
+            column: nom_erp
         adresseSignalee:
             type: string
             length: 200

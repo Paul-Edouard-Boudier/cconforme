@@ -15,7 +15,7 @@ class Report
     /**
      * @var string
      */
-    private $adresseErp;
+    private $nomErp;
 
     /**
      * @var string
@@ -44,27 +44,27 @@ class Report
     }
 
     /**
-     * Set adresseErp
+     * Set nomErp
      *
-     * @param string $adresseErp
+     * @param string $nomErp
      *
      * @return Report
      */
-    public function setAdresseErp($adresseErp)
+    public function setNomErp($nomErp)
     {
-        $this->adresseErp = $adresseErp;
+        $this->nomErp = $nomErp;
 
         return $this;
     }
 
     /**
-     * Get adresseErp
+     * Get nomErp
      *
      * @return string
      */
-    public function getAdresseErp()
+    public function getNomErp()
     {
-        return $this->adresseErp;
+        return $this->nomErp;
     }
 
     /**

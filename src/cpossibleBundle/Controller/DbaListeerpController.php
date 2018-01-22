@@ -231,6 +231,7 @@ class DbaListeerpController extends Controller
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
 
                 $dbaListeerp = new Dbalisteerp();
+                // $types = $this->getTypes();
                 $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
                 $form->handleRequest($request);
                 if ($form->isSubmitted() && $form->isValid()) {
@@ -248,6 +249,7 @@ class DbaListeerpController extends Controller
                 return $this->render('dbalisteerp/new.html.twig', array(
                     'dbaListeerp' => $dbaListeerp,
                     'form' => $form->createView(),
+                    // 'types' =>$types,
                 ));
 
             } else {
@@ -350,5 +352,21 @@ class DbaListeerpController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+     /** function used in the form builder to get types as an array
+    *
+    */
+    private function getTypes() {
+      $em = $this->getDoctrine()->getManager();
+        $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+        $arraytypes = [];
+        foreach ($types as $key => $value) {
+          $test = [];
+          $test = [$value->getTypeactiviteNom() => $value->getTypeactiviteCode()];
+          // dump($value->getTypeactiviteNom());
+          array_push($arraytypes, $test);
+        }
+        return $arraytypes;
     }
 }

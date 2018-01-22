@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DbaListeerpType extends AbstractType
 {
@@ -35,14 +36,15 @@ class DbaListeerpType extends AbstractType
                 '3ème catégorie de 301 à 700 personnes' => '3',
                 '4ème catégorie <= 300 personnes - sauf 5ème catégorie' => '4',
                 '5ème catégorie < seuil dépendant de l\'établissement' => '5']])
-          ->add('listeerpType', ChoiceType::class,
-            ['choices' =>
-              [ 'J' => "J", 'L' => "L", 'M' => "M", 'N' => "N", 'O' => "O", 'P' => "P", 'R' => "R",
-                'S' => "S", 'T' => "T", 'U' => "U", 'V' => "V", 'W' => "W", 'X' => "X",
-                'Y' => "Y", 'PA' => "PA", 'CTS' => "CTS", 'SG' => "SG", 'PS' => "PS",
-                'OA' => "OA", 'GA' => "GA", 'EF' => "EF", 'REF' => "REF"],
-              'multiple' => true,
-              ])
+          // ->add('listeerpType', ChoiceType::class,
+          //   ['choices' =>
+          //     [ 'J' => "J", 'L' => "L", 'M' => "M", 'N' => "N", 'O' => "O", 'P' => "P", 'R' => "R",
+          //       'S' => "S", 'T' => "T", 'U' => "U", 'V' => "V", 'W' => "W", 'X' => "X",
+          //       'Y' => "Y", 'PA' => "PA", 'CTS' => "CTS", 'SG' => "SG", 'PS' => "PS",
+          //       'OA' => "OA", 'GA' => "GA", 'EF' => "EF", 'REF' => "REF"],
+          //     // $arraytypes,
+          //     'multiple' => true,
+          //     ])
           ->add('listeerpDateValidAdap')
           ->add('listeerpDelaiAdap')
           ->add('listeerpIdIgn')

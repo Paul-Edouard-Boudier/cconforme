@@ -81,10 +81,11 @@ class ReportController extends Controller
         $fullMessage .= $message . " / ";
       }
       $report = new Report();
-      $report->setAdresseErp($request->request->get('adresse_erp'));
+      $report->setNomErp($request->request->get('nom_erp'));
       $report->setAdresseSignalee($request->request->get('adresse_signalee'));
       $report->setUserEmail($request->request->get('email'));
       $report->setMessage($fullMessage);
+      // dump($report);die;
       $em->persist($report);
       $em->flush();
 
