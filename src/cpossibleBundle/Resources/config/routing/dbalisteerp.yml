@@ -11,7 +11,12 @@ dbalisteerp_show:
 dbalisteerp_new:
     path:     /new
     defaults: { _controller: "cpossibleBundle:DbaListeerp:new" }
-    methods:  [GET, POST]
+    methods:  GET
+
+dbaListeerp_insert:
+    path: /insert
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:insert"}
+    methods: POST
 
 dbalisteerp_edit:
     path:     /{listeerpId}/edit

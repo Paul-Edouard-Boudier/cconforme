@@ -3,6 +3,7 @@
 namespace cpossibleBundle\Controller;
 
 use cpossibleBundle\Entity\DbaListeerp;
+use cpossibleBundle\Entity\DbaTypeactivite;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -217,11 +218,26 @@ class DbaListeerpController extends Controller
         return $this->redirectToRoute('fos_user_security_login');
       }
     }
+
+    public function newAction() {
+      $securityContext = $this->container->get('security.authorization_checker');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+          $em = $this->getDoctrine()->getManager();
+          $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+          $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
+          return $this->render('dbalisteerp/new.html.twig', [
+            'types' => $types,
+            'categories' => $categories,
+          ]);
+        }
+      }
+    }
     /**
      * Creates a new dbaListeerp entity.
      *
      */
-    public function newAction(Request $request)
+    public function insertAction(Request $request)
     {
 
         $securityContext = $this->container->get('security.authorization_checker');
@@ -229,28 +245,78 @@ class DbaListeerpController extends Controller
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+                $em = $this->getDoctrine()->getManager();
+                dump($request->request);
+                // $dbaListeerp = new Dbalisteerp();
+                // // $types = $this->getTypes();
+                // $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
+                // $form->handleRequest($request);
+                // if ($form->isSubmitted() && $form->isValid()) {
+                //   $types = "";
+                //   foreach ($dbaListeerp->getListeerpType() as $key => $type) {
+                //     $types .= $type.",";
+                //   }
+                //   $dbaListeerp->setListeerpType($types);
+                //   $em->persist($dbaListeerp);
+                //   $em->flush();
+                //   return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                // }
 
-                $dbaListeerp = new Dbalisteerp();
-                // $types = $this->getTypes();
-                $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
-                $form->handleRequest($request);
-                if ($form->isSubmitted() && $form->isValid()) {
-                  $types = "";
-                  foreach ($dbaListeerp->getListeerpType() as $key => $type) {
-                    $types .= $type.",";
-                  }
-                  $dbaListeerp->setListeerpType($types);
-                  $em = $this->getDoctrine()->getManager();
-                  $em->persist($dbaListeerp);
-                  $em->flush();
-                  return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
+                // return $this->render('dbalisteerp/new.html.twig', array(
+                //     'dbaListeerp' => $dbaListeerp,
+                //     'form' => $form->createView(),
+                //     // 'types' =>$types,
+                // ));
+
+              // -------------------------
+                $erp = new Dbalisteerp();
+
+                $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->request->get('departement')])->getDepartementCode();
+
+                $tempAdress = $request->request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
+                $adressExploded = explode(" ",$tempAdress);
+                $intitule_voie = $adressExploded[0]; // "Place"
+
+                $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+                $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+                  ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+                $result = $q->getQuery();
+                // Here we want to get the nom de voie as we wish to put in ddb like "PL"
+                $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+                $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+                $fulladress = "";
+                $fulladress .= $voie;
+                for ($i=1; $i < count($adressExploded) ; $i++) {
+                  $fulladress .= " " .strtoupper($adressExploded[$i]);
                 }
 
-                return $this->render('dbalisteerp/new.html.twig', array(
-                    'dbaListeerp' => $dbaListeerp,
-                    'form' => $form->createView(),
-                    // 'types' =>$types,
-                ));
+                $types = "";
+                foreach ($request->get('types') as $type) {
+                  $types .= $type.",";
+                }
+                
+                $erp->setListeerpType($types);
+                $erp->setListeerpNomVoie($fulladress);
+                $erp->setListeerpDepartement($dpt);
+                $erp->setListeerpNumeroVoie($request->request->get('numero_rue'));
+                $erp->setListeerpCodePostal($request->request->get('code_postal'));
+                $erp->setListeerpNomCommune($request->request->get('commune'));
+                $erp->setListeerpDateValidAdap($request->get('date_valid'));
+                $erp->setListeerpLatitude($request->request->get('lat'));
+                $erp->setListeerpLongitude($request->request->get('lng'));
+                $erp->setListeerpDelaiAdap($request->get('delai'));
+                $erp->setListeerpNature($request->get('nature'));
+                $erp->setListeerpTypedossier($request->get('dossier'));
+                $erp->setListeerpCategorie($request->request->get('categorie'));
+                $erp->setListeerpDemandeur($request->request->get('demandeur'));
+                $erp->setListeErpNomErp($request->request->get('nom_erp'));
+                $erp->setListeerpSiret($request->request->get('siret'));
+                $erp->setListeerpIdAdap($request->request->get('id_adap'));
+                $erp->setListeerpIdIgn($request->request->get('id_ign'));
+                $erp->setListeerpStatut(0);
+                // $em->persist($erp);
+                // $em->flush();
+                dump($erp);die;
 
             } else {
 

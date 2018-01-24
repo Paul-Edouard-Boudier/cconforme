@@ -1,156 +1,156 @@
 {% extends 'base.html.twig' %}
 
-{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{# {% form_theme form 'bootstrap_3_layout.html.twig' %} #}
 {# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
 
+{# {% block stylesheets %}
+    <style>
+        #map {
+            height: 100%;
+        }
+    </style>
+{% endblock %} #}
 
 {% block body %}
     <br>
     <h1>Saisie d'un établissement sur la liste d'accessibilité</h1>
     <br>
-
-
-    {{ form_start(form) }}
-    {% if form_errors(form) != '' %} 
-        {{ form_errors(form) }}
-     {% endif %}
-
     <div class="container-fluid">
-        <div class="row">
-
-            <div class="col-lg-4 offset-2">
-                {{ form_widget(form.listeerpDemandeur, {'attr': {'placeholder': 'Demandeur'}}) }}
+        <form action="/liste/insert" method="post">
+            <label for="demandeur">Demandeur</label>
+            <input type="text" name="demandeur" placeholder="nom du demandeur">
+            <label for="nom">Nom de l'établissement / enseigne</label>
+            <input type="text" name="nom_erp" placeholder="Établissement / enseigne">
+            <label for="date">Date d'engagement'</label>
+            <input id="date" type="date" name="date_valid">
+            <label for="delai">Delai de mise en conformité</label>
+            <input type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
+            <label for="types">Types de l'établissement</label>
+            <select multiple name="types[]" class="form-control" id="exampleFormControlSelect2">
+                {% for type in types %}
+                    <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
+                {% endfor %}
+            </select>
+            <label for="dossier">type de dossier</label>
+            <select name="dossier">
+                <option value="adap_s">adap_s</option>
+                <option value="at_adap">at_adap</option>
+                <option value="attestation">attestation</option>
+                <option value="adap">adap</option>
+            </select>
+            <select name="categorie">
+                {% for categorie in categories %}
+                    <option value="{{categorie.categorieId}}">{{categorie.categorieNom}}</option>
+                {% endfor %}
+            </select>
+            <label for="nature">nature de l'établissement</label>
+            <select name="nature">
+                <option value="erp">erp</option>
+                <option value="iop">iop</option>
+            </select>
+            <div>
+                <div id="locationField">
+                  <input id="autocompleteAddress" placeholder="Enter your address"
+                         onFocus="geolocate()" type="text"></input>
+                </div>
+                <label for="numero_rue">Numéro de rue</label>
+                <input name="numero_rue" class="field" id="street_number" disabled="true"></input>
+                <label for="rue">Rue</label>
+                <input name="rue" class="field" id="route" disabled="true"></input>
+                    <!-- Note: Selection of address components in this example is typical.
+                         You may need to adjust it for the locations relevant to your app. See
+                         https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform
+                    -->
+                <label for="commune">Commune</label>
+                <input name="commune" class="field" id="locality" disabled="true"></input>
+                <label for="departement">Département</label>
+                <input name="departement" class="field" id="administrative_area_level_2" disabled="true"></input>
+                <label for="code_postal">Code postal</label>
+                <input name="code_postal" class="field" id="postal_code" disabled="true"></input>
+                <input type="hidden" id="lat" name="lat"></input>
+                <input type="hidden" id="lng" name="lng"></input>
             </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(form.listeErpNomErp, {'attr': {'placeholder': 'Etablissement, enseigne'}}) }}
+            <div>
+                <input type="text" name="id_ign" placeholder="id IGN">
+                <input type="text" name="siret" placeholder="Siret">
+                <input type="text" name="id_adap" placeholder="Id Adap">
             </div>
-
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-2 offset-2">
-                {{ form_widget(form.listeerpSiret, {'attr': {'placeholder': 'Siret'}}) }}
-            </div>
-
-            <div class="col-lg-1">
-                {{ form_widget(form.listeerpNumeroVoie, {'attr': {'placeholder': 'Numéro Voie'}}) }}
-            </div>
-
-            <div class="col-lg-1">
-                {{ form_widget(form.listeerpComplementVoie, {'attr': {'placeholder': 'Compl. voie'}}) }}
-            </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(form.listeerpNomVoie, {'attr': {'placeholder': 'Nom de la voie'}}) }}
-            </div>
-
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-1 offset-5">
-                {{ form_widget(form.listeerpCodePostal, {'attr': {'placeholder': 'Code Postal'}}) }}
-            </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(form.listeerpNomCommune, {'attr': {'placeholder': 'Ville'}}) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-8 mx-auto" style="height: 20px; border-top: 2px solid blue;"></div>
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-1 offset-5">
-                <h3>type d'ERP</h3>
-                {{ form_widget(form.listeerpNature) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-4 offset-2">
-                <h3>Activité</h3>
-                {{ form_widget(form.listeerpType) }}
-            </div>
-
-            <div class="col-lg-4">
-                <h3>Catégorie</h3>
-                {{ form_widget(form.listeerpCategorie) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-2 offset-2">
-                {{ form_widget(form.listeerpTypedossier) }}
-            </div>
-            <div class="col-lg-2">
-                {{ form_widget(form.listeerpIdAdap, {'attr': {'placeholder': 'Numéro Adap'}}) }}
-            </div>
-
-            <div class="col-lg-2">
-                {{ form_widget(form.listeerpDateValidAdap, {'attr': {'placeholder': 'Date d\'engagement'}}) }}
-            </div>
-
-            <div class="col-lg-2">
-                {{ form_widget(form.listeerpDelaiAdap, {'attr': {'placeholder': 'Délai Adap'}}) }}
-            </div>
-        </div>
-
-        <br>
-        <br>
-        <br>
-
-        <div class="row">
-            <div class="col-lg-2 offset-5">
-            {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
-            </div>
-
-            {{ form_widget(form._token) }}
-
-            {{ form_end(form, {'render_rest': false}) }}
-
-            <br>
-            <br>
-
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <ul class="list-group">
-                    <li class="list-group-item col-lg-1 mx-auto">
-                        <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <br>
+            <input type="submit">
+        </form>
     </div>
+    <script>
+      // This example displays an address form, using the autocomplete feature
+      // of the Google Places API to help users fill in the information.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      var placeSearch, autocompleteAddress;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_2: 'short_name',
+        postal_code: 'short_name'
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocompleteAddress = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocompleteAddress')),
+            {types: ['geocode'], 
+            componentRestrictions: {country: 'fr'}
+            });
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocompleteAddress.addListener('place_changed', fillInAddress);
+        // debugger;
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocompleteAddress.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          document.getElementById(component).disabled = false;
+        }
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }
+        $('#lat').val(place.geometry.location.lat());
+        $('#lng').val(place.geometry.location.lng());
+        // debugger
+      }
+
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocompleteAddress.setBounds(circle.getBounds());
+          });
+        }
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&libraries=places&callback=initAutocomplete"
+        async defer></script>
 {% endblock %}

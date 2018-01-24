@@ -35,6 +35,28 @@ class DbaCategorie
      */
     private $categorieNom;
 
+    /**
+     * @return string
+     */
+    public function getCategorieCode()
+    {
+        return $this->categorieCode;
+    }
 
+    /**
+     * @return string
+     */
+    public function getCategorieNom()
+    {
+        return $this->categorieNom;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategorieId()
+    {
+        return $this->categorieId;
+    }
 }
 
