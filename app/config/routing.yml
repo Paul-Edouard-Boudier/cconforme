@@ -73,45 +73,45 @@ annot:
 
 # ---------------
 
-dbalisteerp_index:
-    path:     /index
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:index" }
-    methods:  GET
+# dbalisteerp_index:
+#     path:     /index
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:index" }
+#     methods:  GET
 
-dbalisteerp_show:
-    path:     /{listeerpId}/show
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:show" }
-    methods:  GET
+# dbalisteerp_show:
+#     path:     /{listeerpId}/show
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:show" }
+#     methods:  GET
 
-dbalisteerp_new:
-    path:     /liste/new
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:new" }
-    methods:  GET
+# dbalisteerp_new:
+#     path:     /liste/new
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:new" }
+#     methods:  GET
 
-dbaListeerp_insert:
-    path: /liste/insert
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:insert"}
-    methods: POST
+# dbaListeerp_insert:
+#     path: /liste/insert
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:insert"}
+#     methods: POST
 
-dbalisteerp_edit:
-    path:     /{listeerpId}/edit
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:edit" }
-    methods:  [GET, POST]
+# dbalisteerp_edit:
+#     path:     /{listeerpId}/edit
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:edit" }
+#     methods:  [GET, POST]
 
-dbalisteerp_delete:
-    path:     /{listeerpId}/delete
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
-    methods:  DELETE
+# dbalisteerp_delete:
+#     path:     /{listeerpId}/delete
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
+#     methods:  DELETE
 
-dbalisteerp_fetch:
-    path:     /fetch
-    defaults: { _controller: "cpossibleBundle:DbaListeerp:fetch" }
+# dbalisteerp_fetch:
+#     path:     /fetch
+#     defaults: { _controller: "cpossibleBundle:DbaListeerp:fetch" }
 
-ERP_Autocomplete_name:
-    path: /autocomplete_name
-    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_name"}
+# ERP_Autocomplete_name:
+#     path: /autocomplete_name
+#     defaults: { _controller: "cpossibleBundle:ERP:autocomplete_name"}
 
-ERP_Autocomplete_adress:
-    path: /autocomplete_adress
-    defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}
+# ERP_Autocomplete_adress:
+#     path: /autocomplete_adress
+#     defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}
 
