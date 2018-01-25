@@ -1,81 +1,150 @@
 {% extends 'base.html.twig' %}
 
-{# {% form_theme form 'bootstrap_3_layout.html.twig' %} #}
-{# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
-
-{# {% block stylesheets %}
-    <style>
-        #map {
-            height: 100%;
-        }
-    </style>
-{% endblock %} #}
-
 {% block body %}
     <br>
     <h1>Saisie d'un établissement sur la liste d'accessibilité</h1>
     <br>
     <div class="container-fluid">
         <form action="/liste/insert" method="post">
-            <label for="demandeur">Demandeur</label>
-            <input type="text" name="demandeur" placeholder="nom du demandeur">
-            <label for="nom">Nom de l'établissement / enseigne</label>
-            <input type="text" name="nom_erp" placeholder="Établissement / enseigne">
-            <label for="date">Date d'engagement'</label>
-            <input id="date" type="date" name="date_valid">
-            <label for="delai">Delai de mise en conformité</label>
-            <input type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
-            <label for="types">Types de l'établissement</label>
-            <select multiple name="types[]" class="form-control" id="exampleFormControlSelect2">
-                {% for type in types %}
-                    <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
-                {% endfor %}
-            </select>
-            <label for="dossier">type de dossier</label>
-            <select name="dossier">
-                <option value="adap_s">adap_s</option>
-                <option value="at_adap">at_adap</option>
-                <option value="attestation">attestation</option>
-                <option value="adap">adap</option>
-            </select>
-            <select name="categorie">
-                {% for categorie in categories %}
-                    <option value="{{categorie.categorieId}}">{{categorie.categorieNom}}</option>
-                {% endfor %}
-            </select>
-            <label for="nature">nature de l'établissement</label>
-            <select name="nature">
-                <option value="erp">erp</option>
-                <option value="iop">iop</option>
-            </select>
-            <div>
-                <div id="locationField">
-                  <input id="autocompleteAddress" placeholder="Enter your address"
-                         onFocus="geolocate()" type="text"></input>
+            <div class="row">
+                <div class="col-4">
+                    <div>
+                        {# <label for="demandeur">Demandeur</label> #}
+                        <input required class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
+                    </div>
                 </div>
-                <label for="numero_rue">Numéro de rue</label>
-                <input name="numero_rue" class="field" id="street_number" disabled="true"></input>
-                <label for="rue">Rue</label>
-                <input name="rue" class="field" id="route" disabled="true"></input>
-                    <!-- Note: Selection of address components in this example is typical.
-                         You may need to adjust it for the locations relevant to your app. See
-                         https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform
-                    -->
-                <label for="commune">Commune</label>
-                <input name="commune" class="field" id="locality" disabled="true"></input>
-                <label for="departement">Département</label>
-                <input name="departement" class="field" id="administrative_area_level_2" disabled="true"></input>
-                <label for="code_postal">Code postal</label>
-                <input name="code_postal" class="field" id="postal_code" disabled="true"></input>
-                <input type="hidden" id="lat" name="lat"></input>
-                <input type="hidden" id="lng" name="lng"></input>
+                <div class="col-4">
+                    <div>
+                        {# <label for="nom">Nom de l'établissement / enseigne</label> #}
+                        <input required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <input required class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
+                </div>
             </div>
-            <div>
-                <input type="text" name="id_ign" placeholder="id IGN">
-                <input type="text" name="siret" placeholder="Siret">
-                <input type="text" name="id_adap" placeholder="Id Adap">
+            <br><br>
+            <div class="row">
+                <div class="col-6" id="locationField">
+                    <label for="adress">Entrez l'adresse de l'établissement</label>
+                    <input required class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
+                         {# onFocus="geolocate()" #} type="text"></input>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="numero_rue">N° de rue</label>
+                            <input required class="form-control field" name="numero_rue" id="street_number" disabled="true"></input>
+                        </div>
+                        <div class="col-5">
+                            <label for="departement">Département</label>
+                            <input required name="departement" class="form-control field" id="administrative_area_level_2" disabled="true"></input>
+                        </div>
+                        <div class="col-5">
+                            <label for="code_postal">Code postal</label>
+                            <input required name="code_postal" class="field form-control" id="postal_code" disabled="true"></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="rue">Rue</label>
+                            <input required class="form-control field" name="rue" id="route" disabled="true"></input>
+                        </div>
+                        <div class="col-6">
+                            <label for="commune">Commune</label>
+                            <input required name="commune" class="form-control field" id="locality" disabled="true"></input>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input type="submit">
+            <br>
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <label for="types">Type(s) de l'établissement</label>
+                    <select multiple name="types[]" class="form-control" style="height:75%" id="exampleFormControlSelect2">
+                        {% for type in types %}
+                            <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-10 offset-1">
+                            <label for="categorie">Catégorie</label>
+                            <select name="categorie" class="form-control">
+                                {% for categorie in categories %}
+                                    <option value="{{categorie.categorieId}}">{{categorie.categorieNom}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-6 offset-3">
+                            <label for="nature">nature de l'établissement</label>
+                            <select name="nature" class="form-control">
+                                <option value="erp">erp</option>
+                                <option value="iop">iop</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="date">Date d'engagement</label>
+                        </div>
+                        <div class="col-6">
+                            <label for="delai">Delai de mise en conformité</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input required class="form-control" id="date" type="date" name="date_valid">
+                        </div>
+                        <div class="col-6">
+                            <input required class="form-control" type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="adap">Numéro Adap</label>
+                        </div>
+                        <div class="col-6">
+                            <label for="dossier">type de dossier</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input required class="form-control" type="text" name="id_adap" placeholder="N° Adap">
+                        </div>
+                        <div class="col-6">
+                            <select name="dossier" class="form-control">
+                                <option value="adap_s">adap_s</option>
+                                <option value="at_adap">at_adap</option>
+                                <option value="attestation">attestation</option>
+                                <option value="adap">adap</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="lat" name="lat"></input>
+            <input type="hidden" id="lng" name="lng"></input>
+            <br>
+            <div class="row">
+                <div class="col-4 offset-2">
+                    <input type="submit" class="btn btn-success" value="Enregistrer">
+                </div>
+                <div class="col-4">
+                    <a href="/liste/index" class="btn btn-success">Annuler</a>
+                </div>
+            </div>
         </form>
     </div>
     <script>

@@ -243,10 +243,10 @@ class DbaListeerpController extends Controller
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
                 $em = $this->getDoctrine()->getManager();
-                dump($request->request);
+                // dump($request->request);
+
                 // $dbaListeerp = new Dbalisteerp();
                 // // $types = $this->getTypes();
                 // $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
@@ -270,10 +270,11 @@ class DbaListeerpController extends Controller
 
               // -------------------------
                 $erp = new Dbalisteerp();
+                // dump($request->request->get('types'));die;
 
-                $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->request->get('departement')])->getDepartementCode();
+                $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')])->getDepartementCode();
 
-                $tempAdress = $request->request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
+                $tempAdress = $request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
                 $adressExploded = explode(" ",$tempAdress);
                 $intitule_voie = $adressExploded[0]; // "Place"
 
@@ -287,36 +288,57 @@ class DbaListeerpController extends Controller
                 $fulladress = "";
                 $fulladress .= $voie;
                 for ($i=1; $i < count($adressExploded) ; $i++) {
-                  $fulladress .= " " .strtoupper($adressExploded[$i]);
+                    $fulladress .= " " .strtoupper($adressExploded[$i]);
                 }
 
                 $types = "";
+                $i = 0;
                 foreach ($request->get('types') as $type) {
-                  $types .= $type.",";
+                    $types .= $type;
+                    $i++;
+                    if ($i !== count($request->get('types'))) {
+                        $types .= ',';
+                    }
+                }
+
+                $postalCodes = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
+                if (in_array($request->get('code_postal'), $postalCodes)) {
+                    $insee = strval($em->getRepository('cpossibleBundle:Commune')->findOneBy(['codePostal' => $request->get('code_postal')])->getCodeInsee());
+                }
+                else {
+                    $tempCommune = preg_replace('/\-+|\'+/', ' ', strtoupper($request->get('commune')));
+                    if (strpos($tempCommune, 'SAINT') !== false) {
+                        $tempCommune = str_replace('SAINT', 'ST', $tempCommune);
+                    }
+                    elseif (strpos($tempCommune, 'SAINTE') !== false) {
+                        $tempCommune = str_replace('SAINTE', 'STE', $tempCommune);
+                    }
+                    $insee = strval($em->getRepository('cpossibleBundle:Commune')->findOneBy(['nom' => $tempCommune])->getCodeInsee());
                 }
                 
                 $erp->setListeerpType($types);
                 $erp->setListeerpNomVoie($fulladress);
                 $erp->setListeerpDepartement($dpt);
-                $erp->setListeerpNumeroVoie($request->request->get('numero_rue'));
-                $erp->setListeerpCodePostal($request->request->get('code_postal'));
-                $erp->setListeerpNomCommune($request->request->get('commune'));
+                $erp->setListeerpCodeInsee($insee);
+                $erp->setListeerpNumeroVoie($request->get('numero_rue'));
+                $erp->setListeerpCodePostal($request->get('code_postal'));
+                $erp->setListeerpNomCommune($request->get('commune'));
                 $erp->setListeerpDateValidAdap($request->get('date_valid'));
-                $erp->setListeerpLatitude($request->request->get('lat'));
-                $erp->setListeerpLongitude($request->request->get('lng'));
+                $erp->setListeerpLatitude($request->get('lat'));
+                $erp->setListeerpLongitude($request->get('lng'));
                 $erp->setListeerpDelaiAdap($request->get('delai'));
                 $erp->setListeerpNature($request->get('nature'));
                 $erp->setListeerpTypedossier($request->get('dossier'));
-                $erp->setListeerpCategorie($request->request->get('categorie'));
-                $erp->setListeerpDemandeur($request->request->get('demandeur'));
-                $erp->setListeErpNomErp($request->request->get('nom_erp'));
-                $erp->setListeerpSiret($request->request->get('siret'));
-                $erp->setListeerpIdAdap($request->request->get('id_adap'));
-                $erp->setListeerpIdIgn($request->request->get('id_ign'));
+                $erp->setListeerpCategorie($request->get('categorie'));
+                $erp->setListeerpDemandeur($request->get('demandeur'));
+                $erp->setListeErpNomErp($request->get('nom_erp'));
+                $erp->setListeerpSiret($request->get('siret'));
+                $erp->setListeerpIdAdap($request->get('id_adap'));
                 $erp->setListeerpStatut(0);
-                // $em->persist($erp);
-                // $em->flush();
-                dump($erp);die;
+                $em->persist($erp);
+                $em->flush();
+                // dump($erp);die;
+                return $this->redirectToRoute('dbalisteerp_new');
 
             } else {
 

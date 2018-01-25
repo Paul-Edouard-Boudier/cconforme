@@ -214,4 +214,10 @@ cpossibleBundle\Entity\DbaListeerp:
           options:
             unsigned: false
           column: listeERP_latitude
+        listeerpDossierTps:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: listeErp_dossier_tps
     lifecycleCallbacks: {  }

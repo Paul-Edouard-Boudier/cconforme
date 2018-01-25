@@ -190,6 +190,29 @@ class DbaListeerp
     private $listeerpLatitude;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="listeERP_dossier_tps", type="integer", nullable=true)
+     */
+    private $listeerpDossierTps;
+
+    /**
+     * @return int
+     */
+    public function getListeerpDossierTps()
+    {
+        return $this->listeerpDossierTps;
+    }
+
+    /**
+     * @param int $listeerpDossierTps
+     */
+    public function setListeerpDossierTps($listeerpDossierTps)
+    {
+        $this->listeerpDossierTps = $listeerpDossierTps;
+    }
+
+    /**
      * @return int
      */
     public function getListeerpId()

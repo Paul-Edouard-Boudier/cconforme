@@ -22,14 +22,6 @@ class TpsController extends Controller
     $em = $this->getDoctrine()->getManager();
     $errors = [];
     $departement = $request->request->get('departement');
-
-    // /!\ CHECKING fucking useless since i'll go woth option select... dumbass /!\
-    // if ($departement == "0") {
-    //   $errors['departement'] = "Veuillez entrer un numéro de département valide.";
-    // }
-    // if (strlen($departement) == 1) {
-    //   $departement = "0".$departement;
-    // }
     
 
     $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
@@ -89,7 +81,8 @@ class TpsController extends Controller
         preg_match("/[0-9]{1,3}/", $champ->value, $departement);
         // return true if found, flase if not
         // check insert for information about id
-        return $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => intval($departement[0].str_repeat("0", 6 - strlen(strval($dossier->id))).strval($dossier->id))]) ? true : false;
+        // return $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => intval($departement[0].str_repeat("0", 6 - strlen(strval($dossier->id))).strval($dossier->id))]) ? true : false;
+        return $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpDossierTps' => intval($departement[0].str_repeat("0", 6 - strlen(strval($dossier->id))).strval($dossier->id))]) ? true : false;
       }
     }
   }
@@ -106,65 +99,53 @@ class TpsController extends Controller
         // Regex to get the first 1 to 3 digits that hold the dpt number
         // $selector = "/[0-9]{1,3}/";
         preg_match("/[0-9]{1,3}/", $value, $departement);
-        // dump($departement[0]);
         $erp->setListeerpDepartement($departement[0]);
         // Set an id like this: dpt_number + 6 digits(dossier id)
         // take length of dossier id
         // $length_dossier_id = strlen(strval($dossier->id));
-        // dump($length_dossier_id);
         if (strlen(strval($dossier->id)) < 6) {
           // Check length of dossier->id and add as many 0 to fill the 6 digits that we need for the $erp->id
           $stringId = $departement[0].str_repeat("0", 6 - strlen(strval($dossier->id))).strval($dossier->id);
-          $erp->setListeerpId(intval($stringId));
+          $erp->setListeerpDossierTps(intval($stringId));
         } else {
           $stringId = $departement[0].strval($dossier->id);
-          $erp->setListeerpId(intval($stringId));
+          $erp->setListeerpDossierTps(intval($stringId));
         }
       }
       if ($libelle == "Type d'établissement") {
-        // $nature = strtolower($value);
-        // dump($nature);
         $erp->setListeerpNature(strtolower($value));
       }
       if ($libelle == "Catégorie") {
         // $selector = "/[0-9]{1,2}/";
         preg_match("/[0-9]{1,2}/", $value, $categorie);
-        // dump($categorie[0]);
         $erp->setListeerpCategorie($categorie[0]);
       }
       if ($libelle == "Date de mise en conformité") {
         // Not sure if it's the right date
-        // dump($value);
         $erp->setListeerpDateValidAdap($value);
       }
       if ($libelle == "Durée de la dérogation en année") {
         if (!empty($value)) {
-          // dump($value);
           $erp->setListeerpDelaiAdap($value);
         }
       }
       if ($libelle == "Numéro d'adap") {
         if (!empty($value)) {
-          // dump($value);
           $erp->setListeerpIdAdap($value);
         }
       }
       if ($libelle == "Nom de l'établissement, enseigne") {
-        // dump($value);
         $erp->setListeErpNomErp($value);
       }
       if ($libelle == "Siret") {
         if (empty($value)) {
-          // dump($value);
           $erp->setListeerpSiret('0');
         }
         else {
-          // dump(intval($value));
           $erp->setListeerpSiret($value);
         }
       }
       if ($libelle == "Type de déclaration") {
-        //dump(strtolower($value));
         $erp->setListeerpTypedossier(strtolower($value));
       }
       if ($libelle == "Types d'activités") {
@@ -185,13 +166,11 @@ class TpsController extends Controller
           }
           $i ++;
         }
-        // dump($types);
         $erp->setListeerpType($types);
       }
       if ($libelle == "Adresse") {
         // var wrote with underscore are the one coming from google
         // I think that my double checking is useless, maybe it is better to just work with what google gives me
-        // dump($value);
 
         // /!\ GOOGLE REQUEST /!\
         // google request to retrieve lat and long from $value
@@ -215,7 +194,6 @@ class TpsController extends Controller
           // If we want to retrieve locality via the adress that google found
           if (in_array('locality', $adress->types)) {
             $commune_google = $adress->long_name;
-            // dump($commune_google);die;
           }
         }
         $location = $result->geometry->location; // object that contain lat and lng
@@ -272,8 +250,8 @@ class TpsController extends Controller
 
     $em->persist($erp);
     // Here we set the id instead of having it auto incremented
-    $metadata = $em->getClassMetaData(get_class($erp));
-    $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+    // $metadata = $em->getClassMetaData(get_class($erp));
+    // $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
     $em->flush();
     // return the id so i can count something in an simple array later
     return $erp->getListeerpId();

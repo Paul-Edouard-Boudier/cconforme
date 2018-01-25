@@ -1,0 +1,21 @@
+cpossibleBundle\Entity\Commune:
+    type: entity
+    table: dba_commune
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        codeInsee:
+            type: integer
+            column: Commune_insee
+        codePostal:
+            type: integer
+            column: Commune_cp
+        nom:
+            type: string
+            length: 200
+            column: Commune_nom
+    lifecycleCallbacks: {  }
