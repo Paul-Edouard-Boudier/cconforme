@@ -5,6 +5,7 @@ cpossibleBundle\Entity\Commune:
         id:
             type: integer
             id: true
+            column: Commune_id
             generator:
                 strategy: AUTO
     fields:
