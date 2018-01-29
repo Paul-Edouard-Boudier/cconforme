@@ -74,12 +74,31 @@ class HomeController extends AbstractErpController
             ->setParameter('Commune', '%' . $request->get('commune') . '%' )
             ->setParameter('Nom', '%' . $request->get('nom') . '%');
         if ($request->get('type') !== 'null') {
-          //dump(true);die;
           $queryBuilder->andWhere('dba.listeerpType LIKE :Type')
             ->setParameter('Type', '%' . $request->get('type') . '%');
         }
-        $result = $queryBuilder->getQuery();
-        $erps = $result->getArrayResult();
+        $result = $queryBuilder->getQuery()->getArrayResult();
+        // we get it into an array so we can modify the entity and then add month and year
+        // so we can display it properly on homepage for the user
+        $erps = [];
+        foreach ($result as $erp) {
+          $erp['accessible'] = 'est accessible';
+          if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
+            $erp['accessible'] = null;
+            setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+            $date = $erp['listeerpDateValidAdap'];
+            $delai = $erp['listeerpDelaiAdap'];
+            //
+            $date = new DateTime($date);
+            $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
+            //
+            $date->add(new DateInterval('P'.$delai.'Y'));
+            $newdate =  $date->format('d-m-Y');
+            $time = strtotime($newdate);
+            $erp['annee'] = date("Y",$time);
+          }
+          array_push($erps, $erp);
+        }
         return new JsonResponse($erps);
       }
       else {

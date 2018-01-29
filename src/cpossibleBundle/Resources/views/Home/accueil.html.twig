@@ -529,7 +529,14 @@
             document.getElementById('result').innerHTML = "";
             var result = '';
             for (var i = 0; i < data.length; i++) {
-              result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
+              // result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
+              if (data[i].accessible == null) {
+                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+              }
+              else {
+                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+              }
+              // debugger;
 
               // If the erp has latitude and long in ddb we take it, otherise we don't display it on the map
               if (parseFloat(data[i].listeerpLatitude) != 0) {
