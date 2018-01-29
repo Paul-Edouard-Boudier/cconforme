@@ -551,15 +551,21 @@
                 if (data[i].listeerpNumeroVoie != '') {
                     data[i].address = data[i].listeerpNumeroVoie+' '+data[i].listeerpNomVoie+', '+
                     data[i].listeerpCodePostal+' '+data[i].listeerpNomCommune;
-                } 
+                }
+                var info =  "<div><p>"+data[i].listeErpNomErp+"<p>"+
+                        "<p>"+data[i].address+"<p>"+
+                        "<p>Est accessible</p></div>";
 
+                if (data[i].accessible == null) {
+                    var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
+                        "<p>"+data[i].address+"<p>"+
+                        "<p>Acessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                }
                 var marker = new google.maps.Marker({
                   map: map,
                   position: position,
                   //icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                  info:
-                        "<div><p>"+data[i].listeErpNomErp+"<p>"+
-                        "<p>"+data[i].address+"<p></div>",
+                  info: info
                 });
                 // // extends the map to fit bounds so we have every marker displayed on the map
                 map.fitBounds(bounds);
