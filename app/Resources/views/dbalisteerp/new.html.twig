@@ -10,49 +10,49 @@
                 <div class="col-4">
                     <div>
                         {# <label for="demandeur">Demandeur</label> #}
-                        <input required class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
+                        <input value="" required class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
                     </div>
                 </div>
                 <div class="col-4">
                     <div>
                         {# <label for="nom">Nom de l'établissement / enseigne</label> #}
-                        <input required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
+                        <input value="" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
                     </div>
                 </div>
                 <div class="col-4">
-                    <input required class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
+                    <input value="" required class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
                 </div>
             </div>
             <br><br>
             <div class="row">
                 <div class="col-6" id="locationField">
                     <label for="adress">Entrez l'adresse de l'établissement</label>
-                    <input required class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
+                    <input value="" required class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
                          {# onFocus="geolocate()" #} type="text"></input>
                 </div>
                 <div class="col-6">
                     <div class="row">
                         <div class="col-2">
                             <label for="numero_rue">N° de rue</label>
-                            <input required class="form-control field" name="numero_rue" id="street_number" disabled="true"></input>
+                            <input value="" required class="form-control field" name="numero_rue" id="street_number" disabled="true"></input>
                         </div>
                         <div class="col-5">
                             <label for="departement">Département</label>
-                            <input required name="departement" class="form-control field" id="administrative_area_level_2" disabled="true"></input>
+                            <input value="" required name="departement" class="form-control field" id="administrative_area_level_2" disabled="true"></input>
                         </div>
                         <div class="col-5">
                             <label for="code_postal">Code postal</label>
-                            <input required name="code_postal" class="field form-control" id="postal_code" disabled="true"></input>
+                            <input value="" required name="code_postal" class="field form-control" id="postal_code" disabled="true"></input>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             <label for="rue">Rue</label>
-                            <input required class="form-control field" name="rue" id="route" disabled="true"></input>
+                            <input value="" required class="form-control field" name="rue" id="route" disabled="true"></input>
                         </div>
                         <div class="col-6">
                             <label for="commune">Commune</label>
-                            <input required name="commune" class="form-control field" id="locality" disabled="true"></input>
+                            <input value="" required name="commune" class="form-control field" id="locality" disabled="true"></input>
                         </div>
                     </div>
                 </div>
@@ -103,10 +103,10 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <input required class="form-control" id="date" type="date" name="date_valid">
+                            <input value="" required class="form-control" id="date" type="date" name="date_valid">
                         </div>
                         <div class="col-6">
-                            <input required class="form-control" type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
+                            <input value="" required class="form-control" type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
                         </div>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
                     </div>
                     <div class="row">
                         <div class="col-6">
-                            <input required class="form-control" type="text" name="id_adap" placeholder="N° Adap">
+                            <input value="" required class="form-control" type="text" name="id_adap" placeholder="N° Adap">
                         </div>
                         <div class="col-6">
                             <select name="dossier" class="form-control">
@@ -134,8 +134,8 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="lat" name="lat"></input>
-            <input type="hidden" id="lng" name="lng"></input>
+            <input value="" type="hidden" id="lat" name="lat"></input>
+            <input value="" type="hidden" id="lng" name="lng"></input>
             <br>
             <div class="row">
                 <div class="col-4 offset-2">

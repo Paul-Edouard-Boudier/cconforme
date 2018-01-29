@@ -110,8 +110,10 @@ class DbaListeerpController extends Controller
                 );
                 // $test = $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => 69031198]);
                 // dump($test);die;
+                $choices = [5, 10, 15, 20, 25, 30];
                 return $this->render('dbalisteerp/index.html.twig', array(
                     'dbaListeerps' => $result,
+                    'choices' => $choices,
                 ));
 
 
@@ -424,6 +426,42 @@ class DbaListeerpController extends Controller
         }
 
         return $this->redirectToRoute('dbalisteerp_index');
+    }
+
+
+    /**
+    * @Route("/last/{number}", name="dbalisteerp_last", requirements={"number"="\d+"})
+    */
+    public function lastAction(Request $request, $number) {
+      $securityContext = $this->container->get('security.authorization_checker');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+          // dump($number);die;
+          $choices = [5, 10, 15, 20, 25, 30];
+          if (!in_array($number, $choices)) {
+            return $this->redirectToRoute('dbalisteerp_index');
+          }
+          $em = $this->getDoctrine()->getManager();
+          $erps = array_slice($em->getRepository('cpossibleBundle:DbaListeerp')->findAll(), -$number);
+
+          $paginator = $this->get('knp_paginator');
+          $result =$paginator->paginate(
+              $erps,
+              $request->query->getInt('page', 1),
+              $request->query->getInt('limit', 10)
+          );
+          return $this->render('dbalisteerp/index.html.twig', [
+            'dbaListeerps' => $result,
+            'choices' => $choices
+          ]);
+        }
+        else {
+          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+        }
+      }
+      else {
+        return $this->redirectToRoute('fos_user_security_login');
+      }
     }
 
     /**

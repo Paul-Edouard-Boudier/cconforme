@@ -3,13 +3,24 @@
 {% block body %}
     <br>
     <h1>Liste ERP</h1>
-
+    <br><br>
     <div class="container-fluid">
       <div class="row">
         <div class="col-2">
-          <label for="">Rechercher par</label>
+            <div>
+                <form action="/last/5" id="choiceForm">
+                    <select id="choice">
+                        {% for choice in choices %}
+                            <option value="{{choice}}">{{choice}}</option>
+                        {% endfor %}
+                    </select>
+                      <label for="last"> derniers erps</label>
+                      <button type="submit" class="btn btn-outline-primary btn-lg">Afficher</button>
+                </form>
+            </div>
         </div>
         <div class="col-10">
+            <h3>Rechercher par</h3>
           <form class="form-control-erp" action="{{ path('list') }}" method="get">
             <div class="row erp-row">
               <input class="col-3" type="text" name="commune" placeholder="Commune">
@@ -32,7 +43,7 @@
 
 
     </div>
-    {% if dbaListeerps.items  %}
+    {% if dbaListeerps.items %}
     <div class="col-lg-12 mx-auto">
 
         <table class="table-bordered table-striped">
@@ -97,5 +108,15 @@
         <a style="color: #ffffff; padding: 4em" name="export" href="{{ path('export') }}"><button class="btn btn-success btn-lg">Export CSV</button></a>
         <a style="color: #ffffff; padding: 4em" href="{{ path('tps_index')}}"><button class="btn btn-success btn-lg">Update BDD via TPS</button></a>
     </div>
+
+    <script>
+    $(document).ready(function() {
+        $('#choice').on('change', function() {
+            var input = $(this).val();
+            $('#choiceForm').attr('action', '/last/'+input+'');
+            // debugger;
+        })
+    })
+    </script>
 
 {% endblock %}

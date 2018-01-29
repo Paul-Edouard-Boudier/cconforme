@@ -73,6 +73,11 @@ annot:
 
 # ---------------
 
+dbalisteerp_last:
+    path: /last/{number}
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:last"}
+    methods: GET
+
 dbalisteerp_index:
     path:     /index
     defaults: { _controller: "cpossibleBundle:DbaListeerp:index" }
