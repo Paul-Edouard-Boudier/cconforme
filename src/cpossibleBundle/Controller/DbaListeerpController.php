@@ -275,23 +275,23 @@ class DbaListeerpController extends Controller
                 // dump($request->request->get('types'));die;
 
                 $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')])->getDepartementCode();
+                $fulladdress = getNormalizedAddress($request->get('rue'));
+                // $tempAdress = $request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
+                // $adressExploded = explode(" ",$tempAdress);
+                // $intitule_voie = $adressExploded[0]; // "Place"
 
-                $tempAdress = $request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
-                $adressExploded = explode(" ",$tempAdress);
-                $intitule_voie = $adressExploded[0]; // "Place"
-
-                $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
-                $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-                  ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
-                $result = $q->getQuery();
-                // Here we want to get the nom de voie as we wish to put in ddb like "PL"
-                $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
-                $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
-                $fulladress = "";
-                $fulladress .= $voie;
-                for ($i=1; $i < count($adressExploded) ; $i++) {
-                    $fulladress .= " " .strtoupper($adressExploded[$i]);
-                }
+                // $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+                // $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+                //   ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+                // $result = $q->getQuery();
+                // // Here we want to get the nom de voie as we wish to put in ddb like "PL"
+                // $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+                // $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+                // $fulladress = "";
+                // $fulladress .= $voie;
+                // for ($i=1; $i < count($adressExploded) ; $i++) {
+                //     $fulladress .= " " .strtoupper($adressExploded[$i]);
+                // }
 
                 $types = "";
                 $i = 0;

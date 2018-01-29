@@ -40,6 +40,11 @@ cpossible_list:
   defaults: { _controller: cpossibleBundle:Home:search_list}
   methods: POST
 
+cpossible_erpslist:
+    path: /erps_list_autocompleted
+    defaults: { _controller: cpossibleBundle:Home:erpListAutocompleted}
+    methods: [POST, GET]
+
 
 report_index:
     path: /report

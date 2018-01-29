@@ -81,6 +81,7 @@ class HomeController extends AbstractErpController
         // we get it into an array so we can modify the entity and then add month and year
         // so we can display it properly on homepage for the user
         $erps = [];
+        // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
         foreach ($result as $erp) {
           $erp['accessible'] = 'est accessible';
           if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
@@ -133,6 +134,50 @@ class HomeController extends AbstractErpController
             'typesErp' => $typesErp,
         ));
 
+    }
+    /**
+    * @param address that comes from the google autocompletion 
+    * @return array of erps that fit the address
+    */
+    public function erpListAutocompletedAction(Request $request) {
+      if ($request->isXMLHttpRequest()) {
+        // $address = "Place de l'Europe";
+        // $number = "17";
+
+        $em = $this->getDoctrine()->getManager();
+        $fulladdress = $this->getNormalizedAddress($request->get('address'));
+        $qb = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp');
+        $qb->andWhere('erp.listeerpNomVoie LIKE :address')
+        ->andWhere('erp.listeerpNumeroVoie LIKE :number')
+        ->setParameter('address', $fulladdress )
+        ->setParameter('number', $request->get('number'));
+        $result = $qb->getQuery()->getArrayResult();
+
+        $erps = [];
+        // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
+        foreach ($result as $erp) {
+          $erp['accessible'] = 'est accessible';
+          if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
+            $erp['accessible'] = null;
+            setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+            $date = $erp['listeerpDateValidAdap'];
+            $delai = $erp['listeerpDelaiAdap'];
+            //
+            $date = new DateTime($date);
+            $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
+            //
+            $date->add(new DateInterval('P'.$delai.'Y'));
+            $newdate =  $date->format('d-m-Y');
+            $time = strtotime($newdate);
+            $erp['annee'] = date("Y",$time);
+          }
+          array_push($erps, $erp);
+        }
+        return new JsonResponse($erps);
+      }
+      else {
+        return "Failed";
+      }
     }
 
       /**

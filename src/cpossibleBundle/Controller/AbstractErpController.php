@@ -64,4 +64,24 @@ abstract class AbstractErpController extends Controller
         }
         return $entities;
     }
+
+    protected function getNormalizedAddress($address) {
+        $em = $this->getDoctrine()->getManager();
+        $tempAdress = $address; // Here: "Place de l'Europe" (whithout whitespcae at the end)
+        $adressExploded = explode(" ",$tempAdress);
+        $intitule_voie = $adressExploded[0]; // "Place"
+        $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+        $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+        ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+        $result = $q->getQuery();
+        // Here we want to get the nom de voie as we wish to put in ddb like "PL"
+        $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+        $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+        $fulladdress = "";
+        $fulladdress .= $voie;
+        for ($i=1; $i < count($adressExploded) ; $i++) {
+          $fulladdress .= " " .strtoupper($adressExploded[$i]);
+        }
+        return $fulladdress;
+    }
 }

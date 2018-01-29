@@ -251,6 +251,38 @@
                             (place.address_components[1] && place.address_components[1].short_name || ''),
                             (place.address_components[2] && place.address_components[2].short_name || '')
                         ].join(' ');
+
+                        var addressMinified = [
+                            (place.address_components[1] && place.address_components[1].short_name || '')
+                            ].join(' ');
+                        var number = [
+                            (place.address_components[0] && place.address_components[0].short_name || '')
+                            ].join(' ');
+                        $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
+                            $('#result').empty();
+                            if (data.length > 1) {
+                                $('#message').removeClass('alert-danger');
+                                $('#message').addClass('alert-success');
+                                $('#message').html(data.length+' erps trouvés à cette adresse');
+                            } else if (data.length == 1){
+                                $('#message').removeClass('alert-danger');
+                                $('#message').addClass('alert-success');
+                                $('#message').html(data.length+' erp trouvé à cette adresse');
+                            } else {
+                                $('#message').addClass('alert-danger');
+                                $('#message').removeClass('alert-success');
+                                $('#message').html('Aucun erps trouvés à cette adresse');
+                            }
+                            var result = '';
+                            for (var i=0; i < data.length; i++) {
+                                if (data[i].accessible == null) {
+                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+                                } else {
+                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+                                }
+                            }
+                            $('#result').append(result);
+                        })
                     }
 
                     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
