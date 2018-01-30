@@ -247,51 +247,10 @@ class DbaListeerpController extends Controller
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
                 $em = $this->getDoctrine()->getManager();
-                // dump($request->request);
-
-                // $dbaListeerp = new Dbalisteerp();
-                // // $types = $this->getTypes();
-                // $form = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
-                // $form->handleRequest($request);
-                // if ($form->isSubmitted() && $form->isValid()) {
-                //   $types = "";
-                //   foreach ($dbaListeerp->getListeerpType() as $key => $type) {
-                //     $types .= $type.",";
-                //   }
-                //   $dbaListeerp->setListeerpType($types);
-                //   $em->persist($dbaListeerp);
-                //   $em->flush();
-                //   return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
-                // }
-
-                // return $this->render('dbalisteerp/new.html.twig', array(
-                //     'dbaListeerp' => $dbaListeerp,
-                //     'form' => $form->createView(),
-                //     // 'types' =>$types,
-                // ));
-
-              // -------------------------
                 $erp = new Dbalisteerp();
-                // dump($request->request->get('types'));die;
 
                 $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')])->getDepartementCode();
-                $fulladdress = getNormalizedAddress($request->get('rue'));
-                // $tempAdress = $request->get('rue'); // Here: "Place de l'Europe" (whithout whitespcae at the end)
-                // $adressExploded = explode(" ",$tempAdress);
-                // $intitule_voie = $adressExploded[0]; // "Place"
-
-                // $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
-                // $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-                //   ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
-                // $result = $q->getQuery();
-                // // Here we want to get the nom de voie as we wish to put in ddb like "PL"
-                // $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
-                // $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
-                // $fulladress = "";
-                // $fulladress .= $voie;
-                // for ($i=1; $i < count($adressExploded) ; $i++) {
-                //     $fulladress .= " " .strtoupper($adressExploded[$i]);
-                // }
+                $fulladdress = $this->getNormalizedAddress($request->get('rue'));
 
                 $types = "";
                 $i = 0;
@@ -319,7 +278,7 @@ class DbaListeerpController extends Controller
                 }
                 
                 $erp->setListeerpType($types);
-                $erp->setListeerpNomVoie($fulladress);
+                $erp->setListeerpNomVoie($fulladdress);
                 $erp->setListeerpDepartement($dpt);
                 $erp->setListeerpCodeInsee($insee);
                 $erp->setListeerpNumeroVoie($request->get('numero_rue'));
@@ -337,9 +296,9 @@ class DbaListeerpController extends Controller
                 $erp->setListeerpSiret($request->get('siret'));
                 $erp->setListeerpIdAdap($request->get('id_adap'));
                 $erp->setListeerpStatut(0);
+                // dump($erp);die;
                 $em->persist($erp);
                 $em->flush();
-                // dump($erp);die;
                 return $this->redirectToRoute('dbalisteerp_new');
 
             } else {
@@ -494,5 +453,25 @@ class DbaListeerpController extends Controller
           array_push($arraytypes, $test);
         }
         return $arraytypes;
+    }
+
+    protected function getNormalizedAddress($address) {
+        $em = $this->getDoctrine()->getManager();
+        $tempAdress = $address; // Here: "Place de l'Europe" (whithout whitespcae at the end)
+        $adressExploded = explode(" ",$tempAdress);
+        $intitule_voie = $adressExploded[0]; // "Place"
+        $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+        $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+        ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+        $result = $q->getQuery();
+        // Here we want to get the nom de voie as we wish to put in ddb like "PL"
+        $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+        $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+        $fulladdress = "";
+        $fulladdress .= $voie;
+        for ($i=1; $i < count($adressExploded) ; $i++) {
+          $fulladdress .= " " .strtoupper($adressExploded[$i]);
+        }
+        return $fulladdress;
     }
 }
