@@ -12,32 +12,6 @@ class HomeController extends AbstractErpController
 {
 
     public function aroundAction(Request $request) {
-      // $em = $this->getDoctrine()->getManager();
-      // $result = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp')->getQuery()->getArrayResult();
-      // // dump($result);die;
-      // $markers = []; // The array that hold every single item retrieved by query
-      //   // Here we calculate the distance for each point to the center
-      //   // that is the point where the user is searching
-      //   // and then we push into [markers], every items that we want
-      //   foreach ($result as $item) {
-      //     $item = $this->getAccessibility($item);
-      //     // dump($item);die;
-      //     // if ($item['listeerpNumeroVoie'] != '') $item['address'] = $item['listeERP_numero_voie'] . ' ' . $item['listeERP_nom_voie'] . ', ' .
-      //     //   $item['listeERP_code_postal'].' '.$item['listeERP_nom_commune'];
-      //     // $ilat = floatval($item['listeERP_latitude']);
-      //     // $ilong = floatval($item['listeERP_longitude']);
-      //     // $distanceAuCarre = (($ilat - $lat) ** 2) + (($ilong - $lng) ** 2);
-      //     // $distance = sqrt($distanceAuCarre);
-      //     // if ($distance <= $rayon) {
-      //     //   $item['distance'] = $distance;
-      //       array_push($markers, $item);
-      //       // echo ($item['listeerpId']." ");
-      //     // }
-      //   }
-
-
-
-      // dump($markers);die;
       if ($request->isXMLHttpRequest()) {
         $lat = floatval($request->get('lat'));
         $lng = floatval($request->get('lng'));

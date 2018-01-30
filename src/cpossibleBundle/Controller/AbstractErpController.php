@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: hugoLambrinidis
- * Date: 19/12/2017
- * Time: 15:17
- */
+
 namespace cpossibleBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use \Datetime;

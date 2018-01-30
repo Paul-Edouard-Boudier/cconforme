@@ -347,14 +347,13 @@
                     markerArray[i].setMap(null);
                 }
                 markerArray = [];
-                getSingleErpFromForm(id, result, map, markerArray, geocoder)
+                getSingleErpFromForm(id, result, map, markerArray, geocoder);
                 return false;
             })
         }
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
-                debugger;
                 // numbers need to be in float
                 // iterate over data that is rendered by the controller
                 for( i = 0; i < ((data.length) -1); i++ ) {
@@ -391,7 +390,6 @@
                     });
                     markerArray.push(marker);
                 }
-                debugger;
                 //Keep the color for the last one that represent the location from where the user is searching
                 var last = data.pop();
                 var position = new google.maps.LatLng(parseFloat(last.listeerpLatitude), parseFloat(last.listeerpLongitude));
