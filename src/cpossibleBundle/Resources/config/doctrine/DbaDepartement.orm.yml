@@ -81,4 +81,8 @@ cpossibleBundle\Entity\DbaDepartement:
             options:
                 fixed: flase
             column: departement_procedure
+        departementEnService:
+            type: integer
+            nullable: false
+            column: departement_en_service
     lifecycleCallbacks: {  }

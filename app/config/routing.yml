@@ -33,7 +33,7 @@ cpossible_fetch:
 cpossible_around:
     path: /around
     defaults: { _controller: cpossibleBundle:Home:around }
-    methods: [POST, GET] # enlever GET
+    methods: POST
 
 cpossible_list:
   path: /search_list
@@ -44,6 +44,11 @@ cpossible_erpslist:
     path: /erps_list_autocompleted
     defaults: { _controller: cpossibleBundle:Home:erpListAutocompleted}
     methods: [POST, GET]
+
+cpossible_checkdpt:
+    path: /checkdpt
+    defaults: { _controller: cpossibleBundle:Home:checkDepartement}
+    methods: POST
 
 
 report_index:

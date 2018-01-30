@@ -69,6 +69,11 @@
                 <tr>
                 </tr>
             </table>
+            <br>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-10 mx-auto">
+                <div id="message2" class="alert"></div>
+            </div>
+            <br>
             <div class="col-10 mx-auto" id="map"></div>
             <div class="col-11 col-lg-10 mx-auto">
             </div>
@@ -208,89 +213,92 @@
                 marker.setVisible(false);
                 var place = autocomplete.getPlace();
                 var address = place.address_components;
-                // We check wether or not the place autocompleted is from another dpt than Rhône
-                // if it is then we stop here, else, we allow to proceed further
+                // We check wether or not the dpt from address autocompleted is 'en service'
                 var dpt = address.some(function(e) {
-                    if (e.types.includes('administrative_area_level_2') && e.short_name !== 'Rhône') {
-                        return true;
-                    }
-                })
-                if (dpt) {
-                    var error = "Ce service est actuellement disponible uniquement pour le département du Rhône."
-                    $('#message').removeClass('alert-success');
-                    $('#message').addClass('alert-danger');
-                    $('#message').html(error);
-                }
-                else {
-                    $('#message').removeClass('alert-success');
-                    $('#message').removeClass('alert-danger');
-                    $('#message').html('');
-                    if (!place.geometry) {
-                        window.alert("No details available for input: '" + place.name + "'");
-                        return;
-                    }
-                    if (place.geometry.viewport) {
-                        map.fitBounds(place.geometry.viewport);
-                    } else {
-                        map.setCenter(place.geometry.location);
-                    }
-                    marker.setIcon(/** @type {google.maps.Icon} */({
-                        url: place.icon,
-                        size: new google.maps.Size(71, 71),
-                        origin: new google.maps.Point(0, 0),
-                        anchor: new google.maps.Point(17, 34),
-                        scaledSize: new google.maps.Size(35, 35)
-                    }));
-                    marker.setPosition(place.geometry.location);
-                    marker.setVisible(true);
-
-                    var address = '';
-                    if (place.address_components) {
-                        address = [
-                            (place.address_components[0] && place.address_components[0].short_name || ''),
-                            (place.address_components[1] && place.address_components[1].short_name || ''),
-                            (place.address_components[2] && place.address_components[2].short_name || '')
-                        ].join(' ');
-
-                        var addressMinified = [
-                            (place.address_components[1] && place.address_components[1].short_name || '')
-                            ].join(' ');
-                        var number = [
-                            (place.address_components[0] && place.address_components[0].short_name || '')
-                            ].join(' ');
-                        $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
-                            $('#result').empty();
-                            if (data.length > 1) {
-                                $('#message').removeClass('alert-danger');
-                                $('#message').addClass('alert-success');
-                                $('#message').html(data.length+' erps trouvés à cette adresse');
-                            } else if (data.length == 1){
-                                $('#message').removeClass('alert-danger');
-                                $('#message').addClass('alert-success');
-                                $('#message').html(data.length+' erp trouvé à cette adresse');
-                            } else {
-                                $('#message').addClass('alert-danger');
+                    if (e.types.includes('administrative_area_level_2')) {
+                        $.post('/checkdpt', {'dpt': e.short_name}).success(function(data) {
+                            if (data.status == false) {
+                                var error = "Ce service n'est actuellement pas disponible pour le département "+data.message+"."
                                 $('#message').removeClass('alert-success');
-                                $('#message').html('Aucun erps trouvés à cette adresse');
+                                $('#message').addClass('alert-danger');
+                                $('#message').html(error);
                             }
-                            var result = '';
-                            for (var i=0; i < data.length; i++) {
-                                if (data[i].accessible == null) {
-                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
-                                } else {
-                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+                            else {
+                                $('#message').removeClass('alert-success');
+                                $('#message').removeClass('alert-danger');
+                                $('#message').html('');
+                                if (!place.geometry) {
+                                    window.alert("impossible de localiser '" + place.name + "'");
+                                    return;
                                 }
+                                if (place.geometry.viewport) {
+                                    map.fitBounds(place.geometry.viewport);
+                                } else {
+                                    map.setCenter(place.geometry.location);
+                                }
+                                // marker.setIcon(/** @type {google.maps.Icon} */({
+                                //     url: place.icon,
+                                //     size: new google.maps.Size(71, 71),
+                                //     origin: new google.maps.Point(0, 0),
+                                //     anchor: new google.maps.Point(17, 34),
+                                //     scaledSize: new google.maps.Size(35, 35)
+                                // }));
+                                marker.setPosition(place.geometry.location);
+                                marker.setVisible(true);
+
+                                var address = '';
+                                if (place.address_components) {
+                                    address = [
+                                        (place.address_components[0] && place.address_components[0].short_name || ''),
+                                        (place.address_components[1] && place.address_components[1].short_name || ''),
+                                        (place.address_components[2] && place.address_components[2].short_name || '')
+                                    ].join(' ');
+
+                                    var addressMinified = [
+                                        (place.address_components[1] && place.address_components[1].short_name || '')
+                                        ].join(' ');
+                                    var number = [
+                                        (place.address_components[0] && place.address_components[0].short_name || '')
+                                        ].join(' ');
+                                    $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
+                                        $('#result').empty();
+                                        if (data.length > 1) {
+                                            $('#message').removeClass('alert-danger');
+                                            $('#message').addClass('alert-success');
+                                            $('#message').html(data.length+' erps trouvés à cette adresse');
+                                        } else if (data.length == 1){
+                                            $('#message').removeClass('alert-danger');
+                                            $('#message').addClass('alert-success');
+                                            $('#message').html(data.length+' erp trouvé à cette adresse');
+                                        } else {
+                                            $('#message').addClass('alert-danger');
+                                            $('#message').removeClass('alert-success');
+                                            $('#message').html('Aucun erps trouvés à cette adresse');
+                                        }
+                                        var result = '';
+                                        for (var i=0; i < data.length; i++) {
+                                            if (data[i].accessible == null) {
+                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+                                            } else {
+                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+                                            }
+                                        }
+                                        $('#result').append(result);
+                                    })
+                                }
+                                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                                infowindow.open(map, marker);
+
+                                document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
+                                document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
                             }
-                            $('#result').append(result);
                         })
                     }
-
-                    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-                    infowindow.open(map, marker);
-
-                    document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
-                    document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
-                }
+                })
+                // if (dpt) {
+                // }
+                // else {
+                // }
             });
 
             // Those are buttons on the google map:
@@ -342,12 +350,12 @@
 
             $('#form').on('submit', function() {
                 var id = $('.id_autocomplete').data('iditem');
-                var result = $('#result');
+                var message = $('#message2');
                 for (var i = 0; i < markerArray.length; i++) {
                     markerArray[i].setMap(null);
                 }
                 markerArray = [];
-                getSingleErpFromForm(id, result, map, markerArray, geocoder);
+                getSingleErpFromForm(id, message, map, markerArray, geocoder);
                 return false;
             })
         }
@@ -627,21 +635,21 @@
           })
         }
 
-        function getSingleErpFromForm(id, result, map, markerArray, geocoder) {
+        function getSingleErpFromForm(id, message, map, markerArray, geocoder) {
             $.ajax({
                 method: 'post',
                 url: '',
                 data: {data : id},
                 dataType: 'json',
                 success: function(data) {
-                    result.html(data.message);
-                    result.removeClass('alert-danger');
-                    result.addClass('alert-success');
+                    message.html(data.message);
+                    message.removeClass('alert-danger');
+                    message.addClass('alert-success');
                     // debugger;
                     if (data.error == true) {
-                        result.html(data.message);
-                        result.removeClass('alert-success');
-                        result.addClass('alert-danger');
+                        message.html(data.message);
+                        message.removeClass('alert-success');
+                        message.addClass('alert-danger');
                     }
                     geocodeAddress(geocoder, map, markerArray);
                     if (geocodeAddress() == false) {

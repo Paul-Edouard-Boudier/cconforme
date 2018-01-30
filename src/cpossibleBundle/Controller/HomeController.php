@@ -61,6 +61,8 @@ class HomeController extends AbstractErpController
         return "Failed";
       }
     }
+
+
     // Function that display all erp that the user want to see
     /**
      * @param $request
@@ -109,6 +111,8 @@ class HomeController extends AbstractErpController
         return "Failed";
       }
     }
+
+
     public function fetchAction ()
     {
         $request = Request::createFromGlobals();
@@ -138,6 +142,8 @@ class HomeController extends AbstractErpController
         ));
 
     }
+
+
     /**
     * @param address that comes from the google autocompletion 
     * @return array of erps that fit the address
@@ -167,6 +173,27 @@ class HomeController extends AbstractErpController
       else {
         return "Failed";
       }
+    }
+
+
+    /**
+    * @param departement from homepage autocomplete
+    * @return true if dpt is 'en service' false otherwise
+    */
+    public function checkDepartementAction(Request $request) {
+        if ($request->isXMLHttpRequest()) {
+            $em = $this->getDoctrine()->getManager();
+            $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('dpt')]);
+            if ($dpt->getDepartementEnService() == 1) {
+              $data = ['status' => true, 'message' => $dpt->getDepartementMessage()];
+              return new JsonResponse($data);
+            }
+            $data = ['status' =>false, 'message' => $dpt->getDepartementMessage()];
+            return new JsonResponse($data);
+        }
+        else {
+            return "Failed";
+        }
     }
 
       /**

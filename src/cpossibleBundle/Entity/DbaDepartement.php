@@ -78,6 +78,13 @@ class DbaDepartement
     private $departementProcedure;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="departement_en_service", type="int", nullable=true)
+     */
+    private $departementEnService;
+
+    /**
      * @return string
      */
     public function getDepartementToken()
@@ -125,5 +132,20 @@ class DbaDepartement
     //     $this->listeerpId = $procedure;
     // }
 
+    /**
+     * @return int
+     */
+    public function getDepartementEnService()
+    {
+        return $this->departementEnService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepartementMessage()
+    {
+        return $this->departementMessage;
+    }
 
 }
