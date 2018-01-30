@@ -354,24 +354,32 @@
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
-
+                debugger;
                 // numbers need to be in float
                 // iterate over data that is rendered by the controller
                 for( i = 0; i < ((data.length) -1); i++ ) {
                   // Setup the position of the marker dynamically via it's info
                   // try to geocode the erp via the full adress if known
-                    var position = new google.maps.LatLng(parseFloat(data[i].listeERP_latitude), parseFloat(data[i].listeERP_longitude));
+                    var position = new google.maps.LatLng(parseFloat(data[i].listeerpLatitude), parseFloat(data[i].listeerpLongitude));
                     // extends bounds of the map to the position of the marker
                     bounds.extend(position);
+
+                    var info =  "<div><p>"+data[i].listeErpNomErp+"<p>"+
+                        "<p>"+data[i].address+"<p>"+
+                        "<p>Est accessible</p></div>";
+
+                    if (data[i].accessible == null) {
+                        var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
+                            "<p>"+data[i].address+"<p>"+
+                            "<p>Acessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                    }
                     // create a blue marker everytime
                     var marker = new google.maps.Marker({
                       map: map,
                       position: position,
                       icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                       // info: data[i].liste_ERP_nom_erp + data[i].address,
-                      info: 
-                        "<div><p>"+data[i].liste_ERP_nom_erp+"<p>"+
-                        "<p>"+data[i].address+"<p></div>",
+                      info: info
                     });
                     // extends the map to fit bounds so we have every marker displayed on the map
                     map.fitBounds(bounds);
@@ -383,14 +391,15 @@
                     });
                     markerArray.push(marker);
                 }
+                debugger;
                 //Keep the color for the last one that represent the location from where the user is searching
                 var last = data.pop();
-                var position = new google.maps.LatLng(parseFloat(last.listeERP_latitude), parseFloat(last.listeERP_longitude));
+                var position = new google.maps.LatLng(parseFloat(last.listeerpLatitude), parseFloat(last.listeerpLongitude));
                 bounds.extend(position);
                 var marker = new google.maps.Marker({
                   map: map,
                   position: position,
-                  info: last.liste_ERP_nom_erp,
+                  info: last.listeErpNomErp,
                 });
                 var infowindow = new google.maps.InfoWindow();
                 google.maps.event.addListener(marker, 'click', function () {

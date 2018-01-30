@@ -12,19 +12,46 @@ class HomeController extends AbstractErpController
 {
 
     public function aroundAction(Request $request) {
+      // $em = $this->getDoctrine()->getManager();
+      // $result = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp')->getQuery()->getArrayResult();
+      // // dump($result);die;
+      // $markers = []; // The array that hold every single item retrieved by query
+      //   // Here we calculate the distance for each point to the center
+      //   // that is the point where the user is searching
+      //   // and then we push into [markers], every items that we want
+      //   foreach ($result as $item) {
+      //     $item = $this->getAccessibility($item);
+      //     // dump($item);die;
+      //     // if ($item['listeerpNumeroVoie'] != '') $item['address'] = $item['listeERP_numero_voie'] . ' ' . $item['listeERP_nom_voie'] . ', ' .
+      //     //   $item['listeERP_code_postal'].' '.$item['listeERP_nom_commune'];
+      //     // $ilat = floatval($item['listeERP_latitude']);
+      //     // $ilong = floatval($item['listeERP_longitude']);
+      //     // $distanceAuCarre = (($ilat - $lat) ** 2) + (($ilong - $lng) ** 2);
+      //     // $distance = sqrt($distanceAuCarre);
+      //     // if ($distance <= $rayon) {
+      //     //   $item['distance'] = $distance;
+      //       array_push($markers, $item);
+      //       // echo ($item['listeerpId']." ");
+      //     // }
+      //   }
+
+
+
+      // dump($markers);die;
       if ($request->isXMLHttpRequest()) {
         $lat = floatval($request->get('lat'));
         $lng = floatval($request->get('lng'));
         // limit = number of items i want to display
         $limit = intval($request->get('limit'));
-
-        $conn = $this->getDoctrine()->getManager()
-                      ->getConnection();
-        $sql = "SELECT * FROM resicadminresic.dba_listeERP;";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        $actualLocation = ['listeERP_latitude' => $lat, 'listeERP_longitude' => $lng, 'liste_ERP_nom_erp' => 'Point de départ du rayon de recherche'];
+        $em = $this->getDoctrine()->getManager();
+        $result = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp')->getQuery()->getArrayResult();
+        // $conn = $this->getDoctrine()->getManager()
+        //               ->getConnection();
+        // $sql = "SELECT * FROM resicadminresic.dba_listeERP;";
+        // $stmt = $conn->prepare($sql);
+        // $stmt->execute();
+        // $result = $stmt->fetchAll();
+        $actualLocation = ['listeerpLatitude' => $lat, 'listeerpLongitude' => $lng, 'listeErpNomErp' => 'Point de départ du rayon de recherche'];
 
         // we could set this dynamically aswell
         // the distance from the point where we are actually seraching items
@@ -34,10 +61,11 @@ class HomeController extends AbstractErpController
         // that is the point where the user is searching
         // and then we push into [markers], every items that we want
         foreach ($result as $item) {
-          if ($item['listeERP_numero_voie'] != '') $item['address'] = $item['listeERP_numero_voie'] . ' ' . $item['listeERP_nom_voie'] . ', ' .
-            $item['listeERP_code_postal'].' '.$item['listeERP_nom_commune'];
-          $ilat = floatval($item['listeERP_latitude']);
-          $ilong = floatval($item['listeERP_longitude']);
+          $item = $this->getAccessibility($item);
+          if ($item['listeerpNumeroVoie'] != '') $item['address'] = $item['listeerpNumeroVoie'] . ' ' . $item['listeerpNomVoie'] . ', ' .
+            $item['listeerpCodePostal'].' '.$item['listeerpNomCommune'];
+          $ilat = floatval($item['listeerpLatitude']);
+          $ilong = floatval($item['listeerpLongitude']);
           $distanceAuCarre = (($ilat - $lat) ** 2) + (($ilong - $lng) ** 2);
           $distance = sqrt($distanceAuCarre);
           if ($distance <= $rayon) {
@@ -83,21 +111,22 @@ class HomeController extends AbstractErpController
         $erps = [];
         // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
         foreach ($result as $erp) {
-          $erp['accessible'] = 'est accessible';
-          if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
-            $erp['accessible'] = null;
-            setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
-            $date = $erp['listeerpDateValidAdap'];
-            $delai = $erp['listeerpDelaiAdap'];
-            //
-            $date = new DateTime($date);
-            $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
-            //
-            $date->add(new DateInterval('P'.$delai.'Y'));
-            $newdate =  $date->format('d-m-Y');
-            $time = strtotime($newdate);
-            $erp['annee'] = date("Y",$time);
-          }
+          $erp = $this->getAccessibility($erp);
+        //   $erp['accessible'] = 'est accessible';
+        //   if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
+        //     $erp['accessible'] = null;
+        //     setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+        //     $date = $erp['listeerpDateValidAdap'];
+        //     $delai = $erp['listeerpDelaiAdap'];
+        //     //
+        //     $date = new DateTime($date);
+        //     $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
+        //     //
+        //     $date->add(new DateInterval('P'.$delai.'Y'));
+        //     $newdate =  $date->format('d-m-Y');
+        //     $time = strtotime($newdate);
+        //     $erp['annee'] = date("Y",$time);
+        //   }
           array_push($erps, $erp);
         }
         return new JsonResponse($erps);
@@ -156,21 +185,7 @@ class HomeController extends AbstractErpController
         $erps = [];
         // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
         foreach ($result as $erp) {
-          $erp['accessible'] = 'est accessible';
-          if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
-            $erp['accessible'] = null;
-            setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
-            $date = $erp['listeerpDateValidAdap'];
-            $delai = $erp['listeerpDelaiAdap'];
-            //
-            $date = new DateTime($date);
-            $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
-            //
-            $date->add(new DateInterval('P'.$delai.'Y'));
-            $newdate =  $date->format('d-m-Y');
-            $time = strtotime($newdate);
-            $erp['annee'] = date("Y",$time);
-          }
+          $erp = $this->getAccessibility($erp);
           array_push($erps, $erp);
         }
         return new JsonResponse($erps);

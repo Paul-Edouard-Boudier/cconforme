@@ -7,6 +7,8 @@
  */
 namespace cpossibleBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use \Datetime;
+use \DateInterval;
 abstract class AbstractErpController extends Controller
 {
     protected function getSingleErp($id) {
@@ -83,5 +85,40 @@ abstract class AbstractErpController extends Controller
           $fulladdress .= " " .strtoupper($adressExploded[$i]);
         }
         return $fulladdress;
+    }
+
+    protected function getAccessibility($erp) {
+      $erp['accessible'] = 'est accessible';
+      if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
+        $erp['accessible'] = null;
+        setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+        $date = $erp['listeerpDateValidAdap'];
+        $delai = $erp['listeerpDelaiAdap'];
+        $dt = DateTime::createFromFormat("Y-m-d", $date);
+        if ($dt !== false && !array_sum($dt->getLastErrors())) {
+        //
+        // $date = new DateTime($date);
+        // $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
+        // //
+        // $date->add(new DateInterval('P'.$delai.'Y'));
+        // $newdate =  $date->format('d-m-Y');
+        // $time = strtotime($newdate);
+        // $erp['annee'] = date("Y",$time);
+
+        $datetime = new DateTime($date);
+        $date = $datetime->createFromFormat('Y-m-d', $date);
+        $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
+        $date->add(new DateInterval('P'.$delai.'Y'));
+        $newdate =  $date->format('d-m-Y');
+        $time = strtotime($newdate);
+        $erp['annee'] = date("Y",$time);
+        } 
+        else {
+          $erp['mois'] = null;
+          $erp['annee'] = null;
+          return $erp;
+        }
+      }
+      return $erp;
     }
 }
