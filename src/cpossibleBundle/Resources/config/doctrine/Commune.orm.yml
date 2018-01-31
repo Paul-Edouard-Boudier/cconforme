@@ -19,4 +19,8 @@ cpossibleBundle\Entity\Commune:
             type: string
             length: 200
             column: Commune_nom
+        nomGoogle:
+            type: string
+            length: 200
+            column: Commune_nom_google
     lifecycleCallbacks: {  }

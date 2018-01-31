@@ -94,7 +94,7 @@ class DbaListeerp
     /**
      * @var string
      *
-     * @ORM\Column(name="listeERP_siret", type="string", length=14, nullable=true)
+     * @ORM\Column(name="listeERP_siret", type="string", length=14, nullable=false)
      */
     private $listeerpSiret;
 

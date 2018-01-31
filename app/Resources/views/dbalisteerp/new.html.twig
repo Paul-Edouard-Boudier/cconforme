@@ -10,7 +10,7 @@
                 <div class="col-4">
                     <div>
                         {# <label for="demandeur">Demandeur</label> #}
-                        <input value="" required class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
+                        <input value="" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
                     </div>
                 </div>
                 <div class="col-4">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <input value="" required class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
+                    <input value="" class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
                 </div>
             </div>
             <br><br>
@@ -34,7 +34,7 @@
                     <div class="row">
                         <div class="col-2">
                             <label for="numero_rue">N° de rue</label>
-                            <input value="" required class="form-control field" name="numero_rue" id="street_number" disabled="true"></input>
+                            <input value="" class="form-control field" name="numero_rue" id="street_number" disabled="true"></input>
                         </div>
                         <div class="col-8 offset-1">
                             <label for="rue">Rue</label>
@@ -75,7 +75,7 @@
                             <label for="categorie">Catégorie</label>
                             <select name="categorie" class="form-control">
                                 {% for categorie in categories %}
-                                    <option value="{{categorie.categorieId}}">{{categorie.categorieNom}}</option>
+                                    <option value="{{categorie.categorieId}}">{{categorie.categorieCode}} : {{categorie.categorieNom}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -115,7 +115,7 @@
                 <div class="col-6">
                     <div class="row">
                         <div class="col-6">
-                            <label for="adap">Numéro Adap</label>
+                            <label for="adap">Numéro de dossier (adap)</label>
                         </div>
                         <div class="col-6">
                             <label for="dossier">type de dossier</label>

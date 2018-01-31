@@ -122,7 +122,7 @@ cpossibleBundle\Entity\DbaListeerp:
         listeerpSiret:
             type: string
             length: 14
-            nullable: true
+            nullable: false
             options:
                 unsigned: false
             column: listeERP_siret

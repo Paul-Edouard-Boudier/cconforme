@@ -17,9 +17,9 @@ class ReportController extends Controller
 
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
           if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+            // -----------------
+            // Actual code for the controller
             $em = $this->getDoctrine()->getManager();
-
-
             $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
             // if (empty($reports)) {
             //   $reports = 'empty reports';
@@ -27,6 +27,9 @@ class ReportController extends Controller
             return $this->render('cpossibleBundle:Report:index.html.twig', [
               'reports' => $reports,
             ]);
+            // ----------------------
+
+            // code to change coordinates from actual base to google api
 
             // previous lng : 4.826645389
             // lng : 4.8266948

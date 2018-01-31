@@ -293,12 +293,15 @@ class DbaListeerpController extends Controller
                 $erp->setListeerpCategorie($request->get('categorie'));
                 $erp->setListeerpDemandeur($request->get('demandeur'));
                 $erp->setListeErpNomErp($request->get('nom_erp'));
-                $erp->setListeerpSiret($request->get('siret'));
+                if (($request->get('siret') == "") || !intval($request->get('siret'))) {
+                  // $erp->setListeerpSiret('0');
+                  dump(intval($request->get('siret')));die;
+                }
                 $erp->setListeerpIdAdap($request->get('id_adap'));
                 $erp->setListeerpStatut(0);
-                // dump($erp);die;
-                $em->persist($erp);
-                $em->flush();
+                dump($erp);die;
+                // $em->persist($erp);
+                // $em->flush();
                 return $this->redirectToRoute('dbalisteerp_new');
 
             } else {

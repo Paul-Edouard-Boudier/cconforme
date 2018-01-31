@@ -24,23 +24,30 @@ class Commune
     /**
      * @var int
      *
-     * @ORM\Column(name="code_insee", type="integer")
+     * @ORM\Column(name="Commune_insee", type="integer")
      */
     private $codeInsee;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="code_postal", type="integer")
+     * @ORM\Column(name="Commune_cp", type="integer")
      */
     private $codePostal;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=33)
+     * @ORM\Column(name="Commune_nom", type="string", length=200)
      */
     private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Commune_nom_google", type="string", length=200)
+     */
+    private $nomGoogle;
 
 
     /**
@@ -124,4 +131,29 @@ class Commune
     {
         return $this->nom;
     }
+
+    /**
+     * Get nomGoogle.
+     *
+     * @return string
+     */
+    public function getNomGoogle()
+    {
+        return $this->nomGoogle;
+    }
+
+    /**
+     * Set nom.
+     *
+     * @param string $nomGoogle
+     *
+     * @return Commun
+     */
+    public function setNomGoogle($nomGoogle)
+    {
+        $this->nomGoogle = $nomGoogle;
+
+        return $this;
+    }
+
 }
