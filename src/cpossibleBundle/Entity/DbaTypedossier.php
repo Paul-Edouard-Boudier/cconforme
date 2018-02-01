@@ -28,6 +28,11 @@ class DbaTypedossier
      */
     private $typedossierCode;
 
+    public function getTypeDossierCode()
+    {
+        return $this->typedossierCode;
+    }
+
     /**
      * @var string
      *

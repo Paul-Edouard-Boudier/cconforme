@@ -113,6 +113,11 @@ dbalisteerp_edit:
     defaults: { _controller: "cpossibleBundle:DbaListeerp:edit" }
     methods:  [GET, POST]
 
+dbaListeerp_editOne:
+    path: /{listeerpId}/update
+    defaults: { _controller: "cpossibleBundle:DbaListeerp:editOne"} 
+    methods: [POST, GET] #enlever GET après vérif
+
 dbalisteerp_delete:
     path:     /{listeerpId}/delete
     defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }

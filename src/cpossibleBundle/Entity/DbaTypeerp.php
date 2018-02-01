@@ -28,6 +28,11 @@ class DbaTypeerp
      */
     private $typeerpCode;
 
+    public function getTypeErpCode()
+    {
+        return $this->typeerpCode;
+    }
+
     /**
      * @var string
      *

@@ -1,164 +1,262 @@
 {% extends 'base.html.twig' %}
 
-{% form_theme edit_form 'bootstrap_3_layout.html.twig' %}
-{# {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %} #}
-
 {% block body %}
     <br>
-    <h1>Modification d'un établissement sur la liste d'accessibilité</h1>
+    <h1>Saisie d'un établissement sur la liste d'accessibilité</h1>
     <br>
-
-
-    {{ form_start(edit_form) }}
-    {% if form_errors(edit_form) != '' %} 
-        {{ form_errors(edit_form) }}
-         {% endif %}
-
     <div class="container-fluid">
-        <div class="row">
-
-            <div class="col-lg-4 offset-2">
-                {{ form_widget(edit_form.listeerpDemandeur, {'attr': {'placeholder': 'Demandeur'}}) }}
+        <form action="/{{erp.listeerpId}}/update" method="post">
+            <div class="row">
+                <div class="col-4">
+                    <div>
+                        {# <label for="demandeur">Demandeur</label> #}
+                        <input value="{{erp.listeerpDemandeur}}" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div>
+                        {# <label for="nom">Nom de l'établissement / enseigne</label> #}
+                        <input value="{{erp.listeErpNomErp}}" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <input value="{{erp.listeerpSiret}}" class="form-control" type="text" name="siret" maxlength="14" placeholder="Siret">
+                </div>
             </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(edit_form.listeErpNomErp, {'attr': {'placeholder': 'Etablissement, enseigne'}}) }}
+            <br><br>
+            <div class="row">
+                <div class="col-6" id="locationField">
+                    <label for="adress">Entrez la nouvelle adresse de l'établissement</label>
+                    <input value="" class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
+                         {# onFocus="geolocate()" #} type="text"></input>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-2">
+                            <label for="numero_rue">N° de rue</label>
+                            <input disabled="true" value="{{erp.listeerpNumeroVoie}}" class="form-control field" name="numero_rue" id="street_number" ></input>
+                        </div>
+                        <div class="col-8 offset-1">
+                            <label for="rue">Rue</label>
+                            <input disabled="true" value="{{erp.listeerpNomVoie}}" class="form-control field" name="rue" id="route" ></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="commune">Commune</label>
+                            <input disabled="true" value="{{erp.listeerpNomCommune}}" required name="commune" class="form-control field" id="locality" ></input>
+                        </div>
+                        <div class="col-4 offset-1">
+                            <label for="code_postal">Code postal</label>
+                            <input disabled="true" value="{{erp.listeerpCodePostal}}" required name="code_postal" class="field form-control" id="postal_code" ></input>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <label for="departement">Département</label>
+                            <input disabled="true" value="{{erp.listeerpDepartement}}" required name="departement" class="form-control field" id="administrative_area_level_2" ></input>
+                        </div>
+                    </div>
+                </div>
             </div>
-
             <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-2 offset-2">
-                {{ form_widget(edit_form.listeerpSiret, {'attr': {'placeholder': 'Siret'}}) }}
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <label for="types">Type(s) de l'établissement</label>
+                    <select multiple name="types[]" class="form-control" style="height:75%" id="exampleFormControlSelect2">
+                        {% for type in types %}
+                            <option 
+                            {% for erptype in erptypes %}
+                                {% if erptype == type.typeactiviteCode %}
+                                    selected="true" 
+                                {% endif %}
+                            {% endfor %}
+                            value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-10 offset-1">
+                            <label for="categorie">Catégorie</label>
+                            <select name="categorie" class="form-control">
+                                {% for categorie in categories %}
+                                    <option 
+                                    {% if erp.listeerpCategorie == categorie.categorieId %}
+                                        selected="true"
+                                    {% endif %}
+                                    value="{{categorie.categorieId}}">{{categorie.categorieCode}} : {{categorie.categorieNom}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-6 offset-3">
+                            <label for="nature">nature de l'établissement</label>
+                            <select name="nature" class="form-control">
+                                {% for nature in natures %}
+                                    <option {% if erp.listeerpNature == nature.typeerpCode %} selected="true"{% endif %}
+                                    value="{{nature.typeerpCode}}">{{nature.typeerpCode}}</option>
+                                {% endfor %}
+                                {# <option value="erp">erp</option>
+                                <option value="iop">iop</option> #}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-lg-1">
-                {{ form_widget(edit_form.listeerpNumeroVoie, {'attr': {'placeholder': 'Numéro Voie'}}) }}
+            <br>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="date">Date d'engagement</label>
+                        </div>
+                        <div class="col-6">
+                            <label for="delai">Delai de mise en conformité</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input value="{{erp.listeerpDateValidAdap}}" required class="form-control" id="date" type="date" name="date_valid">
+                        </div>
+                        <div class="col-6">
+                            <input value="{{erp.listeerpDelaiAdap}}" required class="form-control" type="number" step='3' min='0' max='9' name="delai" placeholder='3'>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="adap">Numéro de dossier (adap)</label>
+                        </div>
+                        <div class="col-6">
+                            <label for="dossier">type de dossier</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <input value="{{erp.listeerpIdAdap}}" required class="form-control" type="text" name="id_adap" placeholder="N° Adap">
+                        </div>
+                        <div class="col-6">
+                            <select name="dossier" class="form-control">
+                                {% for dossier in dossiers %}
+                                    <option {% if erp.listeerpTypedossier == dossier.typedossierCode %} selected="true"{% endif %}
+                                    value="{{dossier.typedossierCode}}">{{dossier.typedossierCode}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-lg-1">
-                {{ form_widget(edit_form.listeerpComplementVoie, {'attr': {'placeholder': 'Compl. voie'}}) }}
+            <input value="{{erp.listeerpLatitude}}" type="hidden" id="lat" name="lat">
+            <input value="{{erp.listeerpLongitude}}" type="hidden" id="lng" name="lng">
+            <input value="{{erp.listeerpId}}" name="id" type="hidden">
+            <br>
+            <div class="row">
+                <div class="col-4 offset-2">
+                    <input type="submit" class="btn btn-success" value="Enregistrer">
+                </div>
+                <div class="col-4">
+                    <a href="/liste/index" class="btn btn-success">Annuler</a>
+                </div>
             </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(edit_form.listeerpNomVoie, {'attr': {'placeholder': 'Nom de la voie'}}) }}
-            </div>
-
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-1 offset-5">
-                {{ form_widget(edit_form.listeerpCodePostal, {'attr': {'placeholder': 'Code Postal'}}) }}
-            </div>
-
-            <div class="col-lg-4">
-                {{ form_widget(edit_form.listeerpNomCommune, {'attr': {'placeholder': 'Ville'}}) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-8 mx-auto" style="height: 20px; border-top: 2px solid blue;"></div>
-        </div>
-
-        <div class="row">
-
-            <div class="col-lg-1 offset-5">
-                <h3>type d'ERP</h3>
-                {{ form_widget(edit_form.listeerpNature) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-4 offset-2">
-                <h3>Activité</h3>
-                {{ form_widget(edit_form.listeerpType) }}
-            </div>
-
-            <div class="col-lg-4">
-                <h3>Catégorie</h3>
-                {{ form_widget(edit_form.listeerpCategorie) }}
-            </div>
-
-            <br>
-            <br>
-            <br>
-            <br>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-2 offset-2">
-                {{ form_widget(edit_form.listeerpTypedossier) }}
-            </div>
-            <div class="col-lg-2">
-                {{ form_widget(edit_form.listeerpIdAdap, {'attr': {'placeholder': 'Numéro Adap'}}) }}
-            </div>
-
-            <div class="col-lg-2">
-                {{ form_widget(edit_form.listeerpDateValidAdap, {'attr': {'placeholder': 'Date d\'engagement'}}) }}
-            </div>
-
-            <div class="col-lg-2">
-                {{ form_widget(edit_form.listeerpDelaiAdap, {'attr': {'placeholder': 'Délai Adap'}}) }}
-            </div>
-        </div>
-
-        <br>
-        <br>
-        <br>
-
-        <div class="row">
-            <div class="col-lg-2 offset-5">
-                {{ form_widget(edit_form.Enregistrer, {'attr': {'class': 'btn btn-success'}}) }}
-            </div>
-
-            {{ form_widget(edit_form._token) }}
-
-            {{ form_end(edit_form, {'render_rest': false}) }}
-
-            <br>
-            <br>
-
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <ul class="list-group">
-                    <li class="list-group-item col-lg-1 mx-auto">
-                        <a href="{{ path('dbalisteerp_index') }}">Liste ERP</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <br>
-        <div class="col-10 mx-auto">
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                <a href="{{ path('fos_user_security_logout') }}" class="btn btn-outline-danger btn-lg">
-                    <i class="fa fa-sign-out" aria-hidden="true"></i>
-                    Déconnexion
-                </a>
-            {% else %}
-            {% endif %}
-        </div>
+        </form>
     </div>
+    <script>
+
+    $(document).ready(function() {
+        $('input[name=siret]').on('input', function() {
+          if ($(this).val().length == 14) {
+            var isnum = /^\d+$/.test($(this).val());
+            $('#inserted').remove();
+            $('input[type=submit]').attr("disabled", false);
+            $('input[name=siret]').parent().removeAttr('style');
+            if (!isnum) {
+              $('input[type=submit]').attr("disabled", true);
+              $(this).before("<label id='inserted'>Veuillez entrer un n° de Siret valide (14 chiffres)</label>");
+              $(this).parent().css('border', '1px solid red');
+            }
+          }
+        })
+
+        $('form').on('submit', function() {
+          return confirm('Etes-vous sûr de vos informations ?');
+        })
+      })
+      // This example displays an address form, using the autocomplete feature
+      // of the Google Places API to help users fill in the information.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      var placeSearch, autocompleteAddress;
+      var componentForm = {
+        street_number: 'short_name',
+        route: 'long_name',
+        locality: 'long_name',
+        administrative_area_level_2: 'short_name',
+        postal_code: 'short_name'
+      };
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocompleteAddress = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocompleteAddress')),
+            {types: ['geocode'], 
+            componentRestrictions: {country: 'fr'}
+            });
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocompleteAddress.addListener('place_changed', fillInAddress);
+        // debugger;
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocompleteAddress.getPlace();
+
+        for (var component in componentForm) {
+          document.getElementById(component).value = '';
+          // document.getElementById(component).disabled = false;
+        }
+
+        // Get each component of the address from the place details
+        // and fill the corresponding field on the form.
+        for (var i = 0; i < place.address_components.length; i++) {
+          var addressType = place.address_components[i].types[0];
+          if (componentForm[addressType]) {
+            var val = place.address_components[i][componentForm[addressType]];
+            document.getElementById(addressType).value = val;
+          }
+        }
+        $('#lat').val(place.geometry.location.lat());
+        $('#lng').val(place.geometry.location.lng());
+        // debugger
+      }
+
+      // Bias the autocomplete object to the user's geographical location,
+      // as supplied by the browser's 'navigator.geolocation' object.
+      function geolocate() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var geolocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            var circle = new google.maps.Circle({
+              center: geolocation,
+              radius: position.coords.accuracy
+            });
+            autocompleteAddress.setBounds(circle.getBounds());
+          });
+        }
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVK6KttAlmqs-6rC-thezTYr8cPvxWKdQ&libraries=places&callback=initAutocomplete"
+        async defer></script>
 {% endblock %}

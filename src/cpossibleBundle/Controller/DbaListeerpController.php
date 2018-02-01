@@ -225,10 +225,12 @@ class DbaListeerpController extends Controller
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
         if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+          $errors = [];
           $em = $this->getDoctrine()->getManager();
           $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
           $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
           return $this->render('dbalisteerp/new.html.twig', [
+            'errors' => $errors,
             'types' => $types,
             'categories' => $categories,
           ]);
@@ -248,60 +250,17 @@ class DbaListeerpController extends Controller
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
                 $em = $this->getDoctrine()->getManager();
                 $erp = new Dbalisteerp();
-
-                $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')])->getDepartementCode();
-                $fulladdress = $this->getNormalizedAddress($request->get('rue'));
-
-                $types = "";
-                $i = 0;
-                foreach ($request->get('types') as $type) {
-                    $types .= $type;
-                    $i++;
-                    if ($i !== count($request->get('types'))) {
-                        $types .= ',';
-                    }
+                $response = $this->insertion($request, $erp);
+                if ($response[1]) {
+                  $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+                  $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
+                  return $this->render('dbalisteerp/new.html.twig', [
+                    'erp' => $erp,
+                    'errors' => $errors,
+                    'types' => $types,
+                    'categories' => $categories,
+                  ]);
                 }
-
-                $postalCodes = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
-                if (in_array($request->get('code_postal'), $postalCodes)) {
-                    $insee = strval($em->getRepository('cpossibleBundle:Commune')->findOneBy(['codePostal' => $request->get('code_postal')])->getCodeInsee());
-                }
-                else {
-                    $tempCommune = preg_replace('/\-+|\'+/', ' ', strtoupper($request->get('commune')));
-                    if (strpos($tempCommune, 'SAINT') !== false) {
-                        $tempCommune = str_replace('SAINT', 'ST', $tempCommune);
-                    }
-                    elseif (strpos($tempCommune, 'SAINTE') !== false) {
-                        $tempCommune = str_replace('SAINTE', 'STE', $tempCommune);
-                    }
-                    $insee = strval($em->getRepository('cpossibleBundle:Commune')->findOneBy(['nom' => $tempCommune])->getCodeInsee());
-                }
-                
-                $erp->setListeerpType($types);
-                $erp->setListeerpNomVoie($fulladdress);
-                $erp->setListeerpDepartement($dpt);
-                $erp->setListeerpCodeInsee($insee);
-                $erp->setListeerpNumeroVoie($request->get('numero_rue'));
-                $erp->setListeerpCodePostal($request->get('code_postal'));
-                $erp->setListeerpNomCommune($request->get('commune'));
-                $erp->setListeerpDateValidAdap($request->get('date_valid'));
-                $erp->setListeerpLatitude($request->get('lat'));
-                $erp->setListeerpLongitude($request->get('lng'));
-                $erp->setListeerpDelaiAdap($request->get('delai'));
-                $erp->setListeerpNature($request->get('nature'));
-                $erp->setListeerpTypedossier($request->get('dossier'));
-                $erp->setListeerpCategorie($request->get('categorie'));
-                $erp->setListeerpDemandeur($request->get('demandeur'));
-                $erp->setListeErpNomErp($request->get('nom_erp'));
-                if (($request->get('siret') == "") || !intval($request->get('siret'))) {
-                  // $erp->setListeerpSiret('0');
-                  dump(intval($request->get('siret')));die;
-                }
-                $erp->setListeerpIdAdap($request->get('id_adap'));
-                $erp->setListeerpStatut(0);
-                dump($erp);die;
-                // $em->persist($erp);
-                // $em->flush();
                 return $this->redirectToRoute('dbalisteerp_new');
 
             } else {
@@ -335,29 +294,34 @@ class DbaListeerpController extends Controller
      * Displays a form to edit an existing dbaListeerp entity.
      *
      */
-    public function editAction(Request $request, DbaListeerp $dbaListeerp)
+    public function editAction(/*Request $request,*/DbaListeerp $erp)
     {
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
             if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+              $em = $this->getDoctrine()->getManager();
+              $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+              $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
+              $dossiers = $em->getRepository('cpossibleBundle:DbaTypedossier')->findAll();
+              $natures = $em->getRepository('cpossibleBundle:DbaTypeerp')->findAll();
+              $errors = [];
 
-                $deleteForm = $this->createDeleteForm($dbaListeerp);
-                $editForm = $this->createForm('cpossibleBundle\Form\DbaListeerpType', $dbaListeerp);
-                $editForm->handleRequest($request);
-
-                if ($editForm->isSubmitted() && $editForm->isValid()) {
-                    $this->getDoctrine()->getManager()->flush();
-
-                    return $this->redirectToRoute('dbalisteerp_show', array('listeerpId' => $dbaListeerp->getListeerpid()));
-                }
-
-                return $this->render('dbalisteerp/edit.html.twig', array(
-                    'dbaListeerp' => $dbaListeerp,
-                    'edit_form' => $editForm->createView(),
-                    'delete_form' => $deleteForm->createView(),
-                ));
+              $erptypes = $erp->getListeerpType();
+              $newtypes = str_replace(["/", "-", ","], [" ", " ", " "], $erptypes);
+              $erptypes = explode(" ", $newtypes);
+              $action = '/'.$erp->getListeerpid().'/update';
+              return $this->render('dbalisteerp/edit.html.twig', [
+                'action' => $action,
+                'erp' => $erp,
+                'erptypes' => $erptypes,
+                'errors' => $errors,
+                'types' => $types,
+                'categories' => $categories,
+                'natures' => $natures,
+                'dossiers' => $dossiers,
+              ]);
 
             } else {
 
@@ -369,6 +333,33 @@ class DbaListeerpController extends Controller
 
             return $this->redirectToRoute('fos_user_security_login');
         }
+    }
+
+    public function editOneAction(Request $request, DbaListeerp $erp) {
+      $securityContext = $this->container->get('security.authorization_checker');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+          $em = $this->getDoctrine()->getManager();
+          dump($request->get('id'));
+          // METTRE A JOUR L'ERP ICI PUTAIN C'EST HYPER LONG
+          $response = $this->insertion($request, $erp);
+          dump($erp);die;
+          if ($repsonse[1]) {
+            $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+            $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
+            return $this->render('dbalisteerp/new.html.twig', [
+              'erp' => $erp,
+              'errors' => $response[1],
+              'types' => $types,
+              'categories' => $categories,
+            ]);
+          }
+        } else {
+            return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+        }
+      } else {
+        return $this->redirectToRoute('fos_user_security_login');
+      }
     }
 
     /**
@@ -460,7 +451,7 @@ class DbaListeerpController extends Controller
 
     protected function getNormalizedAddress($address) {
         $em = $this->getDoctrine()->getManager();
-        $tempAdress = $address; // Here: "Place de l'Europe" (whithout whitespcae at the end)
+        $tempAdress = $address; // Here like: "Place de l'Europe" (whithout whitespcae at the end)
         $adressExploded = explode(" ",$tempAdress);
         $intitule_voie = $adressExploded[0]; // "Place"
         $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
@@ -476,5 +467,73 @@ class DbaListeerpController extends Controller
           $fulladdress .= " " .strtoupper($adressExploded[$i]);
         }
         return $fulladdress;
+    }
+
+    protected function insertion($request, $erp) {
+      $em = $this->getDoctrine()->getManager();
+      // dump($request);
+      // dump($erp);die;
+      $errors = [];
+      $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')])->getDepartementCode();
+      if ($request->get('rue')) {
+        $fulladdress = $this->getNormalizedAddress($request->get('rue'));
+      }
+
+      $types = "";
+      $i = 0;
+      foreach ($request->get('types') as $type) {
+          $types .= $type;
+          $i++;
+          if ($i !== count($request->get('types'))) {
+              $types .= ',';
+          }
+      }
+
+      $communeGoogle = $em->getRepository('cpossibleBundle:Commune')->findOneBy(['nomGoogle' => $request->get('commune')]);
+      $cplyon = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
+      if ($communeGoogle) {
+        $erp->setListeerpNomCommune($communeGoogle->getNom());
+      }
+      else if ((strtoupper($request->get('commune')) == 'LYON') && (in_array($request->get('code_postal'), $cplyon))) {
+        $arr = substr($request->get('code_postal'), -2);
+        $erp->setListeerpNomCommune('LYON '.$arr);
+      }
+      else {
+        $errors['commune'] = "La commune renseignée ne correspond à aucune commune connue";
+      }
+
+      if (in_array($request->get('code_postal'), $cplyon)) {
+          $insee = strval($em->getRepository('cpossibleBundle:Commune')->findOneBy(['codePostal' => $request->get('code_postal')])->getCodeInsee());
+      }
+      else {
+          $insee = $em->getRepository('cpossibleBundle:Commune')->findOneBy(['nom' => $request->get('commune')])->getCodeInsee();
+      }
+      
+      $erp->setListeerpType($types);
+      isset($fulladdress)? $erp->setListeerpNomVoie($fulladdress): $erp->setListeerpNomVoie(null);
+      $erp->setListeerpDepartement($dpt);
+      $erp->setListeerpCodeInsee($insee);
+      $erp->setListeerpNumeroVoie($request->get('numero_rue'));
+      $erp->setListeerpCodePostal($request->get('code_postal'));
+      // $erp->setListeerpNomCommune($request->get('commune'));
+      $erp->setListeerpDateValidAdap($request->get('date_valid'));
+      $erp->setListeerpLatitude($request->get('lat'));
+      $erp->setListeerpLongitude($request->get('lng'));
+      $erp->setListeerpDelaiAdap($request->get('delai'));
+      $erp->setListeerpNature($request->get('nature'));
+      $erp->setListeerpTypedossier($request->get('dossier'));
+      $erp->setListeerpCategorie($request->get('categorie'));
+      $erp->setListeerpDemandeur($request->get('demandeur'));
+      $erp->setListeErpNomErp($request->get('nom_erp'));
+      if (($request->get('siret') == "") || !ctype_digit($request->get('siret'))) {
+        $erp->setListeerpSiret('0');
+      }
+      $erp->setListeerpIdAdap($request->get('id_adap'));
+      $erp->setListeerpStatut(0);
+      // $em->persist($erp);
+      // $em->flush();
+      $response = [$erp, $errors];
+      // dump($response);die;
+      return $response;
     }
 }
