@@ -9,25 +9,28 @@
             <div class="row">
                 <div class="col-4">
                     <div>
+                      <br>
                         {# <label for="demandeur">Demandeur</label> #}
                         <input value="" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
                     </div>
                 </div>
                 <div class="col-4">
                     <div>
+                      <br>
                         {# <label for="nom">Nom de l'établissement / enseigne</label> #}
                         <input value="" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
                     </div>
                 </div>
                 <div class="col-4">
-                    <input value="" class="form-control" type="text" name="siret" minlength="14" maxlength="14" placeholder="Siret">
+                    <label id="label-siret" for=""></label>
+                    <input value="" class="form-control" type="text" name="siret" placeholder="Siret">
                 </div>
             </div>
-            <br><br>
+            <br><br><br>
             <div class="row">
                 <div class="col-6" id="locationField">
                     <label for="adress">Entrez l'adresse de l'établissement</label>
-                    <input value="" required class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
+                    <input value="" class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
                          {# onFocus="geolocate()" #} type="text"></input>
                 </div>
                 <div class="col-6">
@@ -44,9 +47,6 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="commune">Commune</label>
-                            {% if errors['commune'] is defined %}
-                                <label for="">{{errors['commune']}}</label>
-                            {% endif %}
                             <input disabled="true" value="" required name="commune" class="form-control field" id="locality" disabled="true"></input>
                         </div>
                         <div class="col-4 offset-1">
@@ -66,7 +66,7 @@
             <div class="row">
                 <div class="col-lg-6 col-12">
                     <label for="types">Type(s) de l'établissement</label>
-                    <select multiple name="types[]" class="form-control" style="height:75%" id="exampleFormControlSelect2">
+                    <select required multiple name="types[]" class="form-control" style="height:75%" id="exampleFormControlSelect2">
                         {% for type in types %}
                             <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
                         {% endfor %}
@@ -155,16 +155,26 @@
     <script>
       $(document).ready(function() {
         $('input[name=siret]').on('input', function() {
+          $('input[name=siret]').attr('maxlength', '14');
+          $('input[name=siret]').attr('minlength', '14');
+          $('input[type=submit]').attr("disabled", false);
           if ($(this).val().length == 14) {
             var isnum = /^\d+$/.test($(this).val());
-            $('#inserted').remove();
-            $('input[type=submit]').attr("disabled", false);
-            $('input[name=siret]').parent().removeAttr('style');
             if (!isnum) {
               $('input[type=submit]').attr("disabled", true);
-              $(this).before("<label id='inserted'>Veuillez entrer un n° de Siret valide (14 chiffres)</label>");
+              $('#label-siret').html("Veuillez entrer un n° de Siret valide (14 chiffres) ou 0 si vous n'avez aucune informations");
               $(this).parent().css('border', '1px solid red');
+            } else {
+              $('input[name=siret]').parent().removeAttr('style');
+              $('#label-siret').html("");
             }
+          }
+          if ($('input[name=siret]').val() == "" || $('input[name=siret]').val() == "0") {
+            $('#label-siret').html("");
+            $('input[type=submit]').attr("disabled", false);
+            $('input[name=siret]').parent().removeAttr('style');
+            $('input[name=siret]').removeAttr('maxlength');
+            $('input[name=siret]').removeAttr('minlength');
           }
         })
 
