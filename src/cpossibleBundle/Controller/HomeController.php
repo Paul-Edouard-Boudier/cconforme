@@ -150,18 +150,13 @@ class HomeController extends AbstractErpController
     */
     public function erpListAutocompletedAction(Request $request) {
       if ($request->isXMLHttpRequest()) {
-        // $address = "Rue du dr Bouchut";
-        // $number = "17";
-
         $em = $this->getDoctrine()->getManager();
         $fulladdress = $this->getNormalizedAddress($request->get('address'));
-        // $fulladdress = $this->getNormalizedAddress($address);
         $qb = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp');
         $qb->andWhere('erp.listeerpNomVoie LIKE :address')
         ->andWhere('erp.listeerpNumeroVoie LIKE :number')
         ->setParameter('address', $fulladdress )
         ->setParameter('number', $request->get('number'));
-        // ->setParameter('number', $number);
         $result = $qb->getQuery()->getArrayResult();
         $erps = [];
         // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
