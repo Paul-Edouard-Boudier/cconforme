@@ -253,7 +253,6 @@ class DbaListeerpController extends Controller
                 // $response can hold errors which are at index 1
                 $response = $this->insertion($request, $erp);
                 if ($response[1]) {
-                  // dump($response);die;
                   $erp = $this->erpIfErrors($response[0], $response[2]);
                   $action = '/liste/insert';
                   return $this->rendering($response[0], $response[1], $action);
@@ -320,6 +319,7 @@ class DbaListeerpController extends Controller
         if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           $em = $this->getDoctrine()->getManager();
           $response = $this->insertion($request, $erp);
+          // dump($response);die;
           if ($response[1]) {
             $erp = $this->erpIfErrors($response[0], $response[2]);
             $action = '/'.$erp->getListeerpid().'/update';
@@ -456,8 +456,6 @@ class DbaListeerpController extends Controller
       $erp->setListeErpNomErp($request->get('nom_erp'));
       $erp->setListeerpIdAdap($request->get('id_adap'));
       $erp->setListeerpStatut(0);
-      // dump($request);
-      // dump($erp);die;
       $errors = [];
 
       $qb = $em->getRepository('cpossibleBundle:Commune')->createQueryBuilder('c')
@@ -516,21 +514,21 @@ class DbaListeerpController extends Controller
         $erp->setListeerpCodePostal(strval($commune->getCodePostal()));
         $erp->setListeerpCodeInsee(strval($commune->getCodeInsee()));
       }
-      else if (!array_key_exists('code_postal', $errors)) {
-        if ((mb_strtoupper($request->get('commune'), 'UTF-8') == 'LYON') && (in_array($request->get('code_postal'), $cplyon))) {
+      // if the CP is correct and one of the ones lyon uses, and the input commune is like lyon
+      // then =>
+      else if (!array_key_exists('code_postal', $errors) && ((mb_strtoupper($request->get('commune'), 'UTF-8') == 'LYON') && (in_array($request->get('code_postal'), $cplyon)))) {
           $arrondissement = substr($request->get('code_postal'), -2);
           $erp->setListeerpNomCommune('LYON '.$arrondissement);
           $commune = $em->getRepository('cpossibleBundle:Commune')->findOneBy(['nom' => $erp->getListeerpNomCommune()]);
           $erp->setListeerpCodePostal(strval($commune->getCodePostal()));
           $erp->setListeerpCodeInsee(strval($commune->getCodeInsee()));
-        }
       }
       else {
         $errors['commune'] = "La commune renseignée ne correspond à aucune commune connue";
+        // dump($errors);die;
         $response = [$erp, $errors, $request->request];
         return $response;
       }
-      
       // -- CHECK DEPARTEMENT --
       $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementNom' => $request->get('departement')]);
       if ($dpt) {
