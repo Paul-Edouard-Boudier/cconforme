@@ -107,6 +107,10 @@ abstract class AbstractErpController extends Controller
         $newdate =  $date->format('d-m-Y');
         $time = strtotime($newdate);
         $erp['annee'] = date("Y",$time);
+        $now = new DateTime();
+        $nowDate = date('d-m-Y');
+        $checkNow = strtotime(date('d-m-Y'));
+        $checkNow >= $time ? $erp['accessible'] = 'accessible':$erp['accessible'] = null;
         } 
         else {
           $erp['mois'] = null;

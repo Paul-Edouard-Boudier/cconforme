@@ -220,6 +220,10 @@ class HomeController extends AbstractErpController
             $newdate =  $date->format('d-m-Y');
             $time = strtotime($newdate);
             $annee = date("Y",$time); // usefull
+            $now = new DateTime();
+            $nowDate = date('d-m-Y');
+            $checkNow = strtotime(date('d-m-Y'));
+            $checkNow >= $time ? $erp['accessible'] = 'accessible':$erp['accessible'] = null;
         }
         $nom = $erp['name'];
         unset($erp['name']);
@@ -234,6 +238,9 @@ class HomeController extends AbstractErpController
         $response['lat'] = $lat;
         $response['lng'] = $lng;
         $response['commune'] = $erp['commune'];
+        // change this fucking shit that took me like 3 hours to a single line like displayed on map:
+        // L'établissement "nom" sera accessible d'ici "mois" "annee".
+        // L'établissement "nom" est accessible.
         switch($status) {
             case $status == "0000":
                 $response['message'] = "Pas assez de données n'ont été renseignées pour cet établissement";
