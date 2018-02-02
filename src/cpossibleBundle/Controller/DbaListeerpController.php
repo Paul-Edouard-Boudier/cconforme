@@ -438,6 +438,7 @@ class DbaListeerpController extends Controller
         for ($i=1; $i < count($adressExploded) ; $i++) {
           $fulladdress .= " " .mb_strtoupper($adressExploded[$i], 'UTF-8');
         }
+        $fulladdress = str_replace('DR', 'DOCTEUR', $fulladdress);
         return $fulladdress;
     }
 
