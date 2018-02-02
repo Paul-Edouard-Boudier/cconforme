@@ -69,7 +69,7 @@ abstract class AbstractErpController extends Controller
         $intitule_voie = $adressExploded[0]; // "Place"
         $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
         $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-        ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+        ->setParameter('intitulevoieNom', $intitule_voie);
         $result = $q->getQuery();
         // Here we want to get the nom de voie as we wish to put in ddb like "PL"
         $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
@@ -79,6 +79,7 @@ abstract class AbstractErpController extends Controller
         for ($i=1; $i < count($adressExploded) ; $i++) {
           $fulladdress .= " " .strtoupper($adressExploded[$i]);
         }
+        $fulladdress = str_replace('DR', 'DOCTEUR', $fulladdress);
         return $fulladdress;
     }
 

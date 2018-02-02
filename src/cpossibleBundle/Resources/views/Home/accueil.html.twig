@@ -260,6 +260,7 @@
                                     var number = [
                                         (place.address_components[0] && place.address_components[0].short_name || '')
                                         ].join(' ');
+                                        debugger;
                                     $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
                                         $('#result').empty();
                                         if (data.length > 1) {
