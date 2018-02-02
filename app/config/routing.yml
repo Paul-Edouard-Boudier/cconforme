@@ -43,7 +43,7 @@ cpossible_list:
 cpossible_erpslist:
     path: /erps_list_autocompleted
     defaults: { _controller: cpossibleBundle:Home:erpListAutocompleted}
-    methods: [POST, GET]
+    methods: POST
 
 cpossible_checkdpt:
     path: /checkdpt
@@ -67,6 +67,11 @@ report_new:
 report_delete:
     path: /report/{id}/delete
     defaults: { _controller: cpossibleBundle:Report:deleteOne }
+
+siret_index:
+    path: /siret
+    defaults: { _controller: cpossibleBundle:Siret:checkSiret }
+    methods: [POST, GET] #enlever le GET
 
 tps_index:
   path: /tps/form

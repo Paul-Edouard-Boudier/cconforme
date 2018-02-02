@@ -11,14 +11,14 @@
                     <div>
                       <br>
                         {# <label for="demandeur">Demandeur</label> #}
-                        <input value="" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
+                        <input id="demandeur" value="" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
                     </div>
                 </div>
                 <div class="col-4">
                     <div>
                       <br>
                         {# <label for="nom">Nom de l'établissement / enseigne</label> #}
-                        <input value="" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
+                        <input id="enseigne" value="" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
                     </div>
                 </div>
                 <div class="col-4">
@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col-6" id="locationField">
                     <label for="adress">Entrez l'adresse de l'établissement</label>
-                    <input value="" class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
+                    <input data-check="false" value="" name="address" class="form-control" id="autocompleteAddress" placeholder="Adresse de l'établissement"
                          {# onFocus="geolocate()" #} type="text"></input>
                 </div>
                 <div class="col-6">
@@ -141,6 +141,7 @@
             </div>
             <input value="" type="hidden" id="lat" name="lat"></input>
             <input value="" type="hidden" id="lng" name="lng"></input>
+            <input value="" type="hidden" id="check" name="check" >
             <br>
             <div class="row">
                 <div class="col-4 offset-2">
@@ -165,8 +166,31 @@
               $('#label-siret').html("Veuillez entrer un n° de Siret valide (14 chiffres) ou 0 si vous n'avez aucune informations");
               $(this).parent().css('border', '1px solid red');
             } else {
-              $('input[name=siret]').parent().removeAttr('style');
-              $('#label-siret').html("");
+              $('#label-siret').html("Veuillez patienter...")
+              $.post('/siret', {'siret': $(this).val()}).success(function(data) {
+                if (data == 0) {
+                  $('#label-siret').html("Le siret renseigné est invalide");
+                }
+                else {
+                  var components = ['street_number', 'route', 'locality', 'administrative_area_level_2', 'postal_code'];
+                  for (var i=0; i < components.length; i++) {
+                    var id = components[i];
+                    document.getElementById(id).disabled = false;
+                    document.getElementById(id).value = data.address[id];
+                  }
+                  $('#lat').val(data['lat']);
+                  $('#lng').val(data['lng']);
+                  if (data.enseigne == null && data.demandeur != null) {
+                    $('#enseigne').val(data['demandeur']);
+                  }
+                  else {
+                    $('#demandeur').val(data['demandeur']);
+                    $('#enseigne').val(data['enseigne']);
+                  }
+                  $('input[name=siret]').parent().removeAttr('style');
+                  $('#label-siret').html("");
+                }
+              })
             }
           }
           if ($('input[name=siret]').val() == "" || $('input[name=siret]').val() == "0") {
@@ -211,11 +235,11 @@
         // When the user selects an address from the dropdown, populate the address
         // fields in the form.
         autocompleteAddress.addListener('place_changed', fillInAddress);
-        // debugger;
       }
 
       function fillInAddress() {
         // Get the place details from the autocomplete object.
+        // debugger;
         var place = autocompleteAddress.getPlace();
 
         for (var component in componentForm) {
