@@ -66,6 +66,7 @@
                     <th>Nom commune</th>
                     <th>Département</th>
                     <th>Modifier</th>
+                    <th>Supprimer</th>
                 </tr>
             </thead>
             <tbody>
@@ -90,6 +91,7 @@
                     <td>
                         <a href="{{ path('dbalisteerp_edit', { 'listeerpId': dbaListeerp.listeerpId }) }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
+                    <td><a href="{{ path('dbalisteerp_delete', {'listeerpId': dbaListeerp.listeerpId })}}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
                 </tr>
             {% endfor %}
             </tbody>

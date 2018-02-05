@@ -271,20 +271,19 @@ class DbaListeerpController extends Controller
         }
     }
 
-    /**
-     * Finds and displays a dbaListeerp entity.
-     *
-     */
-    public function showAction(DbaListeerp $dbaListeerp)
-    {
+    // /**
+    //  * Finds and displays a dbaListeerp entity.
+    //  *
+    //  */
+    // public function showAction(DbaListeerp $dbaListeerp)
+    // {
 
-        $deleteForm = $this->createDeleteForm($dbaListeerp);
-
-        return $this->render('dbalisteerp/show.html.twig', array(
-            'dbaListeerp' => $dbaListeerp,
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
+    //     $deleteForm = $this->createDeleteForm($dbaListeerp);
+    //     return $this->render('dbalisteerp/show.html.twig', array(
+    //         'dbaListeerp' => $dbaListeerp,
+    //         'delete_form' => $deleteForm->createView(),
+    //     ));
+    // }
 
     /**
      * 
@@ -338,19 +337,21 @@ class DbaListeerpController extends Controller
      * Deletes a dbaListeerp entity.
      *
      */
-    public function deleteAction(Request $request, DbaListeerp $dbaListeerp)
-    {
-
-        $form = $this->createDeleteForm($dbaListeerp);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($dbaListeerp);
-            $em->flush();
+    public function deleteAction(DbaListeerp $erp)
+    { 
+      $securityContext = $this->container->get('security.authorization_checker');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+          $em = $this->getDoctrine()->getManager();
+          $em->remove($erp);
+          $em->flush();
+          return $this->redirectToRoute('dbalisteerp_index');
+        else {
+          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
         }
-
-        return $this->redirectToRoute('dbalisteerp_index');
+      } else {
+        return $this->redirectToRoute('fos_user_security_login');
+      }
     }
 
 
@@ -389,21 +390,21 @@ class DbaListeerpController extends Controller
       }
     }
 
-    /**
-     * Creates a form to delete a dbaListeerp entity.
-     *
-     * @param DbaListeerp $dbaListeerp The dbaListeerp entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(DbaListeerp $dbaListeerp)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('dbalisteerp_delete', array('listeerpId' => $dbaListeerp->getListeerpid())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
+    // /**
+    //  * Creates a form to delete a dbaListeerp entity.
+    //  *
+    //  * @param DbaListeerp $dbaListeerp The dbaListeerp entity
+    //  *
+    //  * @return \Symfony\Component\Form\Form The form
+    //  */
+    // private function createDeleteForm(DbaListeerp $dbaListeerp)
+    // {
+    //     return $this->createFormBuilder()
+    //         ->setAction($this->generateUrl('dbalisteerp_delete', array('listeerpId' => $dbaListeerp->getListeerpid())))
+    //         ->setMethod('DELETE')
+    //         ->getForm()
+    //     ;
+    // }
 
      /** function used in the form builder to get types as an array
     *

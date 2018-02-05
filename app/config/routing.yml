@@ -126,7 +126,7 @@ dbaListeerp_editOne:
 dbalisteerp_delete:
     path:     /{listeerpId}/delete
     defaults: { _controller: "cpossibleBundle:DbaListeerp:delete" }
-    methods:  DELETE
+    methods:  [DELETE, GET] # maybe we can work with only delete but idk, i didnt look into it, ima work with GET
 
 dbalisteerp_fetch:
     path:     /fetch

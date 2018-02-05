@@ -94,7 +94,7 @@
                         </p>
                         <p><span style="color: red">Il ne permet pas :</span><ul><li>de connaître les établissements entièrement accessibles : un établissement bénéficiant de dérogations pour les aspects ne respectant pas la réglementation est considéré comme conforme ;</li><li>de connaître l’intégralité des établissements du département du Rhône ayant satisfait à leurs obligations : certains ont pu faire l’objet d’un dépôt de documents en préfecture du siège régional ou du siège social.</li></ul></p>
                         <hr style="height: 1px">
-                        <p><span style="font-weight: bold">ATTENTION</span> : ce site est en construction. Malgré tous nos efforts, il est possible que certaines fonctionnalités fonctionnent mal et que certaines données soient incomplètes ou aient fait l’objet d’une erreur de saisie. Merci de nous aider à l’améliorer en signalant tout bug ou erreur sur le nom ou l’adresse de l’ERP.</p>
+                        <p><span style="font-weight: bold">ATTENTION</span> : ce site est en construction. Malgré tous nos efforts, il est possible que certaines fonctionnalités fonctionnent mal et que certaines données soient incomplètes ou aient fait l’objet d’une erreur de saisie. Merci de nous aider à l’améliorer en signalant tout bug ou erreur sur le nom ou l’adresse de l’établissement.</p>
 
                         <p>Vous êtes gestionnaire ou propriétaire d’un établissement et vous n’avez déposé ni attestation ni  Ad’AP ? Tout savoir pour régulariser votre situation <a href="http://www.rhone.gouv.fr/Politiques-publiques/Amenagement-du-territoire-urbanisme-construction-logement/Accessibilite/Accessibilite-des-Etablissements-Recevant-du-Public-ERP">ici</a>.</p>
                     </div>
@@ -266,15 +266,15 @@
                                         if (data.length > 1) {
                                             $('#message').removeClass('alert-danger');
                                             $('#message').addClass('alert-success');
-                                            $('#message').html(data.length+' erps trouvés à cette adresse');
+                                            $('#message').html(data.length+' établissements trouvés à cette adresse');
                                         } else if (data.length == 1){
                                             $('#message').removeClass('alert-danger');
                                             $('#message').addClass('alert-success');
-                                            $('#message').html(data.length+' erp trouvé à cette adresse');
+                                            $('#message').html(data.length+' établissement trouvé à cette adresse');
                                         } else {
                                             $('#message').addClass('alert-danger');
                                             $('#message').removeClass('alert-success');
-                                            $('#message').html('Aucun erps trouvés à cette adresse');
+                                            $('#message').html('Aucun établissements trouvés à cette adresse');
                                         }
                                         var result = '';
                                         for (var i=0; i < data.length; i++) {
@@ -379,7 +379,7 @@
                     if (data[i].accessible == null) {
                         var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
                             "<p>"+data[i].address+"<p>"+
-                            "<p>Acessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                            "<p>Accessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
                     }
                     // create a blue marker everytime
                     var marker = new google.maps.Marker({
@@ -514,7 +514,7 @@
           aroundThisLocationUI.style.cursor = 'pointer';
           aroundThisLocationUI.style.marginBottom = '22px';
           aroundThisLocationUI.style.textAlign = 'center';
-          aroundThisLocationUI.title = 'Cliquez pour savoir quel(s) erp(s) est(sont) à proximité(s) de ce point';
+          aroundThisLocationUI.title = 'Cliquez pour savoir quel(s) établissement(s) est(sont) à proximité(s) de ce point';
           aroundThisLocationDiv.appendChild(aroundThisLocationUI);
 
           // Set CSS for the control interior.
@@ -553,7 +553,7 @@
           reportAdressUI.style.cursor = 'pointer';
           reportAdressUI.style.marginBottom = '22px';
           reportAdressUI.style.textAlign = 'center';
-          reportAdressUI.title = 'Cliquez pour savoir quel(s) erp(s) est(sont) à proximité(s) de ce point';
+          reportAdressUI.title = 'Cliquez pour savoir quel(s) établissement(s) est(sont) à proximité(s) de ce point';
           reportAdressControlDiv.appendChild(reportAdressUI);
 
           var reportAdressText = document.createElement('div');
@@ -607,7 +607,7 @@
                 if (data[i].accessible == null) {
                     var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
                         "<p>"+data[i].address+"<p>"+
-                        "<p>Acessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                        "<p>Accessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
                 }
                 var marker = new google.maps.Marker({
                   map: map,
@@ -667,7 +667,7 @@
                                     }
                                 });
                             }
-                            $('#error_location').html("impossible de localiser précisément l'erp");
+                            $('#error_location').html("impossible de localiser précisément l'établissement");
                             $('#error_location').addClass('alert-danger');
                         }
                         else if (data.lat !== "0" || data.lng !== "0") {
