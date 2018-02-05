@@ -44,7 +44,8 @@ class TpsController extends Controller
     if (!empty($errors)) {
       $count = null;
       $error = array_values($errors)[0];
-      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count]);
+      $label = '';
+      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
     }
     // /!\ END CHECKING /!\
 
@@ -65,7 +66,8 @@ class TpsController extends Controller
     }
     $count = count($erpsArray);
     $error = [];
-    return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count]);
+    $label = 'établissement(s) ajouté(s) à la base de donées.';
+    return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
   }
 
   /**

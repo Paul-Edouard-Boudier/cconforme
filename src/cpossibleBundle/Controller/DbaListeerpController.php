@@ -253,6 +253,7 @@ class DbaListeerpController extends Controller
                 // $response can hold errors which are at index 1
                 $response = $this->insertion($request, $erp);
                 if ($response[1]) {
+                  dump($response);die;
                   $erp = $this->erpIfErrors($response[0], $response[2]);
                   $action = '/liste/insert';
                   return $this->rendering($response[0], $response[1], $action);
@@ -346,7 +347,7 @@ class DbaListeerpController extends Controller
           $em->remove($erp);
           $em->flush();
           return $this->redirectToRoute('dbalisteerp_index');
-        else {
+        } else {
           return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
         }
       } else {
@@ -424,12 +425,12 @@ class DbaListeerpController extends Controller
 
     protected function getNormalizedAddress($address) {
         $em = $this->getDoctrine()->getManager();
-        $tempAdress = $address; // Here like: "Place de l'Europe" (whithout whitespcae at the end)
+        $tempAdress = $address; // Here like: "Place de l'Europe" (whithout whitespace at the end)
         $adressExploded = explode(" ",$tempAdress);
         $intitule_voie = $adressExploded[0]; // "Place"
         $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
         $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-        ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+        ->setParameter('intitulevoieNom', $intitule_voie);
         $result = $q->getQuery();
         // Here we want to get the nom de voie as we wish to put in ddb like "PL"
         $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos

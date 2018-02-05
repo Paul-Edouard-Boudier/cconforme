@@ -68,13 +68,18 @@ report_delete:
     path: /report/{id}/delete
     defaults: { _controller: cpossibleBundle:Report:deleteOne }
 
-siret_index:
+checking_siret:
     path: /siret
-    defaults: { _controller: cpossibleBundle:Siret:checkSiret }
-    methods: [POST, GET] #enlever le GET
+    defaults: { _controller: cpossibleBundle:Checking:siret }
+    methods: POST
+
+checking_normalize:
+    path: /normalize
+    defaults: { _controller: cpossibleBundle:Checking:normalizeDadabase }
+    methods: GET
 
 tps_index:
-  path: /tps/form
+  path: /tps
   defaults: { _controller: cpossibleBundle:Tps:tps }
 
 tps_new:

@@ -197,6 +197,29 @@ class DbaListeerp
     private $listeerpDossierTps;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="listeERP_adresse_temporaire", type="string", length=255, nullable=true)
+     */
+    private $listeerpAdresseTemporaire;
+
+    /**
+     * @return string
+     */
+    public function getListeerpAdresseTemporaire()
+    {
+        return $this->listeerpAdresseTemporaire;
+    }
+
+    /**
+     * @param string $listeerpAdresseTemporaire
+     */
+    public function setListeerpAdresseTemporaire($listeerpAdresseTemporaire)
+    {
+        $this->listeerpAdresseTemporaire = $listeerpAdresseTemporaire;
+    }    
+
+    /**
      * @return int
      */
     public function getListeerpDossierTps()

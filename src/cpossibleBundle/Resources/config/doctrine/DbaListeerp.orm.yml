@@ -220,4 +220,11 @@ cpossibleBundle\Entity\DbaListeerp:
             options:
                 unsigned: false
             column: listeErp_dossier_tps
+        listeerpAdresseTemporaire:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+            column: listeERP_adresse_temporaire
     lifecycleCallbacks: {  }
