@@ -91,7 +91,7 @@ class TpsController extends Controller
 
   private function insert($dossier, $entity, $em, $erps) {
     $erp = new Dbalisteerp();
-
+    // dump($entity);die;
     // Here's how we get the entries
     foreach ($entity->champs as $champ) {
       $libelle = $champ->type_de_champ->libelle;
@@ -171,6 +171,7 @@ class TpsController extends Controller
         $erp->setListeerpType($types);
       }
       if ($libelle == "Adresse") {
+        // dump($value);die;
         // var wrote with underscore are the one coming from google
         // I think that my double checking is useless, maybe it is better to just work with what google gives me
 
@@ -195,10 +196,24 @@ class TpsController extends Controller
           }
           // If we want to retrieve locality via the adress that google found
           if (in_array('locality', $adress->types)) {
-            $commune_google = $adress->long_name;
+            $nom_commune = $adress->long_name;
           }
         }
         $location = $result->geometry->location; // object that contain lat and lng
+        if (strtoupper($nom_commune) == 'LYON') {
+          $arrondissement = substr($postal_code, -2);
+          $nom_commune = 'LYON '.$arrondissement;
+        }
+        $communeGoogle = $em->getRepository('cpossibleBundle:Commune')->findOneBy(['nomGoogle' => $nom_commune]);
+        if ($communeGoogle) {
+          $nom_commune = $communeGoogle->getNom();
+          $insee = strval($communeGoogle->getCodeInsee());
+        } else {
+          $commune = $em->getRepository('cpossibleBundle:Commune')->findOneBy(['nom' => $nom_commune]);
+          $nom_commune = $commune->getNom();
+          $insee = strval($commune->getCodeInsee());
+        }
+        // dump($nom_commune);die;
         // /!\ END GOOGLE REQUEST /!\
 
         // Regex that split a string like this:
@@ -218,11 +233,13 @@ class TpsController extends Controller
         $tempAdress = $route_name; // Here: "Place de l'Europe" (whithout whitespcae at the end)
         $adressExploded = explode(" ",$tempAdress);
         $intitule_voie = $adressExploded[0]; // "Place"
+        $intitule_voie = str_replace('Ave.', 'AVENUE', $intitule_voie);
+        // $intitule_voie = 'Ave.';
 
         // We search in ddb the "intitulevoie" that match with what we get from the "dossier"
         $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
         $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-          ->setParameter('intitulevoieNom', '%' . $intitule_voie . '%' );
+          ->setParameter('intitulevoieNom', $intitule_voie);
         $result = $q->getQuery();
         // Here we want to get the nom de voie as we wish to put in ddb like "PL"
         $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
@@ -232,6 +249,7 @@ class TpsController extends Controller
         for ($i=1; $i < count($adressExploded) ; $i++) {
           $fulladress .= " " .strtoupper($adressExploded[$i]);
         }
+        $fulladress = str_replace('DR', 'DOCTEUR', $fulladress);
 
         // Set the object
         $erp->setListeerpNomVoie($fulladress);
@@ -239,7 +257,9 @@ class TpsController extends Controller
         ($numeroVoie != $street_number)? $erp->setListeerpNumeroVoie($street_number) : $erp->setListeerpNumeroVoie($numeroVoie);
         // Check if i get the same postal code as google
         ($codePostal != $postal_code)? $erp->setListeerpCodePostal($postal_code) : $erp->setListeerpCodePostal($codePostal);
-        ($commune != $commune_google)? $erp->setListeerpNomCommune($commune_google) : $erp->setListeerpNomCommune($commune);
+        $erp->setListeerpNomCommune($nom_commune);
+        $erp->setListeerpCodeInsee($insee);
+        // ($commune != $commune_google)? $erp->setListeerpNomCommune($commune_google) : $erp->setListeerpNomCommune($commune);
         $erp->setListeerpLatitude($location->lat);
         $erp->setListeerpLongitude($location->lng);
       }
@@ -251,9 +271,6 @@ class TpsController extends Controller
     }
 
     $em->persist($erp);
-    // Here we set the id instead of having it auto incremented
-    // $metadata = $em->getClassMetaData(get_class($erp));
-    // $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
     $em->flush();
     // return the id so i can count something in an simple array later
     return $erp->getListeerpId();

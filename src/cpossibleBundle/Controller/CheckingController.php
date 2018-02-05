@@ -55,7 +55,6 @@ class CheckingController extends Controller {
 				$q->andWhere('erp.listeerpAdresseTemporaire is not null');
 				$erps = $q->getQuery()->getResult();
 				$i = 0;
-				// echo(count($erps)." établissement(s) trouvé(s)."."<br>");
 				foreach ($erps as $erp) {
 					$fullAdressForSearch = $erp->getListeerpAdresseTemporaire();
 	        $key = "AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk";
@@ -96,13 +95,13 @@ class CheckingController extends Controller {
 							$data['address']['insee'] = strval($commune->getCodeInsee());
 						}
 
-						$cplyon = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
-		      // Trying to set up an array that hold LYON 01, LYON 02, etc... to check the commune 
-		      	$lyon = [];
-		      	foreach ($cplyon as $cp) {
-			        $var = "LYON ".substr($cp, -2);
-			        array_push($lyon, $var);
-		      	}
+						// $cplyon = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
+		    //   // Trying to set up an array that hold LYON 01, LYON 02, etc... to check the commune 
+		    //   	$lyon = [];
+		    //   	foreach ($cplyon as $cp) {
+			   //      $var = "LYON ".substr($cp, -2);
+			   //      array_push($lyon, $var);
+		    //   	}
 					}
 					$erp->setListeerpLongitude($data['lng']);
 					$erp->setListeerpLatitude($data['lat']);
