@@ -14,7 +14,6 @@ class CheckingController extends Controller {
 		// token given by my tutor;
 		$token = "owliIf6GFqVoA6qASY8NXnoPW3zCliOl";
 		// get siret from request
-		// $siret = "80136322700027";
 		$siret = $request->get('siret');
 		// $tokengoogle = 
 		$response = Unirest\Request::get('https://entreprise.api.gouv.fr/v2/etablissements/'.$siret.'?token='.$token.'');
@@ -36,8 +35,6 @@ class CheckingController extends Controller {
 			}
 			$data['lat'] = strval($result->geometry->location->lat);
 			$data['lng'] = strval($result->geometry->location->lng);
-			// dump($data);die;
-			// dump($result);die;
 			return new JsonResponse($data);
 		}
 		else {
@@ -94,14 +91,6 @@ class CheckingController extends Controller {
 							$data['address']['locality'] = $commune->getNom();
 							$data['address']['insee'] = strval($commune->getCodeInsee());
 						}
-
-						// $cplyon = ['69001', '69002', '69003', '69004', '69005', '69006', '69007', '69008', '69009'];
-		    //   // Trying to set up an array that hold LYON 01, LYON 02, etc... to check the commune 
-		    //   	$lyon = [];
-		    //   	foreach ($cplyon as $cp) {
-			   //      $var = "LYON ".substr($cp, -2);
-			   //      array_push($lyon, $var);
-		    //   	}
 					}
 					$erp->setListeerpLongitude($data['lng']);
 					$erp->setListeerpLatitude($data['lat']);
@@ -114,8 +103,6 @@ class CheckingController extends Controller {
 					$erp->setListeerpAdresseTemporaire(null);
 					$em->persist($erp);
 					$em->flush();
-					// echo "établissement ".$i." mis à jour.";
-					// echo'<br>';
 					$i ++;
 				}
     		$label = 'établissement(s) mis à jour.';
