@@ -45,15 +45,23 @@ class DbaListeerpController extends Controller
 
         $securityContext = $this->container->get('security.authorization_checker');
 
-        if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-
-
+        if ($securityContext->isGranted('ROLE_ADMIN')) {
                 $em = $this->getDoctrine()->getManager();
-
                 $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
                 $_SESSION['request'] = [];
+            if (!$this->getUser()->hasRole('ROLE_SUPER_ADMIN')) {
+                if ($this->getUser()->getCommune()) {
+                  $commune = $this->getUser()->getCommune();
+                  $_SESSION['request']['commune'] = $commune;
+                  $queryBuilder
+                        ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                        ->setParameter('listeerpNomCommune', $commune );
+                }
+                $dpt = $this->getUser()->getDepartement();
+                $_SESSION['request']['departement'] = $dpt;
+                $queryBuilder->andWhere('dba.listeerpDepartement LIKE :dpt')
+                ->setParameter('dpt', $dpt);
+            }
                 if(isset($_GET['adap'])){
                   $_SESSION['request']['adap'] = $_GET['adap'];
                     $queryBuilder
@@ -61,8 +69,7 @@ class DbaListeerpController extends Controller
                         ->setParameter('listeerpIdAdap', '%' . $_GET['adap'] . '%' );
                 }
 
-                if(isset($_GET['commune'])){
-                  // $_SESSION['request']['commune'] = $request->query->getAlnum('commune');
+                if(isset($_GET['commune']) && !$_SESSION['request']['commune']){
                   $_SESSION['request']['commune'] = $_GET['commune'];
                     $queryBuilder
                         ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
@@ -108,23 +115,13 @@ class DbaListeerpController extends Controller
                     $request->query->getInt('page', 1),
                     $request->query->getInt('limit', 10)
                 );
-                // $test = $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => 69031198]);
-                // dump($test);die;
                 $choices = [5, 10, 15, 20, 25, 30];
                 return $this->render('dbalisteerp/index.html.twig', array(
                     'dbaListeerps' => $result,
                     'choices' => $choices,
                 ));
 
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
-
         } else {
-
             return $this->redirectToRoute('fos_user_security_login');
         }
     }
@@ -136,13 +133,15 @@ class DbaListeerpController extends Controller
 
       $securityContext = $this->container->get('security.authorization_checker');
 
-      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-
-          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+      if ($securityContext->isGranted('ROLE_ADMIN')) {
             $em = $this->getDoctrine()->getManager();
 
             $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
             if(!empty($_SESSION['request'])) {
+              if (array_key_exists('departement', $_SESSION['request']) == true) {
+                $queryBuilder->andWhere('dba.listeerpDepartement LIKE :departement')
+                ->setParameter('departement', $_SESSION['request']['departement']);
+              }
               if(array_key_exists('adap', $_SESSION['request']) == true){
                   $queryBuilder
                       ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
@@ -209,11 +208,6 @@ class DbaListeerpController extends Controller
             return $this->render('dbalisteerp/csv.html.twig', array(
                 'dbaListeerps' => $result,
             ), $response);
-          } else {
-
-          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-        }
 
       } else {
 
@@ -224,7 +218,6 @@ class DbaListeerpController extends Controller
     public function newAction() {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           $errors = [];
           $em = $this->getDoctrine()->getManager();
           $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
@@ -234,7 +227,9 @@ class DbaListeerpController extends Controller
             'types' => $types,
             'categories' => $categories,
           ]);
-        }
+        } else {
+
+        return $this->redirectToRoute('fos_user_security_login');
       }
     }
     /**
@@ -247,7 +242,6 @@ class DbaListeerpController extends Controller
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
                 $em = $this->getDoctrine()->getManager();
                 $erp = new Dbalisteerp();
                 // $response can hold errors which are at index 1
@@ -259,12 +253,6 @@ class DbaListeerpController extends Controller
                   return $this->rendering($response[0], $response[1], $action);
                 }
                 return $this->redirectToRoute('dbalisteerp_new');
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
 
         } else {
 
@@ -296,16 +284,9 @@ class DbaListeerpController extends Controller
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
 
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
               $errors = [];
               $action = '/'.$erp->getListeerpid().'/update';
               return $this->rendering($erp, $errors, $action);
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
 
         } else {
 
@@ -316,7 +297,6 @@ class DbaListeerpController extends Controller
     public function editOneAction(Request $request, DbaListeerp $erp) {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           $em = $this->getDoctrine()->getManager();
           $response = $this->insertion($request, $erp);
           // dump($response);die;
@@ -329,9 +309,6 @@ class DbaListeerpController extends Controller
         } else {
             return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
         }
-      } else {
-        return $this->redirectToRoute('fos_user_security_login');
-      }
     }
 
     /**
@@ -342,16 +319,12 @@ class DbaListeerpController extends Controller
     { 
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           $em = $this->getDoctrine()->getManager();
           $em->remove($erp);
           $em->flush();
           return $this->redirectToRoute('dbalisteerp_index');
-        } else {
-          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-        }
       } else {
-        return $this->redirectToRoute('fos_user_security_login');
+          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
       }
     }
 
@@ -362,7 +335,6 @@ class DbaListeerpController extends Controller
     public function lastAction(Request $request, $number) {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           // dump($number);die;
           $choices = [5, 10, 15, 20, 25, 30];
           if (!in_array($number, $choices)) {
@@ -385,10 +357,6 @@ class DbaListeerpController extends Controller
         else {
           return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
         }
-      }
-      else {
-        return $this->redirectToRoute('fos_user_security_login');
-      }
     }
 
     // /**

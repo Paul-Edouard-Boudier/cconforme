@@ -15,15 +15,11 @@ class ReportController extends Controller
     public function indexAction() {
       $securityContext = $this->container->get('security.authorization_checker');
 
-      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
+      // if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
             // -----------------
             // Actual code for the controller
             $em = $this->getDoctrine()->getManager();
             $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
-            // if (empty($reports)) {
-            //   $reports = 'empty reports';
-            // }
             return $this->render('cpossibleBundle:Report:index.html.twig', [
               'reports' => $reports,
             ]);
@@ -37,11 +33,11 @@ class ReportController extends Controller
             // lat : 45.7613227
             // /!\ TEST CHANGE LAT AND LNG FOR EVERY ENTRIES OF DDB /!\
             // $erps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
-            // // $status = 0;
+            // // $i = 0;
             // foreach ($erps as $erp) {
             //     if ($erp->getListeerpNumeroVoie() != '') {
-            //       $status = $erp->getListeerpId();
-            //       echo($status);
+            //       echo($i);
+            //  
             //         $address = $erp->getListeerpNumeroVoie() . ' ' . $erp->getListeerpNomVoie() . ' ' .$erp->getListeerpCodePostal();
             //         $key = "AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk";
             //         $response = Unirest\Request::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='.$key.'');
@@ -63,13 +59,9 @@ class ReportController extends Controller
             // }
             // dump('ok well, did it worked ?');
             // /!\ END /!\
-
-          } else {
-              return $this->redirectToRoute('fos_user_security_login');
-          }
-      } else {
-          return $this->redirectToRoute('fos_user_security_login');
-      }
+      // } else {
+      //     return $this->redirectToRoute('fos_user_security_login');
+      // }
     }
 
     public function formAction() {
@@ -120,6 +112,23 @@ class ReportController extends Controller
           }
       } else {
           return $this->redirectToRoute('fos_user_security_login');
+      }
+    }
+
+    public function testAction() {
+      $securityContext = $this->container->get('security.authorization_checker');
+      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository('cpossibleBundle:User')->findAll();
+        // $users = $this->getUser();
+        // foreach ($users as $user) {
+          // dump($user->hasRole());die;
+          // dump($user->hasRole('ROLE_ADMIN'));die;
+        // }
+        // dump($users);die;
+        return $this->render('cpossibleBundle:Report:test.html.twig', ['users' => $users]);
+      } else {
+        return $this->redirectToRoute('fos_user_security_login');
       }
     }
 }

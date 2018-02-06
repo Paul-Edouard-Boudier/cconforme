@@ -1,7 +1,11 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-
+  {% if app.user %}
+    {% if app.user.hasRole('ROLE_SUPER_ADMIN') %}
+      <a href="/test">Gestion</a>
+    {% endif %}
+  {% endif %}
   {% if reports %}
     <br>
     <h1>Listes des signalements enregistrés</h1>
@@ -9,7 +13,7 @@
     <table class="table table-hover">
       <thead>
         <tr>
-          <th scope="col">Nom constaté de l'erp</th>
+          <th scope="col">Nom de l'établissement</th>
           <th scope="col">Adresse constatée</th>
           <th scope="col">Mail de l'utilisateur</th>
           <th scope="col">Message</th>
@@ -33,7 +37,7 @@
   {% else %}
     <br>
     <br>
-    <h1>Aucune erp n'a été signalé pour le moment</h1>
+    <h1>Aucune adresse n'a été signalée pour le moment</h1>
     <br>
     <br>
   {% endif %}

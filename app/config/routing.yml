@@ -145,3 +145,7 @@ dbalisteerp_fetch:
 #     path: /autocomplete_adress
 #     defaults: { _controller: "cpossibleBundle:ERP:autocomplete_adress"}
 
+test_url:
+    path: /test
+    defaults: { _controller: "cpossibleBundle:Report:test" }
+    methods: GET

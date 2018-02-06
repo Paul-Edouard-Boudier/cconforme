@@ -35,6 +35,30 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->addRole("ROLE_ADMIN");
+    }
+
+    public function getDepartement() {
+        return $this->departement;
+    }
+
+    public function setDepartement($departement) {
+        $this->departement = $departement;
+    }
+    public function getCommune() {
+        return $this->commune;
+    }
+
+    public function setCommune($commune) {
+        $this->commune = $commune;
+    }
+
+    public function getEpciMetropole() {
+        return $this->epci_metropole;
+    }
+
+    public function setEpciMetropole($epci_metropole) {
+        $this->epci_metropole = $epci_metropole;
     }
 }
 

@@ -62,9 +62,9 @@
                 <a href="/report">Liste signalements</a>
             </div>
              <div class="col-md-2 action-nav">
-                <a href="/liste/index">Liste ERP</a>
+                <a href="/liste/index">Liste des établissements</a>
             </div>
-            <div class="col-md-2"></div>
+            <div class="col-md-2">{{app.user.username}}</div>
             <div class="col-md-2">
               <div class="action-nav">
                 <a href="{{ path('fos_user_security_logout') }}" class="">
