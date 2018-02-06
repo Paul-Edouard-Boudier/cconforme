@@ -133,7 +133,8 @@ class TpsController extends Controller
       }
       if ($libelle == "Numéro d'adap") {
         if (!empty($value)) {
-          $erp->setListeerpIdAdap($value);
+          // $erp->setListeerpIdAdap($value);
+          $adap = $value;
         }
       }
       if ($libelle == "Nom de l'établissement, enseigne") {
@@ -148,7 +149,8 @@ class TpsController extends Controller
         }
       }
       if ($libelle == "Type de déclaration") {
-        $erp->setListeerpTypedossier(strtolower($value));
+        // $erp->setListeerpTypedossier(strtolower($value));
+        $declaration = strtolower($value);
       }
       if ($libelle == "Types d'activités") {
         // select all character of $value between A-Z followed by whitespace
@@ -266,9 +268,30 @@ class TpsController extends Controller
       if ($libelle == "Nom de l'entreprise") {
         $erp->setListeerpDemandeur($value);
       }
+      // $erp->setListeerpIdAdap($adap);
       // For now status is always 0:
       $erp->setListeerpStatut(0);
     }
+      $erp->setListeerpTypedossier($declaration);
+      if ($declaration == "attestation") {
+        // this hole process is to have an idAdap that looks like 'AC-69-T7534' and that we increment everytime
+        // starting from the last id-adap entered that looked like 'AC-69-7533'. So we take the last one incremented and // add one
+
+        $test = 'AC-'.$erp->getListeerpDepartement().'-';
+        $qb = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp');
+        $qb->andWhere('erp.listeerpIdAdap LIKE :test')
+          ->setParameter('test', '%'.$test.'%' )->orderBy('erp.listeerpIdAdap', 'DESC');
+        $result = $qb->getQuery()->getResult()[0]->getListeerpIdAdap();
+
+        $number = str_replace('AC-'.$erp->getListeerpDepartement().'-', '', $result);
+        if (is_numeric($number)) {
+          $number = intval($number);
+        } else {
+          $number = intval(str_replace('AC-'.$erp->getListeerpDepartement().'-T-', '', $result));
+        }
+        $idAdap = 'AC-'.$erp->getListeerpDepartement().'-T-'.($number+1);
+        $erp->setListeerpIdAdap($idAdap);
+      }
 
     $em->persist($erp);
     $em->flush();
