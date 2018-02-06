@@ -1,33 +1,49 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-  <h1>Signalez une adresse</h1>
+  <h1>Signalez une erreur</h1>
   <form class="form-report" action="/report/insert" method="post">
     <div class="row report-row">
-      <div class="col-md-6 left">
-        <label for="">Nom de l'ERP</label>
+      <div class="col-md-2">
+        <label for="message">Nom incorrect</label>
+        <input id="nom_erp" class="form-control" type="checkbox" name="message[]" value="">
+      </div>
+      <div class="col-md-6 offset-md-4 left">
+        <label for="">Nom de l'établissement</label>
         <input class="form-control" type="text" name="nom_erp" value="">
       </div>
-      <div class="col-md-6 left">
-        <label for="">Adresse Constatée</label>
+    </div>
+    <div class="row report-row">
+      <div class="col-md-2">
+        <label for="message">Adresse incorrecte</label>
+        <input id="adresse_signalee" class="form-control" type="checkbox" name="message[]" value="">
+      </div>
+      <div class="col-md-6 offset-md-4 left">
+        <label for="">Adresse de l'établissement</label>
         <input class="form-control" type="text" name="adresse_signalee" value="">
       </div>
     </div>
     <div class="row report-row">
       <div class="col-md-4 left">
         <label for="">Votre email</label>
-        <input class="form-control" type="text" name="email" value="">
-      </div>
-      <div class="col-md-2 offset-md-4">
-        <label for="message">Adresse incorrecte</label>
-        <input class="form-control" type="checkbox" name="message[]" value="Adresse incorrecte">
-      </div>
-      <div class="col-md-2">
-        <label for="message">Nom incorrect</label>
-        <input class="form-control" type="checkbox" name="message[]" value="Nom incorrecte">
+        <input required class="form-control" type="text" name="email" value="">
       </div>
     </div>
-    <!-- <input class="" type="submit" name="submit" value="envoyer"> -->
     <button class="btn btn-secondary left btn-report" type="submit">envoyer</button>
   </form>
+  <script>
+  $(document).ready(function() {
+    $(".form-report").submit(function( event ) {
+      var atLeastOneIsChecked = $('input[name="message[]"]:checked').length > 0;
+      if (atLeastOneIsChecked == false ) {event.preventDefault();alert('veuillez indiquer au moins une erreur');}
+    });  
+    $('input[type=checkbox]').change(function() {
+      if (this.checked) {
+        $('input[name='+$(this.id).selector+']').prop('required', true);
+      } else {
+        $('input[name='+$(this.id).selector+']').removeProp('required');
+      }
+    })
+  })
+</script>
 {% endblock %}

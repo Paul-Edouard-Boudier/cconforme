@@ -226,11 +226,11 @@ class HomeController extends AbstractErpController
         $response['lng'] = $lng;
         $response['commune'] = $erp['commune'];
         if ($erp['accessible'] == null) {
-            $response['message'] = "L'établissement ".$nom." sera accessible d'ici ".$mois." ".$annee.".";
+            $response['message'] = "L'établissement ".$nom." sera conforme d'ici ".$mois." ".$annee.".";
             return $response;
         }
         else {
-            $response['message'] = "L'établissement ".$nom." est accessible.";
+            $response['message'] = "L'établissement ".$nom." est conforme.";
             return $response;
         }
 

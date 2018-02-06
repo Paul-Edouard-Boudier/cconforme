@@ -279,9 +279,9 @@
                                         var result = '';
                                         for (var i=0; i < data.length; i++) {
                                             if (data[i].accessible == null) {
-                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera conforme d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
                                             } else {
-                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est conforme.</td></tr>";
                                             }
                                         }
                                         $('#result').append(result);
@@ -374,12 +374,12 @@
 
                     var info =  "<div><p>"+data[i].listeErpNomErp+"<p>"+
                         "<p>"+data[i].address+"<p>"+
-                        "<p>Est accessible</p></div>";
+                        "<p>Est conforme</p></div>";
 
                     if (data[i].accessible == null) {
                         var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
                             "<p>"+data[i].address+"<p>"+
-                            "<p>Accessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                            "<p>conforme d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
                     }
                     // create a blue marker everytime
                     var marker = new google.maps.Marker({
@@ -579,10 +579,10 @@
             for (var i = 0; i < data.length; i++) {
               // result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
               if (data[i].accessible == null) {
-                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera accessible d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera conforme d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
               }
               else {
-                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est accessible.</td></tr>";
+                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est conforme.</td></tr>";
               }
               // debugger;
 
@@ -602,12 +602,12 @@
                 }
                 var info =  "<div><p>"+data[i].listeErpNomErp+"<p>"+
                         "<p>"+data[i].address+"<p>"+
-                        "<p>Est accessible</p></div>";
+                        "<p>Est conforme</p></div>";
 
                 if (data[i].accessible == null) {
                     var info = "<div><p>"+data[i].listeErpNomErp+"<p>"+
                         "<p>"+data[i].address+"<p>"+
-                        "<p>Accessible d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
+                        "<p>conforme d'ici "+data[i].mois+" "+data[i].annee+"</p></div>";
                 }
                 var marker = new google.maps.Marker({
                   map: map,
