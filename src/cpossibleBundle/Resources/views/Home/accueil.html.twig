@@ -157,11 +157,9 @@
                 }
             });
     //     </script>
-<script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
-    </script>
     <script>
-
+    var initMap;
+        // google.maps.event.addDomListener(window, 'load', initMap);
         $(document).ready(function() {
 
             var isBtnClicked = 0;
@@ -175,206 +173,209 @@
                 $('.searchitems').toggle();
                 clearFields();
             });
-          })
-
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: 45.750000, lng: 4.850000},
-                zoom: 13
-            });
-            var bounds = new google.maps.LatLngBounds();
-            var geocoder = new google.maps.Geocoder();
-            debugger;
-            var markerArray = [];// Array of google map marker object
-            // trying to setup directions on map
-            var markers = []; // Array of positions
-            var directionsService = new google.maps.DirectionsService; // not sure what this is
-            var directionsDisplay = new google.maps.DirectionsRenderer; // not sure what this is
-            var stepDisplay = new google.maps.InfoWindow;
-            directionsDisplay.setMap(map);
-            // $('.directions-btn').on('click', function() {
-            //     getAndDisplayDirection(map, bounds, markers, markerArray);
-            // })
-            $('.route').on('click', function() {
-                calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map, bounds, markers)
-            })
-            // ---
-
-            var input = /** @type {!HTMLInputElement} */(
-                document.getElementById('adress'));
-            var options =   { types: ['geocode'], 
-                                componentRestrictions: {country: 'fr'}
-                            }
-
-            var autocomplete = new google.maps.places.Autocomplete(input, options);
-            autocomplete.bindTo('bounds', map);
-            var infowindow = new google.maps.InfoWindow();
-            var marker = new google.maps.Marker({
-                map: map,
-                anchorPoint: new google.maps.Point(0, -29)
-            });
-
-            autocomplete.addListener('place_changed', function() {
-                infowindow.close();
-                marker.setVisible(false);
-                var place = autocomplete.getPlace();
-                var address = place.address_components;
-                // We check wether or not the dpt from address autocompleted is 'en service'
-                var dpt = address.some(function(e) {
-                    if (e.types.includes('administrative_area_level_2')) {
-                        $.post('/checkdpt', {'dpt': e.short_name}).success(function(data) {
-                            if (data.status == false) {
-                                var error = "Ce service n'est actuellement pas disponible pour le département "+data.message+"."
-                                $('#message').removeClass('alert-success');
-                                $('#message').addClass('alert-danger');
-                                $('#message').html(error);
-                            }
-                            else {
-                                $('#message').removeClass('alert-success');
-                                $('#message').removeClass('alert-danger');
-                                $('#message').html('');
-                                if (!place.geometry) {
-                                    window.alert("impossible de localiser '" + place.name + "'");
-                                    return;
-                                }
-                                if (place.geometry.viewport) {
-                                    map.fitBounds(place.geometry.viewport);
-                                } else {
-                                    map.setCenter(place.geometry.location);
-                                }
-                                // marker.setIcon(/** @type {google.maps.Icon} */({
-                                //     url: place.icon,
-                                //     size: new google.maps.Size(71, 71),
-                                //     origin: new google.maps.Point(0, 0),
-                                //     anchor: new google.maps.Point(17, 34),
-                                //     scaledSize: new google.maps.Size(35, 35)
-                                // }));
-                                marker.setPosition(place.geometry.location);
-                                marker.setVisible(true);
-                                // resset markers everytime
-                                markers = [];
-                                markers.push(marker); // markers is used for directions
-
-                                var address = '';
-                                if (place.address_components) {
-                                    address = [
-                                        (place.address_components[0] && place.address_components[0].short_name || ''),
-                                        (place.address_components[1] && place.address_components[1].short_name || ''),
-                                        (place.address_components[2] && place.address_components[2].short_name || '')
-                                    ].join(' ');
-
-                                    var addressMinified = [
-                                        (place.address_components[1] && place.address_components[1].short_name || '')
-                                        ].join(' ');
-                                    var number = [
-                                        (place.address_components[0] && place.address_components[0].short_name || '')
-                                        ].join(' ');
-                                        // debugger;
-                                    $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
-                                        $('#result').empty();
-                                        if (data.length > 1) {
-                                            $('#message').removeClass('alert-danger');
-                                            $('#message').addClass('alert-success');
-                                            $('#message').html(data.length+' établissements trouvés à cette adresse');
-                                        } else if (data.length == 1){
-                                            $('#message').removeClass('alert-danger');
-                                            $('#message').addClass('alert-success');
-                                            $('#message').html(data.length+' établissement trouvé à cette adresse');
-                                        } else {
-                                            $('#message').addClass('alert-danger');
-                                            $('#message').removeClass('alert-success');
-                                            $('#message').html('Aucun établissements trouvés à cette adresse');
-                                        }
-                                        var result = '';
-                                        for (var i=0; i < data.length; i++) {
-                                            if (data[i].accessible == null) {
-                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera conforme d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
-                                            } else {
-                                                result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est conforme.</td></tr>";
-                                            }
-                                        }
-                                        $('#result').append(result);
-                                    })
-                                }
-                                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-                                infowindow.open(map, marker);
-
-                                document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
-                                document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
-                            }
-                        })
-                    }
+        });
+            initMap = function() {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 45.750000, lng: 4.850000},
+                    zoom: 13
+                });
+                var bounds = new google.maps.LatLngBounds();
+                var geocoder = new google.maps.Geocoder();
+                // debugger;
+                var markerArray = [];// Array of google map marker object
+                // trying to setup directions on map
+                var markers = []; // Array of positions
+                var directionsService = new google.maps.DirectionsService; // not sure what this is
+                var directionsDisplay = new google.maps.DirectionsRenderer; // not sure what this is
+                var stepDisplay = new google.maps.InfoWindow;
+                directionsDisplay.setMap(map);
+                // $('.directions-btn').on('click', function() {
+                //     getAndDisplayDirection(map, bounds, markers, markerArray);
+                // })
+                $('.route').on('click', function() {
+                    calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers)
                 })
-                // if (dpt) {
-                // }
-                // else {
-                // }
-            });
+                // ---
 
-            // Those are buttons on the google map:
-            var aroundMeControlDiv = document.createElement('div');
-            var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
-            aroundMeControlDiv.index = 1;
-            map.controls[google.maps.ControlPosition.LEFT_CENTER].push(aroundMeControlDiv);
+                var input = /** @type {!HTMLInputElement} */(
+                    document.getElementById('adress'));
+                var options =   { types: ['geocode'], 
+                                    componentRestrictions: {country: 'fr'}
+                                }
 
-            var aroundThisLocationDiv = document.createElement('div');
-            var aroundThisLocationControl = new AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray);
-            aroundThisLocationDiv.index = 2;
-            map.controls[google.maps.ControlPosition.LEFT_TOP].push(aroundThisLocationDiv);
+                var autocomplete = new google.maps.places.Autocomplete(input, options);
+                autocomplete.bindTo('bounds', map);
+                var infowindow = new google.maps.InfoWindow();
+                var marker = new google.maps.Marker({
+                    map: map,
+                    anchorPoint: new google.maps.Point(0, -29)
+                });
 
-            var reportAdressControlDiv = document.createElement('div');
-            var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
-            reportAdressControlDiv.index = 3;
-            map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
+                autocomplete.addListener('place_changed', function() {
+                    infowindow.close();
+                    marker.setVisible(false);
+                    var place = autocomplete.getPlace();
+                    var address = place.address_components;
+                    // We check wether or not the dpt from address autocompleted is 'en service'
+                    var dpt = address.some(function(e) {
+                        if (e.types.includes('administrative_area_level_2')) {
+                            $.post('/checkdpt', {'dpt': e.short_name}).success(function(data) {
+                                if (data.status == false) {
+                                    var error = "Ce service n'est actuellement pas disponible pour le département "+data.message+"."
+                                    $('#message').removeClass('alert-success');
+                                    $('#message').addClass('alert-danger');
+                                    $('#message').html(error);
+                                }
+                                else {
+                                    $('#message').removeClass('alert-success');
+                                    $('#message').removeClass('alert-danger');
+                                    $('#message').html('');
+                                    if (!place.geometry) {
+                                        window.alert("impossible de localiser '" + place.name + "'");
+                                        return;
+                                    }
+                                    if (place.geometry.viewport) {
+                                        map.fitBounds(place.geometry.viewport);
+                                    } else {
+                                        map.setCenter(place.geometry.location);
+                                    }
+                                    // marker.setIcon(/** @type {google.maps.Icon} */({
+                                    //     url: place.icon,
+                                    //     size: new google.maps.Size(71, 71),
+                                    //     origin: new google.maps.Point(0, 0),
+                                    //     anchor: new google.maps.Point(17, 34),
+                                    //     scaledSize: new google.maps.Size(35, 35)
+                                    // }));
+                                    marker.setPosition(place.geometry.location);
+                                    marker.setVisible(true);
+                                    // resset markers everytime
+                                    markers = [];
+                                    markers.push(marker.position.lat(), marker.position.lng()); // markers is used for directions
 
-            // selector for the form that hold 3 criteria
-            $('.searchitems').on('submit', function(event) {
-                event.preventDefault();
-                var commune = $(this)[0][0].value;
-                var nom = $(this)[0][1].value;
-                var type = $(this)[0][2].value;
-                var result = $('#result');
-                var message = $('#message');
+                                    var address = '';
+                                    if (place.address_components) {
+                                        address = [
+                                            (place.address_components[0] && place.address_components[0].short_name || ''),
+                                            (place.address_components[1] && place.address_components[1].short_name || ''),
+                                            (place.address_components[2] && place.address_components[2].short_name || '')
+                                        ].join(' ');
 
-                // /!\ CHECK CONDITIONS /!\
-                if (type !== "null" && commune.length == 0 && nom.length == 0) {
-                    message.removeClass('alert-success col-lg-10 mx-auto');
-                    message.addClass('alert-danger col-lg-10 mx-auto');
-                    return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
-                }
-                else if (type == "null" && (commune.length == 0 || nom.length == 0)) {
-                    message.removeClass('alert-success col-lg-10 mx-auto');
-                    message.addClass('alert-danger col-lg-10 mx-auto');
-                    return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
-                }
-                message.removeClass('alert-danger col-lg-10 mx-auto');
-                document.getElementById('message').innerHTML = "";
+                                        var addressMinified = [
+                                            (place.address_components[1] && place.address_components[1].short_name || '')
+                                            ].join(' ');
+                                        var number = [
+                                            (place.address_components[0] && place.address_components[0].short_name || '')
+                                            ].join(' ');
+                                            // debugger;
+                                        $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
+                                            $('#result').empty();
+                                            if (data.length > 1) {
+                                                $('#message').removeClass('alert-danger');
+                                                $('#message').addClass('alert-success');
+                                                $('#message').html(data.length+' établissements trouvés à cette adresse');
+                                            } else if (data.length == 1){
+                                                $('#message').removeClass('alert-danger');
+                                                $('#message').addClass('alert-success');
+                                                $('#message').html(data.length+' établissement trouvé à cette adresse');
+                                            } else {
+                                                $('#message').addClass('alert-danger');
+                                                $('#message').removeClass('alert-success');
+                                                $('#message').html('Aucun établissements trouvés à cette adresse');
+                                            }
+                                            var result = '';
+                                            for (var i=0; i < data.length; i++) {
+                                                if (data[i].accessible == null) {
+                                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera conforme d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
+                                                } else {
+                                                    result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" est conforme.</td></tr>";
+                                                }
+                                            }
+                                            $('#result').append(result);
+                                        })
+                                    }
+                                    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                                    infowindow.open(map, marker);
 
-                // /!\ END CHECK CONDITION /!\
-                for (var i = 0; i < markerArray.length; i++) {
-                    markerArray[i].setMap(null);
-                }
-                markerArray = [];
-                search_criteria(commune, nom, type, map, bounds, markerArray, message);
-            })
+                                    document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
+                                    document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                                }
+                            })
+                        }
+                    })
+                    // if (dpt) {
+                    // }
+                    // else {
+                    // }
+                });
 
-            $('#form').on('submit', function() {
-                var id = $('.id_autocomplete').data('iditem');
-                var message = $('#message2');
-                for (var i = 0; i < markerArray.length; i++) {
-                    markerArray[i].setMap(null);
-                }
-                markerArray = [];
-                markers = [];
-                console.log(geocoder);
-                getSingleErpFromForm(id, message, map, markerArray, geocoder, markers);
-                return false;
-            })
-            $('#test').on('click', function() {
-                console.log(markers);
-                console.log(markers[0].position.lat());
-            })
-        }
+                // Those are buttons on the google map:
+                var aroundMeControlDiv = document.createElement('div');
+                var aroundMeControl = new AroundMeControl(aroundMeControlDiv, bounds, map, markerArray);
+                aroundMeControlDiv.index = 1;
+                map.controls[google.maps.ControlPosition.LEFT_CENTER].push(aroundMeControlDiv);
+
+                var aroundThisLocationDiv = document.createElement('div');
+                var aroundThisLocationControl = new AroundThisLocationControl(aroundThisLocationDiv, bounds, map, markerArray);
+                aroundThisLocationDiv.index = 2;
+                map.controls[google.maps.ControlPosition.LEFT_TOP].push(aroundThisLocationDiv);
+
+                var reportAdressControlDiv = document.createElement('div');
+                var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
+                reportAdressControlDiv.index = 3;
+                map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
+
+                // selector for the form that hold 3 criteria
+                $('.searchitems').on('submit', function(event) {
+                    event.preventDefault();
+                    var commune = $(this)[0][0].value;
+                    var nom = $(this)[0][1].value;
+                    var type = $(this)[0][2].value;
+                    var result = $('#result');
+                    var message = $('#message');
+
+                    // /!\ CHECK CONDITIONS /!\
+                    if (type !== "null" && commune.length == 0 && nom.length == 0) {
+                        message.removeClass('alert-success col-lg-10 mx-auto');
+                        message.addClass('alert-danger col-lg-10 mx-auto');
+                        return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
+                    }
+                    else if (type == "null" && (commune.length == 0 || nom.length == 0)) {
+                        message.removeClass('alert-success col-lg-10 mx-auto');
+                        message.addClass('alert-danger col-lg-10 mx-auto');
+                        return document.getElementById('message').innerHTML = "Veuillez sélectionner au moins 2 critères.";
+                    }
+                    message.removeClass('alert-danger col-lg-10 mx-auto');
+                    document.getElementById('message').innerHTML = "";
+
+                    // /!\ END CHECK CONDITION /!\
+                    for (var i = 0; i < markerArray.length; i++) {
+                        markerArray[i].setMap(null);
+                    }
+                    markerArray = [];
+                    search_criteria(commune, nom, type, map, bounds, markerArray, message);
+                })
+
+                $('#form').on('submit', function() {
+                    var id = $('.id_autocomplete').data('iditem');
+                    var message = $('#message2');
+                    for (var i = 0; i < markerArray.length; i++) {
+                        markerArray[i].setMap(null);
+                    }
+                    markerArray = [];
+                    markers = [];
+                    // console.log(geocoder);
+                    getSingleErpFromForm(id, message, map, markerArray, geocoder, markers);
+                    console.log('ligne 368');
+                    // debugger;
+                    return false;
+                })
+                $('#test').on('click', function() {
+                    console.log(markers);
+                    console.log(markers[0].position.lat());
+                })
+            }
+        // var geocoder;
+        // var map;
 
         function displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray) {
             $.post('/around',{'limit':limit,'lat':lat,'lng':lng}).done(function(data) {
@@ -443,12 +444,16 @@
             var name = document.getElementById('name').value
             // data = address ? address : null
             // if(!data) data = name ? name : null
+            // name is like: 'Cathédrale Saint-Jean | 8 PL SAINT-JEAN, 69005'
             data = name;
             data = data.split("|")[1];
             if (data == " ") {
                 return false;
             }
+            // console.log('ligne 452 + debugger');
+            // debugger;
             geocoder.geocode({'address': data}, function(results, status) {
+            // debugger;
                 if (status === 'OK') {
                     map.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
@@ -667,23 +672,27 @@
                         message.removeClass('alert-success');
                         message.addClass('alert-danger');
                     }
-                    console.log(geocoder);
-                    geocodeAddress(geocoder, map, markerArray);
-                    debugger;
-                    if (geocodeAddress() == false) {
+                    // console.log('ligne 674');
+                    // console.log(geocoder);
+                    // console.log('fin getSingleErpFromForm');
+                    // i think that geocoding is not working and i dont know why
+                    // but we could geocode via commune if the entity doesn't have lat and lng
+                    // geocoder = new google.maps.Geocoder();
+                    // var test = geocodeAddress(geocoder, map, markerArray);
+                    // if (test == false) {
                         if (data.lat == "0" || data.lng == "0") {
-                            if (data.commune) {
-                                geocoder.geocode( { 'address': data.commune }, function(results, status) {
-                                    if (status == google.maps.GeocoderStatus.OK) {
-                                        map.setCenter(results[0].geometry.location);
-                                        document.getElementsByClassName('storage')[0].attributes[1].value = results[0].geometry.location.lat();
-                                        document.getElementsByClassName('storage')[0].attributes[2].value = results[0].geometry.location.lng();
-                                        } 
-                                    else {
-                                        // alert("Could not find location: " + location);
-                                    }
-                                });
-                            }
+                            // if (data.commune) {
+                            //     geocoder.geocode( { 'address': data.commune }, function(results, status) {
+                            //         if (status == google.maps.GeocoderStatus.OK) {
+                            //             map.setCenter(results[0].geometry.location);
+                            //             document.getElementsByClassName('storage')[0].attributes[1].value = results[0].geometry.location.lat();
+                            //             document.getElementsByClassName('storage')[0].attributes[2].value = results[0].geometry.location.lng();
+                            //             } 
+                            //         else {
+                            //             // alert("Could not find location: " + location);
+                            //         }
+                            //     });
+                            // }
                             $('#error_location').html("impossible de localiser précisément l'établissement");
                             $('#error_location').addClass('alert-danger');
                         }
@@ -693,49 +702,76 @@
                                 map: map,
                                 position: latLng
                             });
+                            // debugger;
                             map.setCenter(latLng);
                             marker.setMap(map);
                             markerArray.push(marker);
                             // markers is used for directions
                             console.log('ligne 694');
-                            console.log(marker);
+                            // console.log(marker);
+                            // var latlng = [marker.position.lat(), marker.position.lng()];
                             markers.push(marker);
-                            debugger;
+                            // debugger;
                             // Retrive lat and lng of marker and push it in data attr
                             document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                             document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                            // debugger;
                         }
-                    }
+                    // }
                 },
                 error: function(data) {
                 }
             })
         }
 
-         function calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map, bounds, markers) {
-          if (markerArray.length > 0) {
+        function calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers) {
+          if (markers.length > 0) {
             // First, remove any existing markers from the map.
-            for (var i = 0; i < markerArray.length; i++) {
-              markerArray[i].setMap(null);
+            for (var i = 0; i < markers.length; i++) {
+              markers[i].setMap(null);
             }
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                   // array instead of object {}
-                  var pos = [position.coords.latitude,position.coords.longitude];
-                  // var center = [45.750000,4.850000];
-                  markers.push(pos);
-                  // markers.push(center);
+                  // var pos = [position.coords.latitude,position.coords.longitude];
+                  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                  bounds.extend(latlng);
+                  marker = new google.maps.Marker({
+                    map: map,
+                    position: latlng,
+                  });
+                  map.fitBounds(bounds);
+                  markers.push(marker);
+                  // debugger;
                   // Multiple markers on a single map
-                  for( i = 0; i < markers.length; i++ ) {
-                    var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
-                    bounds.extend(position);
-                    marker = new google.maps.Marker({
-                      map: map,
-                      position: position,
+                  // for( i = 0; i < markers.length; i++ ) {
+                  //   var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
+                  //   bounds.extend(position);
+                  //   marker = new google.maps.Marker({
+                  //     map: map,
+                  //     position: position,
+                  //   });
+                  //   map.fitBounds(bounds);
+                  // }
+                    var origin = markers[1];
+                    var destination = markers[0];
+                    // debugger;
+                    // var origin = markers[0];
+                    // var destination = markers[1];
+                    directionsService.route({
+                      origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+                      destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+                      travelMode: 'WALKING'
+                    }, function(response, status) {
+                      if (status === 'OK') {
+                        debugger;
+                        directionsDisplay.setDirections(response);
+                        // if we want to show steps
+                        // showSteps(response, markers, stepDisplay, map);
+                      } else {
+                        window.alert('Directions request failed due to ' + status);
+                      }
                     });
-                    map.fitBounds(bounds);
-                    markerArray.push(marker);
-                  }
                 }, function() {
                     handleLocationError(true, map, map.getCenter());
                 });
@@ -743,48 +779,33 @@
             // Browser doesn't support Geolocation
             handleLocationError(false, map, map.getCenter());
           }
-            var origin = markerArray[0];
-            var destination = markerArray[1];
-            directionsService.route({
-              origin: {lat: origin.position.lat(), lng: origin.position.lng()},
-              destination: {lat: destination.position.lat(), lng: destination.position.lng()},
-              travelMode: 'WALKING'
-            }, function(response, status) {
-              if (status === 'OK') {
-                directionsDisplay.setDirections(response);
-                // if we want to show steps
-                // showSteps(response, markerArray, stepDisplay, map);
-              } else {
-                window.alert('Directions request failed due to ' + status);
-              }
-            });
           }
         }
-        function showSteps(directionResult, markerArray, stepDisplay, map) {
-        // For each step, place a marker, and add the text to the marker's infowindow.
-        // Also attach the marker to an array so we can keep track of it and remove it
-        // when calculating new routes.
-        var myRoute = directionResult.routes[0].legs[0];
-        // display distance and duration:
-        // directionResult.routes[0].legs[0].distance.text
-        // directionResult.routes[0].legs[0].duration.text
-        // Warning :
-        // directionResult.routes[0].warnings[0]
-        for (var i = 0; i < myRoute.steps.length; i++) {
-          var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
-          marker.setMap(map);
-          marker.setPosition(myRoute.steps[i].start_location);
-          attachInstructionText(
-              stepDisplay, marker, myRoute.steps[i].instructions, map);
-          // start and end location of each step:
-          // directionResult.routes[0].legs[0].steps[i].start_location.lat()
-          // directionResult.routes[0].legs[0].steps[i].start_location.lng()
-          //
-          // directionResult.routes[0].legs[0].steps[i].end_location.lat()
-          // directionResult.routes[0].legs[0].steps[i].end_location.lng()
-          // debugger;
+        function showSteps(directionResult, markers, stepDisplay, map) {
+            // For each step, place a marker, and add the text to the marker's infowindow.
+            // Also attach the marker to an array so we can keep track of it and remove it
+            // when calculating new routes.
+            var myRoute = directionResult.routes[0].legs[0];
+            // display distance and duration:
+            // directionResult.routes[0].legs[0].distance.text
+            // directionResult.routes[0].legs[0].duration.text
+            // Warning :
+            // directionResult.routes[0].warnings[0]
+            for (var i = 0; i < myRoute.steps.length; i++) {
+              var marker = markers[i] = markers[i] || new google.maps.Marker;
+              marker.setMap(map);
+              marker.setPosition(myRoute.steps[i].start_location);
+              attachInstructionText(
+                  stepDisplay, marker, myRoute.steps[i].instructions, map);
+              // start and end location of each step:
+              // directionResult.routes[0].legs[0].steps[i].start_location.lat()
+              // directionResult.routes[0].legs[0].steps[i].start_location.lng()
+              //
+              // directionResult.routes[0].legs[0].steps[i].end_location.lat()
+              // directionResult.routes[0].legs[0].steps[i].end_location.lng()
+              // debugger;
+            }
         }
-      }
       function attachInstructionText(stepDisplay, marker, text, map) {
        google.maps.event.addListener(marker, 'click', function() {
          // Open an info window when the marker is clicked on, containing the text
@@ -793,8 +814,8 @@
          stepDisplay.open(map, marker);
        });
      }
-        // function getAndDisplayDirection(map, bounds, markers, markerArray) {
-        //   console.log(markerArray);
+        // function getAndDisplayDirection(map, bounds, markers) {
+        //   console.log(markers);
         //   if (navigator.geolocation) {
         //     navigator.geolocation.getCurrentPosition(function(position) {
         //       // array instead of object {}
@@ -811,7 +832,7 @@
         //           position: position,
         //         });
         //         map.fitBounds(bounds);
-        //         markerArray.push(marker);
+        //         markers.push(marker);
         //       }
         //     }, function() {
         //       handleLocationError(true, map, map.getCenter());
@@ -822,5 +843,9 @@
         //   }
         //   //********************************
         // }
+    </script>
+    {# async defer #}
+    <script 
+            src="https://maps.googleapis.com/maps/api/js?&sensor=false&key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
     </script>
 {% endblock %}
