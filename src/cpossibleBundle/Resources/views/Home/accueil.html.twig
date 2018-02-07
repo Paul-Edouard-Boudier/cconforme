@@ -25,31 +25,34 @@
         </div>
         <br>
         <br>
+            {# <button type="btn btn-secondary" type="" class="directions-btn" name="button-directions">Directions</button> #}
+            <button id="test">markers</button>
+            <button type="btn btn-secondary" name="button-route" class="route">Itinéraire vers ce lieux depuis ma position</button>
         <a href="#" class="criteres">
           Autres critères de recherche
         </a>
         <div class="col-lg-6 col-sm-8 col-md-8 mx-auto col-12">
-          <form class="searchitems hidden" action="" method="post">
-            <div class="form-row">
-              <div class="form-group col-md-5">
-                <label for="commune">Saisir le nom de commune</label>
-                <input type="text" name="commune" value="" placeholder="Nom de la commune">
-              </div>
-              <div class="form-group col-md-5 offset-md-1">
-                <label for="nom">Saisir le nom de l'établissement</label>
-                <input type="text" name="nom" value="" placeholder="Nom de l'établissement" >
-              </div>
-            </div>
-            <label for="">Type d'activités</label>
-            <select class="form-control" name="type">
-              <option value="null">Non précisé</option>
-              {% for type in typesErp %}
-              <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
-              {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-secondary search-btn-criteres" name="button" value="submit">Recherche avec ces critères</button>
-            <!-- <input type="submit" name="submit" value="Recherche avec ces critères"> -->
-          </form>
+            <form class="searchitems hidden" action="" method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                      <label for="commune">Saisir le nom de commune</label>
+                      <input type="text" name="commune" value="" placeholder="Nom de la commune">
+                    </div>
+                    <div class="form-group col-md-5 offset-md-1">
+                      <label for="nom">Saisir le nom de l'établissement</label>
+                      <input type="text" name="nom" value="" placeholder="Nom de l'établissement" >
+                    </div>
+                </div>
+                <label for="">Type d'activités</label>
+                <select class="form-control" name="type">
+                    <option value="null">Non précisé</option>
+                    {% for type in typesErp %}
+                        <option value="{{type.typeactiviteCode}}">{{type.typeactiviteNom}}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-secondary search-btn-criteres" name="button" value="submit">Recherche avec ces critères</button>
+              <!-- <input type="submit" name="submit" value="Recherche avec ces critères"> -->
+            </form>
         </div>
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
         <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
@@ -103,6 +106,8 @@
         </div>
     </div>
     </div>
+    <!-- <script src="https://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false"
+     type="text/javascript"></script> -->
 <script>
             $(function() {
                 // function that add the item to the form on click
@@ -173,13 +178,27 @@
           })
 
         function initMap() {
-            var markerArray = [];// Array of google map marker object
-            var bounds = new google.maps.LatLngBounds();
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 45.750000, lng: 4.850000},
                 zoom: 13
             });
+            var bounds = new google.maps.LatLngBounds();
             var geocoder = new google.maps.Geocoder();
+            debugger;
+            var markerArray = [];// Array of google map marker object
+            // trying to setup directions on map
+            var markers = []; // Array of positions
+            var directionsService = new google.maps.DirectionsService; // not sure what this is
+            var directionsDisplay = new google.maps.DirectionsRenderer; // not sure what this is
+            var stepDisplay = new google.maps.InfoWindow;
+            directionsDisplay.setMap(map);
+            // $('.directions-btn').on('click', function() {
+            //     getAndDisplayDirection(map, bounds, markers, markerArray);
+            // })
+            $('.route').on('click', function() {
+                calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map, bounds, markers)
+            })
+            // ---
 
             var input = /** @type {!HTMLInputElement} */(
                 document.getElementById('adress'));
@@ -189,19 +208,6 @@
 
             var autocomplete = new google.maps.places.Autocomplete(input, options);
             autocomplete.bindTo('bounds', map);
-            // document.getElementById('search-btn').addEventListener('click', function(e) {
-            //     // e.preventDefault();
-            //     var geocoder = new google.maps.Geocoder();
-            //     // If we want to delete all markers before displaying the one geocoded:
-            //     // remove every marker then setup the array to null
-            //     // Removing marker inside a funciton deosn't seems to work, strangely
-            //     for (var i = 0; i < markerArray.length; i++) {
-            //       markerArray[i].setMap(null);
-            //     }
-            //     markerArray = [];
-            //     geocodeAddress(geocoder, map, markerArray);
-            // });
-
             var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
                 map: map,
@@ -245,6 +251,9 @@
                                 // }));
                                 marker.setPosition(place.geometry.location);
                                 marker.setVisible(true);
+                                // resset markers everytime
+                                markers = [];
+                                markers.push(marker); // markers is used for directions
 
                                 var address = '';
                                 if (place.address_components) {
@@ -356,8 +365,14 @@
                     markerArray[i].setMap(null);
                 }
                 markerArray = [];
-                getSingleErpFromForm(id, message, map, markerArray, geocoder);
+                markers = [];
+                console.log(geocoder);
+                getSingleErpFromForm(id, message, map, markerArray, geocoder, markers);
                 return false;
+            })
+            $('#test').on('click', function() {
+                console.log(markers);
+                console.log(markers[0].position.lat());
             })
         }
 
@@ -636,7 +651,7 @@
           })
         }
 
-        function getSingleErpFromForm(id, message, map, markerArray, geocoder) {
+        function getSingleErpFromForm(id, message, map, markerArray, geocoder, markers) {
             $.ajax({
                 method: 'post',
                 url: '',
@@ -652,7 +667,9 @@
                         message.removeClass('alert-success');
                         message.addClass('alert-danger');
                     }
+                    console.log(geocoder);
                     geocodeAddress(geocoder, map, markerArray);
+                    debugger;
                     if (geocodeAddress() == false) {
                         if (data.lat == "0" || data.lng == "0") {
                             if (data.commune) {
@@ -679,6 +696,11 @@
                             map.setCenter(latLng);
                             marker.setMap(map);
                             markerArray.push(marker);
+                            // markers is used for directions
+                            console.log('ligne 694');
+                            console.log(marker);
+                            markers.push(marker);
+                            debugger;
                             // Retrive lat and lng of marker and push it in data attr
                             document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                             document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
@@ -689,5 +711,116 @@
                 }
             })
         }
+
+         function calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, stepDisplay, map, bounds, markers) {
+          if (markerArray.length > 0) {
+            // First, remove any existing markers from the map.
+            for (var i = 0; i < markerArray.length; i++) {
+              markerArray[i].setMap(null);
+            }
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                  // array instead of object {}
+                  var pos = [position.coords.latitude,position.coords.longitude];
+                  // var center = [45.750000,4.850000];
+                  markers.push(pos);
+                  // markers.push(center);
+                  // Multiple markers on a single map
+                  for( i = 0; i < markers.length; i++ ) {
+                    var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
+                    bounds.extend(position);
+                    marker = new google.maps.Marker({
+                      map: map,
+                      position: position,
+                    });
+                    map.fitBounds(bounds);
+                    markerArray.push(marker);
+                  }
+                }, function() {
+                    handleLocationError(true, map, map.getCenter());
+                });
+            } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, map, map.getCenter());
+          }
+            var origin = markerArray[0];
+            var destination = markerArray[1];
+            directionsService.route({
+              origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+              destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+              travelMode: 'WALKING'
+            }, function(response, status) {
+              if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+                // if we want to show steps
+                // showSteps(response, markerArray, stepDisplay, map);
+              } else {
+                window.alert('Directions request failed due to ' + status);
+              }
+            });
+          }
+        }
+        function showSteps(directionResult, markerArray, stepDisplay, map) {
+        // For each step, place a marker, and add the text to the marker's infowindow.
+        // Also attach the marker to an array so we can keep track of it and remove it
+        // when calculating new routes.
+        var myRoute = directionResult.routes[0].legs[0];
+        // display distance and duration:
+        // directionResult.routes[0].legs[0].distance.text
+        // directionResult.routes[0].legs[0].duration.text
+        // Warning :
+        // directionResult.routes[0].warnings[0]
+        for (var i = 0; i < myRoute.steps.length; i++) {
+          var marker = markerArray[i] = markerArray[i] || new google.maps.Marker;
+          marker.setMap(map);
+          marker.setPosition(myRoute.steps[i].start_location);
+          attachInstructionText(
+              stepDisplay, marker, myRoute.steps[i].instructions, map);
+          // start and end location of each step:
+          // directionResult.routes[0].legs[0].steps[i].start_location.lat()
+          // directionResult.routes[0].legs[0].steps[i].start_location.lng()
+          //
+          // directionResult.routes[0].legs[0].steps[i].end_location.lat()
+          // directionResult.routes[0].legs[0].steps[i].end_location.lng()
+          // debugger;
+        }
+      }
+      function attachInstructionText(stepDisplay, marker, text, map) {
+       google.maps.event.addListener(marker, 'click', function() {
+         // Open an info window when the marker is clicked on, containing the text
+         // of the step.
+         stepDisplay.setContent(text);
+         stepDisplay.open(map, marker);
+       });
+     }
+        // function getAndDisplayDirection(map, bounds, markers, markerArray) {
+        //   console.log(markerArray);
+        //   if (navigator.geolocation) {
+        //     navigator.geolocation.getCurrentPosition(function(position) {
+        //       // array instead of object {}
+        //       var pos = [position.coords.latitude,position.coords.longitude];
+        //       var center = [45.750000,4.850000];
+        //       markers.push(pos);
+        //       markers.push(center);
+        //       // Multiple markers on a single map
+        //       for( i = 0; i < markers.length; i++ ) {
+        //         var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
+        //         bounds.extend(position);
+        //         marker = new google.maps.Marker({
+        //           map: map,
+        //           position: position,
+        //         });
+        //         map.fitBounds(bounds);
+        //         markerArray.push(marker);
+        //       }
+        //     }, function() {
+        //       handleLocationError(true, map, map.getCenter());
+        //     });
+        //   } else {
+        //     // Browser doesn't support Geolocation
+        //     handleLocationError(false, map, map.getCenter());
+        //   }
+        //   //********************************
+        // }
     </script>
 {% endblock %}
