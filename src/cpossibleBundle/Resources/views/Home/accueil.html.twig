@@ -55,7 +55,7 @@
             </form>
         </div>
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
-        <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
+        <div class="erplocation" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
         <div class="user-location" data-lat="" data-lng=""></div>
         <div class="adresse_autocomplete" data-adress=""></div>
         <div class="id_autocomplete" data-iditem=""></div>
@@ -307,8 +307,8 @@
                                     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
                                     infowindow.open(map, marker);
 
-                                    document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
-                                    document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                                    document.getElementsByClassName('erplocation')[0].attributes[1].value = marker.position.lat();
+                                    document.getElementsByClassName('erplocation')[0].attributes[2].value = marker.position.lng();
                                 }
                             })
                         }
@@ -330,6 +330,11 @@
                 var reportAdressControl = new ReportAdressControl(reportAdressControlDiv);
                 reportAdressControlDiv.index = 3;
                 map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
+
+                var routesControlDiv = document.createElement('div');
+                var routesControl = new RoutesControl(routesControlDiv, directionsService, directionsDisplay, stepDisplay, map, bounds, markers)
+                routesControlDiv.index = 4;
+                map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(routesControlDiv);
 
                 // selector for the form that hold 3 criteria
                 $('.searchitems').on('submit', function(event) {
@@ -462,8 +467,8 @@
                     });
                     markerArray.push(marker);
                     // Retrive lat and lng of marker and push it in data attr
-                    document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
-                    document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                    document.getElementsByClassName('erplocation')[0].attributes[1].value = marker.position.lat();
+                    document.getElementsByClassName('erplocation')[0].attributes[2].value = marker.position.lng();
 
                     $('#error_location').removeClass('alert-danger');
                     $('#error_location').html('');
@@ -501,11 +506,14 @@
           // Setup the click event listeners: locate the user
           aroundMeUI.addEventListener('click', function() {
             if (navigator.geolocation) {
+                $('#message').html('');
+                $('#message').removeClass('alert-success');
+                $('#message').removeClass('alert-danger');
               navigator.geolocation.getCurrentPosition(function(position) {
                 // get current position
                 var lat = position.coords.latitude;
                 var lng = position.coords.longitude;
-                var limit = parseInt($('.storage')[0].attributes[3].value);
+                var limit = parseInt($('.erplocation')[0].attributes[3].value);
                 for (var i = 0; i < markerArray.length; i++) {
                   markerArray[i].setMap(null);
                 }
@@ -513,9 +521,12 @@
                 bounds = new google.maps.LatLngBounds();
                 displayMultiplesMarkers(limit, lat, lng, bounds, map, markerArray);
               }, function() {
+                $('#message').html('Impossible de vous localiser');
+                $('#message').removeClass('alert-success');
+                $('#message').addClass('alert-danger');
                 handleLocationError(true, map, map.getCenter());
               });
-              } else {
+            } else {
               // Browser doesn't support Geolocation
               handleLocationError(false, map, map.getCenter());
               }
@@ -550,9 +561,9 @@
 
           // Setup the click event listeners: geolocate the user
           aroundThisLocationUI.addEventListener('click', function() {
-            var lat = parseFloat($('.storage')[0].attributes[1].value);
-            var lng = parseFloat($('.storage')[0].attributes[2].value);
-            var limit = parseInt($('.storage')[0].attributes[3].value);
+            var lat = parseFloat($('.erplocation')[0].attributes[1].value);
+            var lng = parseFloat($('.erplocation')[0].attributes[2].value);
+            var limit = parseInt($('.erplocation')[0].attributes[3].value);
             for (var i = 0; i < markerArray.length; i++) {
               markerArray[i].setMap(null);
             }
@@ -590,6 +601,33 @@
             window.location = "/report/new";
           });
 
+        }
+
+        function RoutesControl(routesControlDiv, directionsService, directionsDisplay, stepDisplay, map, bounds, markers) {
+            var routesUI = document.createElement('div');
+            routesUI.style.backgroundColor = 'rgb(255, 160, 67)';
+            routesUI.style.border = '2px solid rgb(255, 160, 67)';
+            routesUI.style.borderRadius = '3px';
+            routesUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            routesUI.style.cursor = 'pointer';
+            routesUI.style.marginBottom = '22px';
+            routesUI.style.textAlign = 'center';
+            routesUI.title = "Cliquez pour connaître l'Itinéraire entre votre position et l'établissement";
+            routesControlDiv.appendChild(routesUI);
+
+            var routesText = document.createElement('div');
+            routesText.style.color = 'rgb(25,25,25)';
+            routesText.style.fontFamily = 'Roboto,Arial,sans-serif';
+            routesText.style.fontSize = '12px';
+            routesText.style.lineHeight = '30px';
+            routesText.style.paddingLeft = '5px';
+            routesText.style.paddingRight = '5px';
+            routesText.innerHTML = 'Itinéraire depuis votre position';
+            routesUI.appendChild(routesText);
+
+            routesUI.addEventListener('click', function() {
+                calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers);
+            });
         }
 
         function search_criteria(commune, nom, type, map, bounds, markerArray, message) {
@@ -682,8 +720,8 @@
                             //     geocoder.geocode( { 'address': data.commune }, function(results, status) {
                             //         if (status == google.maps.GeocoderStatus.OK) {
                             //             map.setCenter(results[0].geometry.location);
-                            //             document.getElementsByClassName('storage')[0].attributes[1].value = results[0].geometry.location.lat();
-                            //             document.getElementsByClassName('storage')[0].attributes[2].value = results[0].geometry.location.lng();
+                            //             document.getElementsByClassName('erplocation')[0].attributes[1].value = results[0].geometry.location.lat();
+                            //             document.getElementsByClassName('erplocation')[0].attributes[2].value = results[0].geometry.location.lng();
                             //             } 
                             //         else {
                             //             // alert("Could not find location: " + location);
@@ -708,8 +746,8 @@
                             // markers.push(marker);
                             // debugger;
                             // Retrive lat and lng of marker and push it in data attr
-                            document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
-                            document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
+                            document.getElementsByClassName('erplocation')[0].attributes[1].value = marker.position.lat();
+                            document.getElementsByClassName('erplocation')[0].attributes[2].value = marker.position.lng();
                             // debugger;
                         }
                 },
@@ -725,8 +763,12 @@
             //       markers[i].setMap(null);
             //     }
             // }
-            if (($('.user-location').attr('data-lat') == "") && navigator.geolocation) {
+            // if (($('.user-location').attr('data-lat') == "") && navigator.geolocation) {
+            if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
+                        $('#message').html('');
+                        $('#message').removeClass('alert-success');
+                        $('#message').removeClass('alert-danger');
                         // array instead of object {}
                         var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                         $('.user-location').attr('data-lat', position.coords.latitude);
@@ -737,8 +779,8 @@
                             position: latlng,
                         });
                         map.fitBounds(bounds);
-                        var lat = $('.storage').attr('data-lat');
-                        var lng = $('.storage').attr('data-lng');
+                        var lat = $('.erplocation').attr('data-lat');
+                        var lng = $('.erplocation').attr('data-lng');
                         var latlngdest = new google.maps.LatLng(lat, lng)
                         var destination = new google.maps.Marker({
                             map: map,
@@ -758,41 +800,60 @@
                             }
                         });
                     }, function() {
+                            $('#message').html('Impossible de vous localiser');
+                            $('#message').removeClass('alert-success');
+                            $('#message').addClass('alert-danger');
+                            // alert('ALERT');
+                            // debugger;
                             handleLocationError(true, map, map.getCenter());
-                    });
-            } else {
-                var userlat = $('.user-location').attr('data-lat');
-                var userlng = $('.user-location').attr('data-lng');
-                userlatlng = new google.maps.LatLng(userlat, userlng);
-                bounds.extend(userlatlng);
-                var origin = new google.maps.Marker({
-                    map: map,
-                    position: userlatlng,
-                });
-                var lat = $('.storage').attr('data-lat');
-                var lng = $('.storage').attr('data-lng');
-                var destlatlng = new google.maps.LatLng(lat, lng);
-                var destination = new google.maps.Marker({
-                    map: map,
-                    position: destlatlng
-                })
-                bounds.extend(destlatlng);
-                map.fitBounds(bounds);
-                directionsService.route({
-                    origin: {lat: origin.position.lat(), lng: origin.position.lng()},
-                    destination: {lat: destination.position.lat(), lng: destination.position.lng()},
-                    travelMode: 'WALKING'
-                }, function(response, status) {
-                    if (status === 'OK') {
-                        directionsDisplay.setDirections(response);
-                        // showSteps(response, markers, stepDisplay, map);
+                        });
                     } else {
-                        window.alert('Directions request failed due to ' + status);
+                        $('#message').html('Votre naviagateur ne propose pas la géolocalisation.');
+                        $('#message').removeClass('alert-success');
+                        $('#message').addClass('alert-danger');
+                        // console.log('aie aie aie');
+                        // debugger;
+                        // Browser doesn't support Geolocation
+                        handleLocationError(false, map, map.getCenter());
                     }
-                })
-            }
+            // } else {
+            //     $('#message').html('Votre naviagateur ne propose pas la géolocalisation.');
+            //     $('#message').removeClass('alert-success');
+            //     $('#message').addClass('alert-danger');
+
+                // var userlat = $('.user-location').attr('data-lat');
+                // var userlng = $('.user-location').attr('data-lng');
+                // userlatlng = new google.maps.LatLng(userlat, userlng);
+                // bounds.extend(userlatlng);
+                // var origin = new google.maps.Marker({
+                //     map: map,
+                //     position: userlatlng,
+                // });
+                // var lat = $('.erplocation').attr('data-lat');
+                // var lng = $('.erplocation').attr('data-lng');
+                // var destlatlng = new google.maps.LatLng(lat, lng);
+                // var destination = new google.maps.Marker({
+                //     map: map,
+                //     position: destlatlng
+                // })
+                // bounds.extend(destlatlng);
+                // map.fitBounds(bounds);
+                // directionsService.route({
+                //     origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+                //     destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+                //     travelMode: 'WALKING'
+                // }, function(response, status) {
+                //     if (status === 'OK') {
+                //         directionsDisplay.setDirections(response);
+                //         // showSteps(response, markers, stepDisplay, map);
+                //     } else {
+                //         window.alert('Directions request failed due to ' + status);
+                //     }
+                // })
+            // }
         }
         function showSteps(directionResult, markers, stepDisplay, map) {
+            // won't work after how i managed it, i do not use a markerArray
             // For each step, place a marker, and add the text to the marker's infowindow.
             // Also attach the marker to an array so we can keep track of it and remove it
             // when calculating new routes.
