@@ -56,6 +56,7 @@
         </div>
         <!-- <button class="btn btn-secondary location-browser map-btn">Autour de moi</button> -->
         <div class="storage" data-lat="45.750000" data-lng="4.850000" data-limit="34" ></div>
+        <div class="user-location" data-lat="" data-lng=""></div>
         <div class="adresse_autocomplete" data-adress=""></div>
         <div class="id_autocomplete" data-iditem=""></div>
         <div class="row">
@@ -254,8 +255,8 @@
                                     marker.setPosition(place.geometry.location);
                                     marker.setVisible(true);
                                     // resset markers everytime
-                                    markers = [];
-                                    markers.push(marker.position.lat(), marker.position.lng()); // markers is used for directions
+                                    // markers = [];
+                                    // markers.push(marker.position.lat(), marker.position.lng()); // markers is used for directions
 
                                     var address = '';
                                     if (place.address_components) {
@@ -368,15 +369,8 @@
                     }
                     markerArray = [];
                     markers = [];
-                    // console.log(geocoder);
                     getSingleErpFromForm(id, message, map, markerArray, geocoder, markers);
-                    console.log('ligne 368');
-                    // debugger;
                     return false;
-                })
-                $('#test').on('click', function() {
-                    console.log(markers);
-                    console.log(markers[0].position.lat());
                 })
             }
         // var geocoder;
@@ -677,9 +671,6 @@
                         message.removeClass('alert-success');
                         message.addClass('alert-danger');
                     }
-                    // console.log('ligne 674');
-                    // console.log(geocoder);
-                    // console.log('fin getSingleErpFromForm');
                     // i think that geocoding is not working and i dont know why
                     // but we could geocode via commune if the entity doesn't have lat and lng
                     // geocoder = new google.maps.Geocoder();
@@ -712,17 +703,14 @@
                             marker.setMap(map);
                             markerArray.push(marker);
                             // markers is used for directions
-                            console.log('ligne 694');
-                            // console.log(marker);
                             // var latlng = [marker.position.lat(), marker.position.lng()];
-                            markers.push(marker);
+                            // markers.push(marker);
                             // debugger;
                             // Retrive lat and lng of marker and push it in data attr
                             document.getElementsByClassName('storage')[0].attributes[1].value = marker.position.lat();
                             document.getElementsByClassName('storage')[0].attributes[2].value = marker.position.lng();
                             // debugger;
                         }
-                    // }
                 },
                 error: function(data) {
                 }
@@ -730,61 +718,78 @@
         }
 
         function calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers) {
-          if (markers.length > 0) {
-            // First, remove any existing markers from the map.
-            for (var i = 0; i < markers.length; i++) {
-              markers[i].setMap(null);
-            }
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                  // array instead of object {}
-                  // var pos = [position.coords.latitude,position.coords.longitude];
-                  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                  bounds.extend(latlng);
-                  marker = new google.maps.Marker({
-                    map: map,
-                    position: latlng,
-                  });
-                  map.fitBounds(bounds);
-                  markers.push(marker);
-                  // debugger;
-                  // Multiple markers on a single map
-                  // for( i = 0; i < markers.length; i++ ) {
-                  //   var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
-                  //   bounds.extend(position);
-                  //   marker = new google.maps.Marker({
-                  //     map: map,
-                  //     position: position,
-                  //   });
-                  //   map.fitBounds(bounds);
-                  // }
-                    var origin = markers[1];
-                    var destination = markers[0];
-                    // debugger;
-                    // var origin = markers[0];
-                    // var destination = markers[1];
-                    directionsService.route({
-                      origin: {lat: origin.position.lat(), lng: origin.position.lng()},
-                      destination: {lat: destination.position.lat(), lng: destination.position.lng()},
-                      travelMode: 'WALKING'
-                    }, function(response, status) {
-                      if (status === 'OK') {
-                        debugger;
-                        directionsDisplay.setDirections(response);
-                        // if we want to show steps
-                        // showSteps(response, markers, stepDisplay, map);
-                      } else {
-                        window.alert('Directions request failed due to ' + status);
-                      }
+            // if (markers.length > 0) {
+            //     // First, remove any existing markers from the map.
+            //     for (var i = 0; i < markers.length; i++) {
+            //       markers[i].setMap(null);
+            //     }
+            // }
+            if (($('.user-location').attr('data-lat') == "") && navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        // array instead of object {}
+                        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        $('.user-location').attr('data-lat', position.coords.latitude);
+                        $('.user-location').attr('data-lng', position.coords.longitude);
+                        bounds.extend(latlng);
+                        var origin = new google.maps.Marker({
+                            map: map,
+                            position: latlng,
+                        });
+                        map.fitBounds(bounds);
+                        var lat = $('.storage').attr('data-lat');
+                        var lng = $('.storage').attr('data-lng');
+                        var latlngdest = new google.maps.LatLng(lat, lng)
+                        var destination = new google.maps.Marker({
+                            map: map,
+                            position: latlngdest
+                        })
+                        directionsService.route({
+                            origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+                            destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+                            travelMode: 'WALKING'
+                        }, function(response, status) {
+                            if (status === 'OK') {
+                                directionsDisplay.setDirections(response);
+                                // if we want to show steps
+                                // showSteps(response, markers, stepDisplay, map);
+                            } else {
+                                window.alert('Directions request failed due to ' + status);
+                            }
+                        });
+                    }, function() {
+                            handleLocationError(true, map, map.getCenter());
                     });
-                }, function() {
-                    handleLocationError(true, map, map.getCenter());
-                });
             } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, map, map.getCenter());
-          }
-          }
+                var userlat = $('.user-location').attr('data-lat');
+                var userlng = $('.user-location').attr('data-lng');
+                userlatlng = new google.maps.LatLng(userlat, userlng);
+                bounds.extend(userlatlng);
+                var origin = new google.maps.Marker({
+                    map: map,
+                    position: userlatlng,
+                });
+                var lat = $('.storage').attr('data-lat');
+                var lng = $('.storage').attr('data-lng');
+                var destlatlng = new google.maps.LatLng(lat, lng);
+                var destination = new google.maps.Marker({
+                    map: map,
+                    position: destlatlng
+                })
+                bounds.extend(destlatlng);
+                map.fitBounds(bounds);
+                directionsService.route({
+                    origin: {lat: origin.position.lat(), lng: origin.position.lng()},
+                    destination: {lat: destination.position.lat(), lng: destination.position.lng()},
+                    travelMode: 'WALKING'
+                }, function(response, status) {
+                    if (status === 'OK') {
+                        directionsDisplay.setDirections(response);
+                        // showSteps(response, markers, stepDisplay, map);
+                    } else {
+                        window.alert('Directions request failed due to ' + status);
+                    }
+                })
+            }
         }
         function showSteps(directionResult, markers, stepDisplay, map) {
             // For each step, place a marker, and add the text to the marker's infowindow.
@@ -819,38 +824,9 @@
          stepDisplay.open(map, marker);
        });
      }
-        // function getAndDisplayDirection(map, bounds, markers) {
-        //   console.log(markers);
-        //   if (navigator.geolocation) {
-        //     navigator.geolocation.getCurrentPosition(function(position) {
-        //       // array instead of object {}
-        //       var pos = [position.coords.latitude,position.coords.longitude];
-        //       var center = [45.750000,4.850000];
-        //       markers.push(pos);
-        //       markers.push(center);
-        //       // Multiple markers on a single map
-        //       for( i = 0; i < markers.length; i++ ) {
-        //         var position = new google.maps.LatLng(markers[i][0], markers[i][1]);
-        //         bounds.extend(position);
-        //         marker = new google.maps.Marker({
-        //           map: map,
-        //           position: position,
-        //         });
-        //         map.fitBounds(bounds);
-        //         markers.push(marker);
-        //       }
-        //     }, function() {
-        //       handleLocationError(true, map, map.getCenter());
-        //     });
-        //   } else {
-        //     // Browser doesn't support Geolocation
-        //     handleLocationError(false, map, map.getCenter());
-        //   }
-        //   //********************************
-        // }
     </script>
     {# async defer #}
     <script 
-            src="https://maps.googleapis.com/maps/api/js?&sensor=false&key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
+            src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
     </script>
 {% endblock %}
