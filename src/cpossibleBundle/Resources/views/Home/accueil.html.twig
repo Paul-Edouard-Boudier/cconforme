@@ -26,8 +26,8 @@
         <br>
         <br>
             {# <button type="btn btn-secondary" type="" class="directions-btn" name="button-directions">Directions</button> #}
-            <button id="test">markers</button>
-            <button type="btn btn-secondary" name="button-route" class="route">Itinéraire vers ce lieux depuis ma position</button>
+            {# <button id="test">markers</button> #}
+            {# <button type="btn btn-secondary" name="button-route" class="route">Itinéraire vers ce lieux depuis ma position</button> #}
         <a href="#" class="criteres">
           Autres critères de recherche
         </a>
@@ -179,6 +179,14 @@
                 $('.searchitems').toggle();
                 clearFields();
             });
+            $("#adress").on("change paste keyup", function() {
+                if ($(this).val().length > 5) {
+                    $('#message2').html("");
+                    $('#message2').removeClass('alert-success');
+                    $('#message2').removeClass('alert-danger');
+                    $('#name').val('');
+                }
+            });
         });
             initMap = function() {
                 var map = new google.maps.Map(document.getElementById('map'), {
@@ -195,9 +203,6 @@
                 var directionsDisplay = new google.maps.DirectionsRenderer; // not sure what this is
                 var stepDisplay = new google.maps.InfoWindow;
                 directionsDisplay.setMap(map);
-                // $('.directions-btn').on('click', function() {
-                //     getAndDisplayDirection(map, bounds, markers, markerArray);
-                // })
                 $('.route').on('click', function() {
                     calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers)
                 })
@@ -308,10 +313,6 @@
                             })
                         }
                     })
-                    // if (dpt) {
-                    // }
-                    // else {
-                    // }
                 });
 
                 // Those are buttons on the google map:
