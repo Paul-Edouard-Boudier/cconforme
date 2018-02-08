@@ -230,7 +230,7 @@ class HomeController extends AbstractErpController
             return $response;
         }
         else {
-            $response['message'] = "L'établissement ".$nom." est conforme.";
+            $response['message'] = "L'établissement ".$nom." s'est déclaré conforme.";
             return $response;
         }
 
