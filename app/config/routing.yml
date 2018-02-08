@@ -50,6 +50,11 @@ cpossible_checkdpt:
     defaults: { _controller: cpossibleBundle:Home:checkDepartement}
     methods: POST
 
+cpossible_mentions:
+    path: /mentions
+    defaults: { _controller: cpossibleBundle:Home:mentions }
+    methods: GET
+
 
 report_index:
     path: /report

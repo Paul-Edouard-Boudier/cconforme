@@ -312,6 +312,10 @@ class HomeController extends AbstractErpController
         // }
     }
 
+    public function mentionsAction() {
+        return $this->render('cpossibleBundle:Home:mentions.html.twig');
+    }
+
     private function fillVariable($array) {
         $var = "";
         foreach($array as $keys) {

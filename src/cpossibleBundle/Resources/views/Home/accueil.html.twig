@@ -83,29 +83,34 @@
         </div>
 
         <br>
+        <div class="row">
+            <p class="col-4"><a href="/mentions">Mentions légales</a></p>
+            <p class="alert alert-info col-4">Pour consulter les Précautions d'usage, cliquez <a href=".model-id2" data-toggle="modal">ici</a></p>
+            <div tabindex="-1" class="modal fade model-id2" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 style="text-decoration: underline">Ce site est un site officiel, développé par les services de l’État dans le Rhône.</h2>
+                        </div>
+                        <div style="text-align: left" class="modal-body">
+                            <p><span style="color: green">Il permet </span>de vérifier, pour un établissement recevant du public donné, s’il satisfait à ses obligations réglementaires en termes d’accessibilité aux personnes en situation de handicap par une démarche menée dans le Rhône : <ul><li>soit par une attestation de conformité.</li><li>soit par un agenda d’accessibilité programmée (Ad’AP) validé par le préfet à travers lequel le propriétaire ou l’exploitant s’est engagé à rendre conforme l’établissement dans un délai donné.</li></ul>
+                                <span style="font-weight: bold">AUCUN CONTRÔLE SUR PLACE DES ELEMENTS DECLARATIFS CONTENUS DANS CES DOCUMENTS N’EST EXERCE PAR L’ADMINISTRATION.</span>
+                            </p>
+                            <p><span style="color: red">Il ne permet pas :</span><ul><li>de connaître les établissements entièrement accessibles : un établissement bénéficiant de dérogations pour les aspects ne respectant pas la réglementation est considéré comme conforme ;</li><li>de connaître l’intégralité des établissements du département du Rhône ayant satisfait à leurs obligations : certains ont pu faire l’objet d’un dépôt de documents en préfecture du siège régional ou du siège social.</li></ul></p>
+                            <hr style="height: 1px">
+                            <p><span style="font-weight: bold">ATTENTION</span> : ce site est en construction. Malgré tous nos efforts, il est possible que certaines fonctionnalités fonctionnent mal et que certaines données soient incomplètes ou aient fait l’objet d’une erreur de saisie. Merci de nous aider à l’améliorer en signalant tout bug ou erreur sur le nom ou l’adresse de l’établissement.</p>
 
-        <p class="alert alert-info col-4 mx-auto">Pour consulter les Précautions d'usage, cliquez <a href=".model-id2" data-toggle="modal">ici</a></p>
-        <div tabindex="-1" class="modal fade model-id2" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 style="text-decoration: underline">Ce site est un site officiel, développé par les services de l’État dans le Rhône.</h2>
-                    </div>
-                    <div style="text-align: left" class="modal-body">
-                        <p><span style="color: green">Il permet </span>de vérifier, pour un établissement recevant du public donné, s’il satisfait à ses obligations réglementaires en termes d’accessibilité aux personnes en situation de handicap par une démarche menée dans le Rhône : <ul><li>soit par une attestation de conformité.</li><li>soit par un agenda d’accessibilité programmée (Ad’AP) validé par le préfet à travers lequel le propriétaire ou l’exploitant s’est engagé à rendre conforme l’établissement dans un délai donné.</li></ul>
-                            <span style="font-weight: bold">AUCUN CONTRÔLE SUR PLACE DES ELEMENTS DECLARATIFS CONTENUS DANS CES DOCUMENTS N’EST EXERCE PAR L’ADMINISTRATION.</span>
-                        </p>
-                        <p><span style="color: red">Il ne permet pas :</span><ul><li>de connaître les établissements entièrement accessibles : un établissement bénéficiant de dérogations pour les aspects ne respectant pas la réglementation est considéré comme conforme ;</li><li>de connaître l’intégralité des établissements du département du Rhône ayant satisfait à leurs obligations : certains ont pu faire l’objet d’un dépôt de documents en préfecture du siège régional ou du siège social.</li></ul></p>
-                        <hr style="height: 1px">
-                        <p><span style="font-weight: bold">ATTENTION</span> : ce site est en construction. Malgré tous nos efforts, il est possible que certaines fonctionnalités fonctionnent mal et que certaines données soient incomplètes ou aient fait l’objet d’une erreur de saisie. Merci de nous aider à l’améliorer en signalant tout bug ou erreur sur le nom ou l’adresse de l’établissement.</p>
-
-                        <p>Vous êtes gestionnaire ou propriétaire d’un établissement et vous n’avez déposé ni attestation ni  Ad’AP ? Tout savoir pour régulariser votre situation <a href="http://www.rhone.gouv.fr/Politiques-publiques/Amenagement-du-territoire-urbanisme-construction-logement/Accessibilite/Accessibilite-des-Etablissements-Recevant-du-Public-ERP">ici</a>.</p>
+                            <p>Vous êtes gestionnaire ou propriétaire d’un établissement et vous n’avez déposé ni attestation ni  Ad’AP ? Tout savoir pour régulariser votre situation <a href="http://www.rhone.gouv.fr/Politiques-publiques/Amenagement-du-territoire-urbanisme-construction-logement/Accessibilite/Accessibilite-des-Etablissements-Recevant-du-Public-ERP">ici</a>.</p>
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
     </div>
+{% endblock %}
+{% block javascript %}
     <!-- <script src="https://maps.google.com/maps?file=api&amp;v=3&amp;sensor=false"
      type="text/javascript"></script> -->
 <script>
