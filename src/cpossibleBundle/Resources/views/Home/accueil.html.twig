@@ -27,7 +27,7 @@
         <br>
             {# <button type="btn btn-secondary" type="" class="directions-btn" name="button-directions">Directions</button> #}
             {# <button id="test"></button> #}
-            <div id="test"></div>
+            <div id="user"></div>
             {# <button type="btn btn-secondary" name="button-route" class="route">Itinéraire vers ce lieux depuis ma position</button> #}
         <a href="#" class="criteres">
           Autres critères de recherche
@@ -121,7 +121,6 @@
                 var idsitem = []; // array that holds id for item autocompleted
                 var strings = []; // array that holds value of item autocompleted
                 function log( message ) {
-                    // debugger;
                     $( "<div>" ).text( message ).prependTo( "#log" );
                     $( "#log" ).scrollTop( 0 );
                 }
@@ -145,9 +144,7 @@
                     select: function( event, ui) {
                         var indexArr = arraySearch(strings, ui.item.value); // index of strings so we can retrieve the id of the item
                         var id = idsitem[indexArr];
-                        // document.getElementsByClassName('id_autocomplete').attr('data-iditem').value = id;
                         $('.id_autocomplete').data('iditem', id);
-                        // debugger;
                         log( ui.item ?
                             "Selected: " + ui.item.value + " aka " + ui.item.id :
                             "Nothing selected, input was " + this.value );
@@ -156,7 +153,6 @@
 
 
                 function arraySearch(arr,val) {
-                    // debugger;
                     for (var i=0; i<arr.length; i++)
                         if (arr[i] === val)                    
                             return i;
@@ -166,7 +162,6 @@
     </script>
     <script>
     var initMap;
-        // google.maps.event.addDomListener(window, 'load', initMap);
         $(document).ready(function() {
 
             var isBtnClicked = 0;
@@ -196,7 +191,6 @@
                 });
                 var bounds = new google.maps.LatLngBounds();
                 var geocoder = new google.maps.Geocoder();
-                // debugger;
                 var markerArray = [];// Array of google map marker object
                 // trying to setup directions on map
                 var markers = []; // Array of positions
@@ -278,7 +272,6 @@
                                         var number = [
                                             (place.address_components[0] && place.address_components[0].short_name || '')
                                             ].join(' ');
-                                            // debugger;
                                         $.post('/erps_list_autocompleted',{'address': addressMinified, 'number': number}).success(function(data) {
                                             $('#result').empty();
                                             if (data.length > 1) {
@@ -380,31 +373,91 @@
                     return false;
                 })
                 $('#user').on('click', function() {
-                    // debugger;
                     var userarray = [];
-                    // if ($(this).val() == 'user') {
-                        user(userarray, map);
-                    // }
+                    user(userarray, map);
                 })
             }
-        // var geocoder;
-        // var map;
         function user(userarray, map) {
+            // function to geolocate the user for a gps like 
             navigator.geolocation.watchPosition(function(position) {
-                console.log('working');
-                for (var i =0; i < userarray.length; i++) {
-                    userarray[i].setMap(null);
+                var lat = $('.user-location').attr('data-lat');
+                var lng = $('.user-location').attr('data-lng');
+                // check if lat or lng is different form what we have,
+                // if it is, we update user position, otherwise we don't
+                if (parseFloat(lat) !== position.coords.latitude) {
+                    $('.user-location').attr('data-lat', position.coords.latitude);
+                    $('.user-location').attr('data-lng', position.coords.longitude);
+                    for (var i =0; i < userarray.length; i++) {
+                        userarray[i].setMap(null);
+                    }
+                    user = [];
+                    lat = parseFloat($('.user-location').attr('data-lat'));
+                    lng = parseFloat($('.user-location').attr('data-lng'));
+                    pos = new google.maps.LatLng(lat, lng)
+                    var user = new google.maps.Marker({
+                        map: map,
+                        position: pos,
+                        icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png',
+                        info: 'Vous êtes ici.'
+                    })
+                    var infowindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(user, 'click', function () {
+                        infowindow.setContent(this.info);
+                        infowindow.open(map, this);
+                    });
+                    userarray.push(user);
+                } else if (parseFloat(lng) !== position.coords.longitude){
+                    $('.user-location').attr('data-lat', position.coords.latitude);
+                    $('.user-location').attr('data-lng', position.coords.longitude);
+                    for (var i =0; i < userarray.length; i++) {
+                        userarray[i].setMap(null);
+                    }
+                    user = [];
+                    lat = parseFloat($('.user-location').attr('data-lat'));
+                    lng = parseFloat($('.user-location').attr('data-lng'));
+                    pos = new google.maps.LatLng(lat, lng)
+                    var user = new google.maps.Marker({
+                        map: map,
+                        position: pos,
+                        icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png',
+                        info: 'Vous êtes ici.'
+                    })
+                    var infowindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(user, 'click', function () {
+                        infowindow.setContent(this.info);
+                        infowindow.open(map, this);
+                    });
+                    userarray.push(user);
+                } else {
+                    if (userarray[0]) {
+                        console.log('in else loop and if condition');
+                        var user = userarray[0]
+                        var infowindow = new google.maps.InfoWindow();
+                        google.maps.event.addListener(user, 'click', function () {
+                            infowindow.setContent(this.info);
+                            infowindow.open(map, this);
+                        });
+                    } else {
+                        console.log('in else loop and else condition');
+                        $('.user-location').attr('data-lat', position.coords.latitude);
+                        $('.user-location').attr('data-lng', position.coords.longitude);
+                        lat = parseFloat($('.user-location').attr('data-lat'));
+                        lng = parseFloat($('.user-location').attr('data-lng'));
+                        pos = new google.maps.LatLng(lat, lng)
+                        var user = new google.maps.Marker({
+                            map: map,
+                            position: pos,
+                            icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png',
+                            info: 'Vous êtes ici',
+                        })
+                        var infowindow = new google.maps.InfoWindow();
+                        google.maps.event.addListener(user, 'click', function () {
+                            infowindow.setContent(this.info);
+                            infowindow.open(map, this);
+                        });
+                        userarray.push(user);
+                    }
                 }
-                user = [];
-                $('.user-location').attr('data-lat', position.coords.latitude);
-                $('.user-location').attr('data-lng', position.coords.longitude);
-                pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                var user = new google.maps.Marker({
-                    map: map,
-                    position: pos,
-                    icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png'
-                })
-                userarray.push(user);
             })
         }
 
@@ -481,10 +534,7 @@
             if (data == " ") {
                 return false;
             }
-            // console.log('ligne 452 + debugger');
-            // debugger;
             geocoder.geocode({'address': data}, function(results, status) {
-            // debugger;
                 if (status === 'OK') {
                     map.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
@@ -668,7 +718,6 @@
               else {
                 result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" s'est déclaré conforme.</td></tr>";
               }
-              // debugger;
 
               // If the erp has latitude and long in ddb we take it, otherise we don't display it on the map
               if (parseFloat(data[i].listeerpLatitude) != 0) {
@@ -730,7 +779,6 @@
                     message.html(data.message);
                     message.removeClass('alert-danger');
                     message.addClass('alert-success');
-                    // debugger;
                     if (data.error == true) {
                         message.html(data.message);
                         message.removeClass('alert-success');
@@ -763,18 +811,12 @@
                                 map: map,
                                 position: latLng
                             });
-                            // debugger;
                             map.setCenter(latLng);
                             marker.setMap(map);
                             markerArray.push(marker);
-                            // markers is used for directions
-                            // var latlng = [marker.position.lat(), marker.position.lng()];
-                            // markers.push(marker);
-                            // debugger;
                             // Retrive lat and lng of marker and push it in data attr
                             document.getElementsByClassName('erplocation')[0].attributes[1].value = marker.position.lat();
                             document.getElementsByClassName('erplocation')[0].attributes[2].value = marker.position.lng();
-                            // debugger;
                         }
                 },
                 error: function(data) {
@@ -784,14 +826,10 @@
 
         function calculateAndDisplayRoute(directionsService, directionsDisplay, stepDisplay, map, bounds, markers) {
             if (navigator.geolocation) {
-                // navigator.geolocation.getCurrentPosition(function(position) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    // test = true;
                     $('#message').html('');
                     $('#message').removeClass('alert-success');
                     $('#message').removeClass('alert-danger');
-                    console.log('here ligne 783')
-                    // debugger;
                     // array instead of object {}
                     var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     $('.user-location').attr('data-lat', position.coords.latitude);
@@ -838,7 +876,6 @@
             }
         }
         function showSteps(directionResult, markers, stepDisplay, map) {
-            // won't work after how i managed it, i do not use a markerArray
             // For each step, place a marker, and add the text to the marker's infowindow.
             // Also attach the marker to an array so we can keep track of it and remove it
             // when calculating new routes.
@@ -860,9 +897,7 @@
               //
               // directionResult.routes[0].legs[0].steps[i].end_location.lat()
               // directionResult.routes[0].legs[0].steps[i].end_location.lng()
-              // debugger;
             }
-            // debugger;
         }
         function attachInstructionText(stepDisplay, marker, text, map) {
             google.maps.event.addListener(marker, 'click', function() {
@@ -873,7 +908,6 @@
             });
         }
     </script>
-    {# async defer #}
     <script 
             src="https://maps.googleapis.com/maps/api/js?&key=AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk&libraries=places&callback=initMap">
     </script>
