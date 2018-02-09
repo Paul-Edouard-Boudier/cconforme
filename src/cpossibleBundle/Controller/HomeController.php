@@ -19,12 +19,6 @@ class HomeController extends AbstractErpController
         $limit = intval($request->get('limit'));
         $em = $this->getDoctrine()->getManager();
         $result = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('erp')->getQuery()->getArrayResult();
-        // $conn = $this->getDoctrine()->getManager()
-        //               ->getConnection();
-        // $sql = "SELECT * FROM resicadminresic.dba_listeERP;";
-        // $stmt = $conn->prepare($sql);
-        // $stmt->execute();
-        // $result = $stmt->fetchAll();
         $actualLocation = ['listeerpLatitude' => $lat, 'listeerpLongitude' => $lng, 'listeErpNomErp' => 'Point de départ du rayon de recherche'];
 
         // we could set this dynamically aswell
@@ -88,21 +82,6 @@ class HomeController extends AbstractErpController
         // here we want to know if an erp is accessible or not and then push the entity into antoher array to return
         foreach ($result as $erp) {
           $erp = $this->getAccessibility($erp);
-        //   $erp['accessible'] = 'est accessible';
-        //   if ($erp['listeerpDateValidAdap'] != null && $erp['listeerpDelaiAdap'] != null) {
-        //     $erp['accessible'] = null;
-        //     setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
-        //     $date = $erp['listeerpDateValidAdap'];
-        //     $delai = $erp['listeerpDelaiAdap'];
-        //     //
-        //     $date = new DateTime($date);
-        //     $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
-        //     //
-        //     $date->add(new DateInterval('P'.$delai.'Y'));
-        //     $newdate =  $date->format('d-m-Y');
-        //     $time = strtotime($newdate);
-        //     $erp['annee'] = date("Y",$time);
-        //   }
           array_push($erps, $erp);
         }
         return new JsonResponse($erps);
@@ -316,6 +295,7 @@ class HomeController extends AbstractErpController
         return $this->render('cpossibleBundle:Home:mentions.html.twig');
     }
 
+    // So it's useless also now, but i like it so here it is
     private function fillVariable($array) {
         $var = "";
         foreach($array as $keys) {

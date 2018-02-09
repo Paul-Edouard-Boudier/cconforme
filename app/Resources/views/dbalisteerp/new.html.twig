@@ -10,14 +10,12 @@
                 <div class="col-4">
                     <div>
                       <br>
-                        {# <label for="demandeur">Demandeur</label> #}
                         <input id="demandeur" value="" class="form-control" type="text" name="demandeur" placeholder="nom du demandeur">
                     </div>
                 </div>
                 <div class="col-4">
                     <div>
                       <br>
-                        {# <label for="nom">Nom de l'établissement / enseigne</label> #}
                         <input id="enseigne" value="" required class="form-control" type="text" name="nom_erp" placeholder="Établissement / enseigne">
                     </div>
                 </div>
@@ -239,7 +237,6 @@
 
       function fillInAddress() {
         // Get the place details from the autocomplete object.
-        // debugger;
         var place = autocompleteAddress.getPlace();
 
         for (var component in componentForm) {
@@ -258,11 +255,11 @@
         }
         $('#lat').val(place.geometry.location.lat());
         $('#lng').val(place.geometry.location.lng());
-        // debugger
       }
 
       // Bias the autocomplete object to the user's geographical location,
       // as supplied by the browser's 'navigator.geolocation' object.
+      // I think it's useless, i mean, i do not use this
       function geolocate() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function(position) {

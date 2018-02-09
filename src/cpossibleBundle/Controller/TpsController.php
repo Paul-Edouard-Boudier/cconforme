@@ -25,14 +25,8 @@ class TpsController extends Controller
     
 
     $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
-    // if ($dpt == null) {
-    //   $errors['dptvalide'] = "Aucun département n'a été trouvé";
-    //   $procedure = null;
-    //   $token = null;
-    // } else {
-      $procedure = $dpt->getDepartementProcedure();
-      $token = $dpt->getDepartementToken();      
-    // }
+    $procedure = $dpt->getDepartementProcedure();
+    $token = $dpt->getDepartementToken();
 
     if ($procedure == null) {
         $errors['procedure'] = "Le département que vous avez indiqué ne contient aucune procédure actuellement.";
@@ -91,7 +85,6 @@ class TpsController extends Controller
 
   private function insert($dossier, $entity, $em, $erps) {
     $erp = new Dbalisteerp();
-    // dump($entity);die;
     // Here's how we get the entries
     foreach ($entity->champs as $champ) {
       $libelle = $champ->type_de_champ->libelle;
@@ -133,7 +126,6 @@ class TpsController extends Controller
       }
       if ($libelle == "Numéro d'adap") {
         if (!empty($value)) {
-          // $erp->setListeerpIdAdap($value);
           $adap = $value;
         }
       }
@@ -149,7 +141,6 @@ class TpsController extends Controller
         }
       }
       if ($libelle == "Type de déclaration") {
-        // $erp->setListeerpTypedossier(strtolower($value));
         $declaration = strtolower($value);
       }
       if ($libelle == "Types d'activités") {
@@ -173,7 +164,6 @@ class TpsController extends Controller
         $erp->setListeerpType($types);
       }
       if ($libelle == "Adresse") {
-        // dump($value);die;
         // var wrote with underscore are the one coming from google
         // I think that my double checking is useless, maybe it is better to just work with what google gives me
 
@@ -215,7 +205,6 @@ class TpsController extends Controller
           $nom_commune = $commune->getNom();
           $insee = strval($commune->getCodeInsee());
         }
-        // dump($nom_commune);die;
         // /!\ END GOOGLE REQUEST /!\
 
         // Regex that split a string like this:
@@ -236,7 +225,6 @@ class TpsController extends Controller
         $adressExploded = explode(" ",$tempAdress);
         $intitule_voie = $adressExploded[0]; // "Place"
         $intitule_voie = str_replace('Ave.', 'AVENUE', $intitule_voie);
-        // $intitule_voie = 'Ave.';
 
         // We search in ddb the "intitulevoie" that match with what we get from the "dossier"
         $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
@@ -268,7 +256,6 @@ class TpsController extends Controller
       if ($libelle == "Nom de l'entreprise") {
         $erp->setListeerpDemandeur($value);
       }
-      // $erp->setListeerpIdAdap($adap);
       // For now status is always 0:
       $erp->setListeerpStatut(0);
     }

@@ -92,15 +92,6 @@ abstract class AbstractErpController extends Controller
         $delai = $erp['listeerpDelaiAdap'];
         $dt = DateTime::createFromFormat("Y-m-d", $date);
         if ($dt !== false && !array_sum($dt->getLastErrors())) {
-        //
-        // $date = new DateTime($date);
-        // $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));
-        // //
-        // $date->add(new DateInterval('P'.$delai.'Y'));
-        // $newdate =  $date->format('d-m-Y');
-        // $time = strtotime($newdate);
-        // $erp['annee'] = date("Y",$time);
-
         $datetime = new DateTime($date);
         $date = $datetime->createFromFormat('Y-m-d', $date);
         $erp['mois'] = ucfirst(strftime("%B", $date->getTimestamp()));

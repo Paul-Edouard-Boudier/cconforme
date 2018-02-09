@@ -62,7 +62,6 @@ class DbaListeerpController extends Controller
                 }
 
                 if(isset($_GET['commune'])){
-                  // $_SESSION['request']['commune'] = $request->query->getAlnum('commune');
                   $_SESSION['request']['commune'] = $_GET['commune'];
                     $queryBuilder
                         ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
@@ -108,8 +107,6 @@ class DbaListeerpController extends Controller
                     $request->query->getInt('page', 1),
                     $request->query->getInt('limit', 10)
                 );
-                // $test = $em->getRepository('cpossibleBundle:DbaListeerp')->findOneBy(['listeerpId' => 69031198]);
-                // dump($test);die;
                 $choices = [5, 10, 15, 20, 25, 30];
                 return $this->render('dbalisteerp/index.html.twig', array(
                     'dbaListeerps' => $result,
@@ -273,7 +270,7 @@ class DbaListeerpController extends Controller
     }
 
     // /**
-    //  * Finds and displays a dbaListeerp entity.
+    //  * Finds and displays a dbaListeerp entity useless.
     //  *
     //  */
     // public function showAction(DbaListeerp $dbaListeerp)
@@ -319,7 +316,6 @@ class DbaListeerpController extends Controller
         if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
           $em = $this->getDoctrine()->getManager();
           $response = $this->insertion($request, $erp);
-          // dump($response);die;
           if ($response[1]) {
             $erp = $this->erpIfErrors($response[0], $response[2]);
             $action = '/'.$erp->getListeerpid().'/update';
@@ -363,7 +359,6 @@ class DbaListeerpController extends Controller
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
         if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-          // dump($number);die;
           $choices = [5, 10, 15, 20, 25, 30];
           if (!in_array($number, $choices)) {
             return $this->redirectToRoute('dbalisteerp_index');
@@ -417,7 +412,6 @@ class DbaListeerpController extends Controller
         foreach ($types as $key => $value) {
           $test = [];
           $test = [$value->getTypeactiviteNom() => $value->getTypeactiviteCode()];
-          // dump($value->getTypeactiviteNom());
           array_push($arraytypes, $test);
         }
         return $arraytypes;
@@ -528,7 +522,6 @@ class DbaListeerpController extends Controller
       }
       else {
         $errors['commune'] = "La commune renseignée ne correspond à aucune commune connue";
-        // dump($errors);die;
         $response = [$erp, $errors, $request->request];
         return $response;
       }
@@ -564,13 +557,10 @@ class DbaListeerpController extends Controller
       $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
       $dossiers = $em->getRepository('cpossibleBundle:DbaTypedossier')->findAll();
       $natures = $em->getRepository('cpossibleBundle:DbaTypeerp')->findAll();
-      // $errors = [];
 
       $erptypes = $erp->getListeerpType();
       $newtypes = str_replace(["/", "-", ","], [" ", " ", " "], $erptypes);
       $erptypes = explode(" ", $newtypes);
-      // /{{erp.listeerpId}}/update
-      // $action = '/'.$erp->getListeerpid().'/update';
       return $this->render('dbalisteerp/edit.html.twig', [
         'action' => $action,
         'erp' => $erp,
@@ -588,7 +578,6 @@ class DbaListeerpController extends Controller
     * they were entered by user
     */
     protected function erpIfErrors($erp, $request) {
-      // dump($request);die;
       $erp->setListeerpSiret($request->get('siret'));
       $erp->setListeerpNumeroVoie($request->get('numero_rue'));
       $erp->setListeerpNomVoie($request->get('rue'));

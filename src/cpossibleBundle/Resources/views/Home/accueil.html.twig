@@ -430,7 +430,6 @@
                     userarray.push(user);
                 } else {
                     if (userarray[0]) {
-                        console.log('in else loop and if condition');
                         var user = userarray[0]
                         var infowindow = new google.maps.InfoWindow();
                         google.maps.event.addListener(user, 'click', function () {
@@ -438,7 +437,6 @@
                             infowindow.open(map, this);
                         });
                     } else {
-                        console.log('in else loop and else condition');
                         $('.user-location').attr('data-lat', position.coords.latitude);
                         $('.user-location').attr('data-lng', position.coords.longitude);
                         lat = parseFloat($('.user-location').attr('data-lat'));
@@ -486,7 +484,6 @@
                       map: map,
                       position: position,
                       icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                      // info: data[i].liste_ERP_nom_erp + data[i].address,
                       info: info
                     });
                     // extends the map to fit bounds so we have every marker displayed on the map
@@ -711,7 +708,6 @@
             document.getElementById('result').innerHTML = "";
             var result = '';
             for (var i = 0; i < data.length; i++) {
-              // result += '<tr><td>' + data[i].listeErpNomErp + ' | ' + data[i].listeerpNomCommune + '</td></tr>';
               if (data[i].accessible == null) {
                 result += "<tr><td>L'établissement "+data[i].listeErpNomErp+" sera conforme d'ici "+data[i].mois+" "+data[i].annee+".</td></tr>";
               }

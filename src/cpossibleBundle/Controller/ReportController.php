@@ -21,9 +21,6 @@ class ReportController extends Controller
             // Actual code for the controller
             $em = $this->getDoctrine()->getManager();
             $reports = $em->getRepository('cpossibleBundle:Report')->findAll();
-            // if (empty($reports)) {
-            //   $reports = 'empty reports';
-            // }
             return $this->render('cpossibleBundle:Report:index.html.twig', [
               'reports' => $reports,
             ]);
