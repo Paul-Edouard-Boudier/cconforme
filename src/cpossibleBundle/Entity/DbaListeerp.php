@@ -4,6 +4,8 @@ namespace cpossibleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+// OK so i know this entity has been written like garbage (same goes for the others, but the one I wrote), i mean, check those names, it's pure nonsens, however, it wasn't me but two 'professional symfony dev' that did it and writting everything back would have take me so much time, I just could not.
+
 /**
  * DbaListeerp
  *
