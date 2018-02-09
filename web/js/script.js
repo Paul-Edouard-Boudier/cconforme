@@ -1,4 +1,4 @@
-
+// This file is the previous one that come sfrom the previous website, i do not use htis
 // Send client entered Data to the server script using Ajax -> Check if establishment is Available and ask for some information
 // Receiv Data returned by the server and handle them -> Display harvested information and Google Map
 // var dataToSend = {"product_id":"62","product_quantity":"65"};
