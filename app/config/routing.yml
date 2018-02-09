@@ -55,6 +55,12 @@ cpossible_mentions:
     defaults: { _controller: cpossibleBundle:Home:mentions }
     methods: GET
 
+cpossible_update:
+    path: /update
+    defaults: { _controller: cpossibleBundle:Home:updateCoordinates }
+    methods: GET
+    
+
 
 report_index:
     path: /report
@@ -89,7 +95,7 @@ tps_index:
 
 tps_new:
   path: /tps/new
-  defaults: { _controller: cpossibleBundle:Tps:new}
+  defaults: { _controller: cpossibleBundle:Tps:new }
   methods: POST
 
 annot:

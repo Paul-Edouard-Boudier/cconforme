@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use \Datetime;
 use \DateInterval;
+use Unirest;
 
 class HomeController extends AbstractErpController
 {
@@ -293,6 +294,36 @@ class HomeController extends AbstractErpController
 
     public function mentionsAction() {
         return $this->render('cpossibleBundle:Home:mentions.html.twig');
+    }
+
+    public function updateCoordinatesAction() {
+        $securityContext = $this->container->get('security.authorization_checker');
+        if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+            $em = $this->getDoctrine()->getManager();
+            $erps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+            $status = 0;
+            foreach ($erps as $erp) {
+                if ($erp->getListeerpNumeroVoie() != '') {
+                    $status = $erp->getListeerpId();
+                    echo($status." ");
+                    $address = $erp->getListeerpNumeroVoie() . ' ' . $erp->getListeerpNomVoie() . ' ' .$erp->getListeerpCodePostal();
+                    $key = "AIzaSyBapkuSxVaHJ0CZhOBk3H4NnHARd4H_btk";
+                    $response = Unirest\Request::get('https://maps.googleapis.com/maps/api/geocode/json?address='.$address.'&key='.$key.'');
+                    if ($response->body->results) {
+                        $result = $response->body->results[0];
+                        $location = $result->geometry->location;
+                        $erp->setListeerpLongitude($location->lng);
+                        $erp->setListeerpLatitude($location->lat);
+                        $em->persist($erp);
+                        $em->flush();
+                    }
+                }
+            }
+            return $this->redirectToRoute('tps_index');
+        }
+        else {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
     }
 
     // So it's useless also now, but i like it so here it is

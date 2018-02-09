@@ -10,58 +10,69 @@ class TpsController extends Controller
 {
 
   public function tpsAction() {
-    $em = $this->getDoctrine()->getManager();
-    $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
-    return $this->render('cpossibleBundle:TPS:index.html.twig', ['dpts' => $dpts]);
+    $securityContext = $this->container->get('security.authorization_checker');
+    if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+      $em = $this->getDoctrine()->getManager();
+      $dpts = $em->getRepository('cpossibleBundle:DbaDepartement')->findAll();
+      return $this->render('cpossibleBundle:TPS:index.html.twig', ['dpts' => $dpts]);
+    } 
+    else {
+      return $this->redirectToRoute('fos_user_security_login');
+    }
   }
   /**
    * Function that will retrieve infos from the tps procedure and all the dossiers it has
    * and then update the database if the element doesn't exist already
    */
   public function newAction(Request $request) {
-    $em = $this->getDoctrine()->getManager();
-    $errors = [];
-    $departement = $request->request->get('departement');
-    
+    $securityContext = $this->container->get('security.authorization_checker');
+    if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+      $em = $this->getDoctrine()->getManager();
+      $errors = [];
+      $departement = $request->request->get('departement');
+      
 
-    $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
-    $procedure = $dpt->getDepartementProcedure();
-    $token = $dpt->getDepartementToken();
+      $dpt = $em->getRepository('cpossibleBundle:DbaDepartement')->findOneBy(['departementCode' => $departement]);
+      $procedure = $dpt->getDepartementProcedure();
+      $token = $dpt->getDepartementToken();
 
-    if ($procedure == null) {
-        $errors['procedure'] = "Le département que vous avez indiqué ne contient aucune procédure actuellement.";
-    }
-    elseif ($token == null) {
-        $errors['token'] = "Le département renseigné n'a pas donné accès au token administratif.";
-    }
-
-    if (!empty($errors)) {
-      $count = null;
-      $error = array_values($errors)[0];
-      $label = '';
-      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
-    }
-    // /!\ END CHECKING /!\
-
-    // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
-    // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
-    $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
-
-
-    $dossiers = $response->body->dossiers;
-    $erpsArray = []; // array to count how many was inserted.
-    foreach ($dossiers as $dossier) {
-      $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
-      $entity = $subResponse->body->dossier;
-      if($this->exist($dossier, $entity, $em) == false) {
-        // i retrieve an array s i can count how many items i have pushed into ddb
-        array_push($erpsArray, $this->insert($dossier, $entity, $em, $erpsArray));
+      if ($procedure == null) {
+          $errors['procedure'] = "Le département que vous avez indiqué ne contient aucune procédure actuellement.";
       }
+      elseif ($token == null) {
+          $errors['token'] = "Le département renseigné n'a pas donné accès au token administratif.";
+      }
+
+      if (!empty($errors)) {
+        $count = null;
+        $error = array_values($errors)[0];
+        $label = '';
+        return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
+      }
+      // /!\ END CHECKING /!\
+
+      // On récupère tous les dossiers d'une procédure (donc tous les dossier de chaque bâtiment)
+      // Puis on fait une deuxième requete pour récupérer les infos pour chaque dossier trouvé
+      $response = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers?token='.$token.'');
+
+      $dossiers = $response->body->dossiers;
+      $erpsArray = []; // array to count how many was inserted.
+      foreach ($dossiers as $dossier) {
+        $subResponse = Unirest\Request::get('https://tps.apientreprise.fr/api/v1/procedures/'.$procedure.'/dossiers/'.$dossier->id.'?token='.$token.'');
+        $entity = $subResponse->body->dossier;
+        if($this->exist($dossier, $entity, $em) == false) {
+          // i retrieve an array s i can count how many items i have pushed into ddb
+          array_push($erpsArray, $this->insert($dossier, $entity, $em, $erpsArray));
+        }
+      }
+      $count = count($erpsArray);
+      $error = [];
+      $label = 'établissement(s) ajouté(s) à la base de donées.';
+      return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
+    } 
+    else {
+      return $this->redirectToRoute('fos_user_security_login');
     }
-    $count = count($erpsArray);
-    $error = [];
-    $label = 'établissement(s) ajouté(s) à la base de donées.';
-    return $this->render('cpossibleBundle:TPS:new.html.twig', ['error' => $error, 'count' => $count, 'label' => $label]);
   }
 
   /**

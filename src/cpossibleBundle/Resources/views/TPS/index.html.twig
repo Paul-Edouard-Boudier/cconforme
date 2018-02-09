@@ -1,8 +1,9 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
+	<br><br>
 	<div>
-		<h3>Mettez à jour la base de données en renseignant votre département</h3>
+		<h3>Mettez à jour la base de données en renseignant votre département :</h3>
 		<form class="" action="/tps/new" method="post">
 			<select name="departement">
 				{% for dpt in dpts %}
@@ -12,7 +13,13 @@
 			<input type="submit" class="btn btn-success" name="" value="Mise à jour">
 		</form>
 	</div>
+	<br>
+	<br>
 	<div>
-		<h3><a href="/normalize">Vérifiez</a> la normalisation d'adresses de votre base de donnée</h3>
+		<h3><a href="/normalize">Vérifiez</a> la normalisation d'adresses de votre base de donnée.</h3>
+	</div>
+	<br><br>
+	<div class="">
+		<h4><a href="/update">Mettre à jour</a> les coordonnées de chaque établissement.</h4>
 	</div>
 {% endblock %}

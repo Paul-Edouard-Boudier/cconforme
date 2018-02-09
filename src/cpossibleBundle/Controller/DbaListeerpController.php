@@ -41,87 +41,72 @@ class DbaListeerpController extends Controller
       if (session_status() == PHP_SESSION_NONE) {
           session_start();
       }
-
-
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+            $em = $this->getDoctrine()->getManager();
 
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-
-
-                $em = $this->getDoctrine()->getManager();
-
-                $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
-                $_SESSION['request'] = [];
-                if(isset($_GET['adap'])){
-                  $_SESSION['request']['adap'] = $_GET['adap'];
-                    $queryBuilder
-                        ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
-                        ->setParameter('listeerpIdAdap', '%' . $_GET['adap'] . '%' );
-                }
-
-                if(isset($_GET['commune'])){
-                  $_SESSION['request']['commune'] = $_GET['commune'];
-                    $queryBuilder
-                        ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
-                        ->setParameter('listeerpNomCommune', '%' . $_GET['commune'] . '%' );
-                }
-
-                if(isset($_GET['demandeur'])){
-                  $_SESSION['request']['demandeur'] = $_GET['demandeur'];
-                    $queryBuilder
-                        ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
-                        ->setParameter('listeerpDemandeur', '%' . $_GET['demandeur'] . '%' );
-                }
-
-                if(isset($_GET['nom_erp'])){
-                  $_SESSION['request']['nom_erp'] = $_GET['nom_erp'];
-                    $queryBuilder
-                        ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
-                        ->setParameter('listeErpNomErp', '%' . $_GET['nom_erp'] . '%' );
-                }
-
-                if(isset($_GET['nom_voie'])){
-                  $_SESSION['request']['nom_voie'] = $_GET['nom_voie'];
-                    $queryBuilder
-                        ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
-                        ->setParameter('listeerpNomVoie', '%' . $_GET['nom_voie'] . '%' );
-                }
-
-                if(isset($_GET['siret'])){
-                  $_SESSION['request']['siret'] = $_GET['siret'];
-                    $queryBuilder
-                        ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
-                        ->setParameter('listeerpSiret', '%' . $_GET['siret'] . '%' );
-                }
-
-                $dbaListeerps = $queryBuilder->getQuery();
-                if (empty($_SESSION['request'])) {
-                  $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
-                }
-                $paginator = $this->get('knp_paginator');
-
-                $result =$paginator->paginate(
-                    $dbaListeerps,
-                    $request->query->getInt('page', 1),
-                    $request->query->getInt('limit', 10)
-                );
-                $choices = [5, 10, 15, 20, 25, 30];
-                return $this->render('dbalisteerp/index.html.twig', array(
-                    'dbaListeerps' => $result,
-                    'choices' => $choices,
-                ));
-
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
+            $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+            $_SESSION['request'] = [];
+            if(isset($_GET['adap'])){
+              $_SESSION['request']['adap'] = $_GET['adap'];
+                $queryBuilder
+                    ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                    ->setParameter('listeerpIdAdap', '%' . $_GET['adap'] . '%' );
             }
 
-        } else {
+            if(isset($_GET['commune'])){
+              $_SESSION['request']['commune'] = $_GET['commune'];
+                $queryBuilder
+                    ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                    ->setParameter('listeerpNomCommune', '%' . $_GET['commune'] . '%' );
+            }
 
+            if(isset($_GET['demandeur'])){
+              $_SESSION['request']['demandeur'] = $_GET['demandeur'];
+                $queryBuilder
+                    ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                    ->setParameter('listeerpDemandeur', '%' . $_GET['demandeur'] . '%' );
+            }
+
+            if(isset($_GET['nom_erp'])){
+              $_SESSION['request']['nom_erp'] = $_GET['nom_erp'];
+                $queryBuilder
+                    ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
+                    ->setParameter('listeErpNomErp', '%' . $_GET['nom_erp'] . '%' );
+            }
+
+            if(isset($_GET['nom_voie'])){
+              $_SESSION['request']['nom_voie'] = $_GET['nom_voie'];
+                $queryBuilder
+                    ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                    ->setParameter('listeerpNomVoie', '%' . $_GET['nom_voie'] . '%' );
+            }
+
+            if(isset($_GET['siret'])){
+              $_SESSION['request']['siret'] = $_GET['siret'];
+                $queryBuilder
+                    ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
+                    ->setParameter('listeerpSiret', '%' . $_GET['siret'] . '%' );
+            }
+
+            $dbaListeerps = $queryBuilder->getQuery();
+            if (empty($_SESSION['request'])) {
+              $dbaListeerps = $em->getRepository('cpossibleBundle:DbaListeerp')->findAll();
+            }
+            $paginator = $this->get('knp_paginator');
+
+            $result =$paginator->paginate(
+                $dbaListeerps,
+                $request->query->getInt('page', 1),
+                $request->query->getInt('limit', 10)
+            );
+            $choices = [5, 10, 15, 20, 25, 30];
+            return $this->render('dbalisteerp/index.html.twig', array(
+                'dbaListeerps' => $result,
+                'choices' => $choices,
+            ));
+        } else {
             return $this->redirectToRoute('fos_user_security_login');
         }
     }
@@ -132,85 +117,76 @@ class DbaListeerpController extends Controller
     public function exportAction(Request $request){
 
       $securityContext = $this->container->get('security.authorization_checker');
-
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        $em = $this->getDoctrine()->getManager();
 
-          if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-            $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+        if(!empty($_SESSION['request'])) {
+          if(array_key_exists('adap', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
+                  ->setParameter('listeerpIdAdap', '%' . $_SESSION['request']['adap'] . '%' );
+          }
 
-            $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
-            if(!empty($_SESSION['request'])) {
-              if(array_key_exists('adap', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
-                      ->setParameter('listeerpIdAdap', '%' . $_SESSION['request']['adap'] . '%' );
-              }
+          if(array_key_exists('commune', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
+                  ->setParameter('listeerpNomCommune', '%' . $_SESSION['request']['commune'] . '%' );
+          }
 
-              if(array_key_exists('commune', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
-                      ->setParameter('listeerpNomCommune', '%' . $_SESSION['request']['commune'] . '%' );
-              }
+          if(array_key_exists('demandeur', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
+                  ->setParameter('listeerpDemandeur', '%' . $_SESSION['request']['demandeur'] . '%' );
+          }
 
-              if(array_key_exists('demandeur', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
-                      ->setParameter('listeerpDemandeur', '%' . $_SESSION['request']['demandeur'] . '%' );
-              }
+          if(array_key_exists('nom_erp', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
+                  ->setParameter('listeErpNomErp', '%' . $_SESSION['request']['nom_erp'] . '%' );
+          }
 
-              if(array_key_exists('nom_erp', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
-                      ->setParameter('listeErpNomErp', '%' . $_SESSION['request']['nom_erp'] . '%' );
-              }
+          if(array_key_exists('nom_voie', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
+                  ->setParameter('listeerpNomVoie', '%' . $_SESSION['request']['nom_voie'] . '%' );
+          }
 
-              if(array_key_exists('nom_voie', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
-                      ->setParameter('listeerpNomVoie', '%' . $_SESSION['request']['nom_voie'] . '%' );
-              }
-
-              if(array_key_exists('siret', $_SESSION['request']) == true){
-                  $queryBuilder
-                      ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
-                      ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
-              }
-            }
-
-
-            $dbaListeerps = $queryBuilder->getQuery();
-            $paginator = $this->get('knp_paginator');
-
-
-            $result =$paginator->paginate(
-                $dbaListeerps,
-                $request->query->getInt('page', 1),
-                $request->query->getInt('limit', 20000)
-            );
-
-
-            $csv = $result;
-
-            $rows = array();
-
-            foreach ($csv as $event) {
-                $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
-
-                $rows[] = implode(';', $data);
-            }
-
-            $content = implode("\n", $rows);
-            $response = new Response($content);
-            $response->headers->set('Content-Type', 'text/csv');
-
-            return $this->render('dbalisteerp/csv.html.twig', array(
-                'dbaListeerps' => $result,
-            ), $response);
-          } else {
-
-          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
+          if(array_key_exists('siret', $_SESSION['request']) == true){
+              $queryBuilder
+                  ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
+                  ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
+          }
         }
+
+
+        $dbaListeerps = $queryBuilder->getQuery();
+        $paginator = $this->get('knp_paginator');
+
+        $result =$paginator->paginate(
+            $dbaListeerps,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 20000)
+        );
+
+
+        $csv = $result;
+
+        $rows = array();
+
+        foreach ($csv as $event) {
+            $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
+
+            $rows[] = implode(';', $data);
+        }
+
+        $content = implode("\n", $rows);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $this->render('dbalisteerp/csv.html.twig', array(
+            'dbaListeerps' => $result,
+        ), $response);
 
       } else {
 
@@ -221,17 +197,15 @@ class DbaListeerpController extends Controller
     public function newAction() {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-          $errors = [];
-          $em = $this->getDoctrine()->getManager();
-          $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
-          $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
-          return $this->render('dbalisteerp/new.html.twig', [
-            'errors' => $errors,
-            'types' => $types,
-            'categories' => $categories,
-          ]);
-        }
+        $errors = [];
+        $em = $this->getDoctrine()->getManager();
+        $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+        $categories = $em->getRepository('cpossibleBundle:DbaCategorie')->findAll();
+        return $this->render('dbalisteerp/new.html.twig', [
+          'errors' => $errors,
+          'types' => $types,
+          'categories' => $categories,
+        ]);
       }
     }
     /**
@@ -244,28 +218,19 @@ class DbaListeerpController extends Controller
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-                $em = $this->getDoctrine()->getManager();
-                $erp = new Dbalisteerp();
-                // $response can hold errors which are at index 1
-                $response = $this->insertion($request, $erp);
-                if ($response[1]) {
-                  dump($response);die;
-                  $erp = $this->erpIfErrors($response[0], $response[2]);
-                  $action = '/liste/insert';
-                  return $this->rendering($response[0], $response[1], $action);
-                }
-                return $this->redirectToRoute('dbalisteerp_new');
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
-
+          $em = $this->getDoctrine()->getManager();
+          $erp = new Dbalisteerp();
+          // $response can hold errors which are at index 1
+          $response = $this->insertion($request, $erp);
+          if ($response[1]) {
+            dump($response);die;
+            $erp = $this->erpIfErrors($response[0], $response[2]);
+            $action = '/liste/insert';
+            return $this->rendering($response[0], $response[1], $action);
+          }
+          return $this->redirectToRoute('dbalisteerp_new');
         } else {
-
-            return $this->redirectToRoute('fos_user_security_login');
+          return $this->redirectToRoute('fos_user_security_login');
         }
     }
 
@@ -292,20 +257,10 @@ class DbaListeerpController extends Controller
         $securityContext = $this->container->get('security.authorization_checker');
 
         if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-
-            if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-              $errors = [];
-              $action = '/'.$erp->getListeerpid().'/update';
-              return $this->rendering($erp, $errors, $action);
-
-            } else {
-
-                return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-
-            }
-
+            $errors = [];
+            $action = '/'.$erp->getListeerpid().'/update';
+            return $this->rendering($erp, $errors, $action);
         } else {
-
             return $this->redirectToRoute('fos_user_security_login');
         }
     }
@@ -313,18 +268,14 @@ class DbaListeerpController extends Controller
     public function editOneAction(Request $request, DbaListeerp $erp) {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-          $em = $this->getDoctrine()->getManager();
-          $response = $this->insertion($request, $erp);
-          if ($response[1]) {
-            $erp = $this->erpIfErrors($response[0], $response[2]);
-            $action = '/'.$erp->getListeerpid().'/update';
-            return $this->rendering($erp, $response[1], $action);
-          }
-          return $this->redirect('/liste/index');
-        } else {
-            return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $response = $this->insertion($request, $erp);
+        if ($response[1]) {
+          $erp = $this->erpIfErrors($response[0], $response[2]);
+          $action = '/'.$erp->getListeerpid().'/update';
+          return $this->rendering($erp, $response[1], $action);
         }
+        return $this->redirect('/liste/index');
       } else {
         return $this->redirectToRoute('fos_user_security_login');
       }
@@ -338,14 +289,10 @@ class DbaListeerpController extends Controller
     { 
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-          $em = $this->getDoctrine()->getManager();
-          $em->remove($erp);
-          $em->flush();
-          return $this->redirectToRoute('dbalisteerp_index');
-        } else {
-          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($erp);
+        $em->flush();
+        return $this->redirectToRoute('dbalisteerp_index');
       } else {
         return $this->redirectToRoute('fos_user_security_login');
       }
@@ -358,28 +305,23 @@ class DbaListeerpController extends Controller
     public function lastAction(Request $request, $number) {
       $securityContext = $this->container->get('security.authorization_checker');
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
-        if ($this->getUser() && $this->getUser()->getusername() == 'adminresic') {
-          $choices = [5, 10, 15, 20, 25, 30];
-          if (!in_array($number, $choices)) {
-            return $this->redirectToRoute('dbalisteerp_index');
-          }
-          $em = $this->getDoctrine()->getManager();
-          $erps = array_slice($em->getRepository('cpossibleBundle:DbaListeerp')->findAll(), -$number);
+        $choices = [5, 10, 15, 20, 25, 30];
+        if (!in_array($number, $choices)) {
+          return $this->redirectToRoute('dbalisteerp_index');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $erps = array_slice($em->getRepository('cpossibleBundle:DbaListeerp')->findAll(), -$number);
 
-          $paginator = $this->get('knp_paginator');
-          $result =$paginator->paginate(
-              $erps,
-              $request->query->getInt('page', 1),
-              $request->query->getInt('limit', 10)
-          );
-          return $this->render('dbalisteerp/index.html.twig', [
-            'dbaListeerps' => $result,
-            'choices' => $choices
-          ]);
-        }
-        else {
-          return $this->redirectToRoute('cpossibleBundle:Home:accueil.html.twig');
-        }
+        $paginator = $this->get('knp_paginator');
+        $result =$paginator->paginate(
+            $erps,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10)
+        );
+        return $this->render('dbalisteerp/index.html.twig', [
+          'dbaListeerps' => $result,
+          'choices' => $choices
+        ]);
       }
       else {
         return $this->redirectToRoute('fos_user_security_login');
@@ -407,35 +349,35 @@ class DbaListeerpController extends Controller
     */
     private function getTypes() {
       $em = $this->getDoctrine()->getManager();
-        $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
-        $arraytypes = [];
-        foreach ($types as $key => $value) {
-          $test = [];
-          $test = [$value->getTypeactiviteNom() => $value->getTypeactiviteCode()];
-          array_push($arraytypes, $test);
-        }
-        return $arraytypes;
+      $types = $em->getRepository('cpossibleBundle:DbaTypeactivite')->findAll();
+      $arraytypes = [];
+      foreach ($types as $key => $value) {
+        $test = [];
+        $test = [$value->getTypeactiviteNom() => $value->getTypeactiviteCode()];
+        array_push($arraytypes, $test);
+      }
+      return $arraytypes;
     }
 
     protected function getNormalizedAddress($address) {
-        $em = $this->getDoctrine()->getManager();
-        $tempAdress = $address; // Here like: "Place de l'Europe" (whithout whitespace at the end)
-        $adressExploded = explode(" ",$tempAdress);
-        $intitule_voie = $adressExploded[0]; // "Place"
-        $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
-        $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
-        ->setParameter('intitulevoieNom', $intitule_voie);
-        $result = $q->getQuery();
-        // Here we want to get the nom de voie as we wish to put in ddb like "PL"
-        $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
-        $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
-        $fulladdress = "";
-        $fulladdress .= $voie;
-        for ($i=1; $i < count($adressExploded) ; $i++) {
-          $fulladdress .= " " .mb_strtoupper($adressExploded[$i], 'UTF-8');
-        }
-        $fulladdress = str_replace('DR', 'DOCTEUR', $fulladdress);
-        return $fulladdress;
+      $em = $this->getDoctrine()->getManager();
+      $tempAdress = $address; // Here like: "Place de l'Europe" (whithout whitespace at the end)
+      $adressExploded = explode(" ",$tempAdress);
+      $intitule_voie = $adressExploded[0]; // "Place"
+      $q = $em->getRepository('cpossibleBundle:DbaIntitulevoie')->createQueryBuilder('v');
+      $q->andWhere('v.intitulevoieNom LIKE :intitulevoieNom')
+      ->setParameter('intitulevoieNom', $intitule_voie);
+      $result = $q->getQuery();
+      // Here we want to get the nom de voie as we wish to put in ddb like "PL"
+      $arrayDDB = $result->getArrayResult(); // array of 1 array coming from ddb searching via infos
+      $voie = $arrayDDB[0]['intitulevoieCode']; // here we get the "PL"
+      $fulladdress = "";
+      $fulladdress .= $voie;
+      for ($i=1; $i < count($adressExploded) ; $i++) {
+        $fulladdress .= " " .mb_strtoupper($adressExploded[$i], 'UTF-8');
+      }
+      $fulladdress = str_replace('DR', 'DOCTEUR', $fulladdress);
+      return $fulladdress;
     }
 
     protected function insertion($request, $erp) {
