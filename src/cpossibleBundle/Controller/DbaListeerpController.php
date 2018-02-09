@@ -13,11 +13,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Unirest;
-
 
 
 
@@ -120,74 +120,100 @@ class DbaListeerpController extends Controller
       if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
         $em = $this->getDoctrine()->getManager();
 
-        $queryBuilder = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
+        $qb = $em->getRepository('cpossibleBundle:DbaListeerp')->createQueryBuilder('dba');
         if(!empty($_SESSION['request'])) {
           if(array_key_exists('adap', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeerpIdAdap LIKE :listeerpIdAdap')
                   ->setParameter('listeerpIdAdap', '%' . $_SESSION['request']['adap'] . '%' );
           }
 
           if(array_key_exists('commune', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeerpNomCommune LIKE :listeerpNomCommune')
                   ->setParameter('listeerpNomCommune', '%' . $_SESSION['request']['commune'] . '%' );
           }
 
           if(array_key_exists('demandeur', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeerpDemandeur LIKE :listeerpDemandeur')
                   ->setParameter('listeerpDemandeur', '%' . $_SESSION['request']['demandeur'] . '%' );
           }
 
           if(array_key_exists('nom_erp', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeErpNomErp LIKE :listeErpNomErp')
                   ->setParameter('listeErpNomErp', '%' . $_SESSION['request']['nom_erp'] . '%' );
           }
 
           if(array_key_exists('nom_voie', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeerpNomVoie LIKE :listeerpNomVoie')
                   ->setParameter('listeerpNomVoie', '%' . $_SESSION['request']['nom_voie'] . '%' );
           }
 
           if(array_key_exists('siret', $_SESSION['request']) == true){
-              $queryBuilder
+              $qb
                   ->andWhere('dba.listeerpSiret LIKE :listeerpSiret')
                   ->setParameter('listeerpSiret', '%' . $_SESSION['request']['siret'] . '%' );
           }
         }
+        $erps = $qb->getQuery()->getResult();
+        $fileName = "établissements_" . date("d_m_Y") . ".csv";
+        $response = new StreamedResponse();
+ 
+        $response->setCallback(function() use ($erps){
+            $handle = fopen('php://output', 'w+');
+ 
+            // Nom des colonnes du CSV
+            fputcsv($handle, [
+              'Type dossier',
+              'Id adap',
+              'Demandeur',
+              'Nom établissement',
+              'Nature',
+              'Catégorie(s)',
+              'Type',
+              'Date valid adap',
+              'Delai adap',
+              'Siret',
+              'Numéro voie',
+              'Nom voie',
+              'Code Postal',
+              'Code insee',
+              'Nom commune',
+              'Département',
+            ], ';');
+ 
+            //Champs
+            foreach ($erps as $erp)
+            {
+                fputcsv($handle,[
+                  $erp->getListeerpTypeDossier(),
+                  $erp->getListeerpIdAdap(),
+                  $erp->getListeerpDemandeur(),
+                  $erp->getListeErpNomErp(),
+                  $erp->getListeerpNature(),
+                  $erp->getListeerpCategorie(),
+                  $erp->getListeerpType(),
+                  $erp->getListeerpDateValidAdap(),
+                  $erp->getListeerpDelaiAdap(),
+                  $erp->getListeerpSiret(),
+                  $erp->getListeerpNumeroVoie(),
+                  $erp->getListeerpNomVoie(),
+                  $erp->getListeerpCodePostal(),
+                  $erp->getListeerpCodeInsee(),
+                  $erp->getListeerpNomCommune(),
+                  $erp->getListeerpDepartement(),
+                ],';');
+            }
+            fclose($handle);
+        });
 
-
-        $dbaListeerps = $queryBuilder->getQuery();
-        $paginator = $this->get('knp_paginator');
-
-        $result =$paginator->paginate(
-            $dbaListeerps,
-            $request->query->getInt('page', 1),
-            $request->query->getInt('limit', 20000)
-        );
-
-
-        $csv = $result;
-
-        $rows = array();
-
-        foreach ($csv as $event) {
-            $data = array($event->getListeerpDemandeur(), $event->getListeErpNomErp());
-
-            $rows[] = implode(';', $data);
-        }
-
-        $content = implode("\n", $rows);
-        $response = new Response($content);
-        $response->headers->set('Content-Type', 'text/csv');
-
-        return $this->render('dbalisteerp/csv.html.twig', array(
-            'dbaListeerps' => $result,
-        ), $response);
-
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8', 'application/force-download');
+        $response->headers->set('Content-Disposition','attachment; filename='.$fileName);
+        return $response;
       } else {
 
         return $this->redirectToRoute('fos_user_security_login');

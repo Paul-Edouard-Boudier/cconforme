@@ -1,5 +1,15 @@
-Type dossier;Id adap;Demandeur;Nom erp;Nature;Categorie;Type;Date declaration;Date valid adap;Delai adap;Siret;Numero voie;Nom voie;Code postal;Code insee;Nom commune;Departement
+Type dossier;Id adap;Demandeur;Nom erp;Nature;Categorie;Type;Date valid adap;Delai adap;Siret;Numero voie;Nom voie;Code postal;Code insee;Nom commune;Departement
 
-{% for dbaListeerp in dbaListeerps %}
-{{ dbaListeerp.listeerpTypedossier }};{{ dbaListeerp.listeerpIdAdap }};{{ dbaListeerp.listeerpDemandeur }};{{ dbaListeerp.listeErpNomErp }};{{ dbaListeerp.listeerpNature }};{{ dbaListeerp.listeerpCategorie }};{{ dbaListeerp.listeerpType }};{{ dbaListeerp.listeerpDateValidAdap }};{{ dbaListeerp.listeerpDelaiAdap }};{{ dbaListeerp.listeerpSiret }};{{ dbaListeerp.listeerpNumeroVoie }};{{ dbaListeerp.listeerpNomVoie }};{{ dbaListeerp.listeerpCodePostal }};{{ dbaListeerp.listeerpCodeInsee }};{{ dbaListeerp.listeerpNomCommune }};{{ dbaListeerp.listeerpDepartement }}
+{% for erp in erps %}
+{{ erp.listeerpTypedossier }};{{ erp.listeerpIdAdap }};{{ erp.listeerpDemandeur }};{{ erp.listeErpNomErp }};{{ erp.listeerpNature }};{{ erp.listeerpCategorie }};{{ erp.listeerpType }};{{ erp.listeerpDateValidAdap }};{{ erp.listeerpDelaiAdap }};{{ erp.listeerpSiret }};{{ erp.listeerpNumeroVoie }};{{ erp.listeerpNomVoie }};{{ erp.listeerpCodePostal }};{{ erp.listeerpCodeInsee }};{{ erp.listeerpNomCommune }};{{ erp.listeerpDepartement }}
 {% endfor %}
+{# Nom erp;Numero voie;Nom voie;Code postal;Code insee;Nom commune;Departement
+
+{% for erp in erps %}
+{{ erp.listeErpNomErp }};{{ erp.listeerpNumeroVoie }};{{ erp.listeerpNomVoie }};{{ erp.listeerpCodePostal }};{{ erp.listeerpCodeInsee }};{{ erp.listeerpNomCommune }};{{ erp.listeerpDepartement}}
+{% endfor %} #}
+{# Numero voie:Nom voie:Code postal
+11;testaccentÉàL'Europe;69
+{% for erp in erps %}
+{{erp.listeerpNumeroVoie}};{{erp.listeerpNomVoie}};{{erp.listeerpCodePostal}}
+{% endfor %} #}
