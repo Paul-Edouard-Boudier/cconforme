@@ -305,6 +305,12 @@
 
                                 document.getElementsByClassName('erplocation')[0].attributes[1].value = marker.position.lat();
                                 document.getElementsByClassName('erplocation')[0].attributes[2].value = marker.position.lng();
+                                // debugger;
+                                for (var i = 0; i < markerArray.length; i++) {
+                                    markerArray[i].setMap(null);
+                                }
+                                markerArray = [];
+                                $('.googleCommand').removeClass('hidden');
                             }
                         })
                     }
@@ -328,6 +334,8 @@
             map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
 
             var routesControlDiv = document.createElement('div');
+            routesControlDiv.className += 'googleCommand ';
+            routesControlDiv.className += 'hidden ';
             var routesControl = new RoutesControl(routesControlDiv, directionsService, directionsDisplay, stepDisplay, map, bounds, legs)
             routesControlDiv.index = 4;
             map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(routesControlDiv);
@@ -366,6 +374,7 @@
             $('#form').on('submit', function() {
                 var id = $('.id_autocomplete').data('iditem');
                 var message = $('#message2');
+                $('.googleCommand').removeClass('hidden');
                 for (var i = 0; i < markerArray.length; i++) {
                     markerArray[i].setMap(null);
                 }
@@ -737,6 +746,7 @@
         }
 
         function search_criteria(commune, nom, type, map, bounds, markerArray, message) {
+            $('.googleCommand').addClass('hidden');
           $.post('/search_list',{'commune':commune,'nom':nom, 'type':type}).done(function(data) {
             document.getElementById('result').innerHTML = "";
             var result = '';
