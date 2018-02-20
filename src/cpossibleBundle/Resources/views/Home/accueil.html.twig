@@ -333,12 +333,13 @@
             reportAdressControlDiv.index = 3;
             map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(reportAdressControlDiv);
 
-            var routesControlDiv = document.createElement('div');
-            routesControlDiv.className += 'googleCommand ';
-            routesControlDiv.className += 'hidden ';
-            var routesControl = new RoutesControl(routesControlDiv, directionsService, directionsDisplay, stepDisplay, map, bounds, legs)
-            routesControlDiv.index = 4;
-            map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(routesControlDiv);
+            // Uncomment this if you want to display the route between two points, and check calculateAndDisplayRoute() l 869.
+            // var routesControlDiv = document.createElement('div');
+            // routesControlDiv.className += 'googleCommand ';
+            // routesControlDiv.className += 'hidden ';
+            // var routesControl = new RoutesControl(routesControlDiv, directionsService, directionsDisplay, stepDisplay, map, bounds, legs)
+            // routesControlDiv.index = 4;
+            // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(routesControlDiv);
 
             // selector for the form that hold 3 criteria
             $('.searchitems').on('submit', function(event) {
