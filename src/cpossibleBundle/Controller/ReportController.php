@@ -29,13 +29,13 @@ class ReportController extends Controller
     }
 
     public function formAction() {
-      $securityContext = $this->container->get('security.authorization_checker');
+      // $securityContext = $this->container->get('security.authorization_checker');
 
-      if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+      // if ($securityContext->isGranted('ROLE_SUPER_ADMIN')) {
         return $this->render('cpossibleBundle:Report:new.html.twig');
-      } else {
-          return $this->redirectToRoute('fos_user_security_login');
-      }
+      // } else {
+      //     return $this->redirectToRoute('fos_user_security_login');
+      // }
     }
 
     public function insertOneAction(Request $request) {
